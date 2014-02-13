@@ -1,0 +1,23 @@
+[
+   {
+    "name" : "shell"
+  , "path" : "/shell(/{publisher})(/{app})"
+  , "methods" : {
+      "get" : "shell-application/shell-application"
+    }
+  }
+, {
+    "name" : "app-explorer"
+  , "path" : "/app/explorer"
+  , "methods" : {
+      "get" : "app-explorer/app-explorer"
+    }
+  }
+  , {
+    "name" : "ex2"
+  , "path" : "/logical/path"
+  , "methods" : {
+      "get" : "app-explorer/app-explorer"
+    }
+  }
+]
