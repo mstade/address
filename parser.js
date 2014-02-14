@@ -1,7 +1,8 @@
 define(
   [ 
+    "nap"
   ]
-  , function() {
+  , function(nap) {
     
     var web = nap.web()
 
