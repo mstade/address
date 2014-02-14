@@ -23,7 +23,8 @@
     "runtimeDependencies": [
       "moment",
       "jquery",
-      "text"
+      "text",
+      "nap"
     ],
     "type": "library"
   }
