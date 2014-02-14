@@ -14,10 +14,8 @@ define(
           return
         }
 
-       // d3.json("./resource.json", function(err, data) {
-          var web = parser(resources)
-          onload(web)
-       // })
+        var web = parser(resources)
+        onload(web)
       }
 
     }

@@ -1,11 +1,15 @@
 define(
-  [ './web!'
+  [ 'nap'
+  , './web!'
   ]
-  , function(web) {
+  , function(nap, web) {
 
     return function(r) {
       return {
-        then : function(cb) {
+        path : function() {
+          return r
+        }
+      , then : function(cb) {
           web.req(r, cb)
         }
       , into : function(node) {

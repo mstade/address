@@ -2,6 +2,8 @@ define(
   [ 
   ]
   , function() {
+    
+    var web = nap.web()
 
     function isFn(inst){
       return typeof inst === "function"
@@ -79,8 +81,6 @@ define(
 
       return negotiateSelector(args)
     }
-
-    var web = nap.web()
 
     return function(resources) {
 

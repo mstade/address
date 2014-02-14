@@ -1,0 +1,30 @@
+{
+  "name": "address",
+  "version": "0.0.1",
+  "description": "API for nap resources",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-karma": "~0.6.2",
+    "text": "~2.0.10",
+    "zambezi-contrib-build": "~1.0.0",
+    "karma": "~0.10.7",
+    "karma-mocha": "~0.1.0",
+    "karma-sinon-chai": "~0.1.4",
+    "karma-teamcity-reporter": "~0.1.1"
+  },
+  "scripts": {
+    "ci-test": "grunt karma:ci-test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://stash.dts.fm.rbsgrp.net/projects/ZAP/repos/address"
+  },
+  "_zambezi": {
+    "runtimeDependencies": [
+      "moment",
+      "jquery",
+      "text"
+    ],
+    "type": "library"
+  }
+}
