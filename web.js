@@ -1,6 +1,5 @@
 define(
-  [ 'd3'
-  , './parser' 
+  [ './parser' 
   , 'text!./resource.json'
   ]
 , function(d3, parser, resources) {
