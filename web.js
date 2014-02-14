@@ -1,9 +1,19 @@
 define(
-  [ './parser' 
+  [ 'nap'
+  , './parser' 
   , 'text!./resource.json'
   ]
-, function(parser, resources) {
-    return parser(resources)
+, function(parser, config) {
+
+    var web = nap.web()
+      , resources = parser(config)
+
+    resources.forEach(function(resource) {
+      var args = resource.name ? [resource.name] : []
+      web.resource.apply(null, args.concat([resource.path, resource.fn]))
+    })
+
+    return web
   }
 )
   

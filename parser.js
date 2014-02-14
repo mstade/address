@@ -2,8 +2,6 @@ define(
   [ 'nap'
   ]
   , function(nap) {
-    
-    var web = nap.web()
 
     function isFn(inst){
       return typeof inst === "function"
@@ -82,19 +80,15 @@ define(
       return negotiateSelector(args)
     }
 
-    return function(resources) {
+    return function(config) {
 
-      resources = isStr(resources) ? JSON.parse(resources) : resources
+      var parsed = isStr(config) ? JSON.parse(config) : config
 
-      resources.forEach(function(declaration) {
-        var args = [declaration.path]
-        declaration.name && (args.unshift(declaration.name))
-        var fn = parseLevel({methods: declaration.methods}, parseMethods).methods
-        args.push(fn)
-        web.resource.apply(null, args)
+      parsed.forEach(function(resource) {
+        resource.fn = parseLevel({methods: resource.methods}, parseMethods).methods
       })
       
-      return web
+      return parsed
     }
   }
 )
