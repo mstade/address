@@ -3,7 +3,7 @@ define(
   , './parser' 
   , 'text!./resource.json'
   ]
-, function(parser, config) {
+, function(nap, parser, config) {
 
     var web = nap.web()
       , resources = parser(config)
