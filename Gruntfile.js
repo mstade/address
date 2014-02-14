@@ -5,8 +5,8 @@ module.exports = function (grunt) {
             options: {
                 include: [ "address"],
                 plugins: {
-                    "text": '../node_modules/text/text'
-                    "web": 'empty:'
+                  "text": '../node_modules/text/text'
+                , "web": 'empty:'
                 }
             }
         },
