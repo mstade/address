@@ -1,6 +1,6 @@
 define(
   [ 'nap'
-  , './web!'
+  , './web'
   ]
   , function(nap, web) {
 

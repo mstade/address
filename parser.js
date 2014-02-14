@@ -1,6 +1,5 @@
 define(
-  [ 
-    "nap"
+  [ 'nap'
   ]
   , function(nap) {
     

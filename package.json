@@ -21,10 +21,9 @@
   },
   "_zambezi": {
     "runtimeDependencies": [
-      "moment",
-      "jquery",
       "text",
-      "nap"
+      "nap",
+      "d3"
     ],
     "type": "library"
   }

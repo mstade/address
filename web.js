@@ -2,7 +2,7 @@ define(
   [ './parser' 
   , 'text!./resource.json'
   ]
-, function(d3, parser, resources) {
+, function(parser, resources) {
 
     return {
 
@@ -10,6 +10,11 @@ define(
 
         if (config.isBuild) {
           onload()
+          return
+        }
+
+        if(err) {
+          onload(err)
           return
         }
 
