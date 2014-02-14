@@ -19,11 +19,7 @@ define(
       injector.mock(
         'web'
       , function() {
-        return {
-          load :  function (name, req, onload, config) {
-            onload(web)
-          }
-        }
+        return web
       })
       .mock(
         'nap'
