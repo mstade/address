@@ -6,7 +6,7 @@ define(
 , function(nap, parser, config) {
 
     var web = nap.web()
-      , resources = parser(config)
+      , resources = parser.parseResources(config)
 
     resources.forEach(function(resource) {
       var args = resource.name ? [resource.name] : []

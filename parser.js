@@ -1,7 +1,11 @@
 define(
   [ 'nap'
+  , './resolver'
   ]
-  , function(nap) {
+  , function(nap, resolver) {
+
+    var resolve = resolver.resolve
+      , resolveView = resolver.resolveView
 
     function isFn(inst){
       return typeof inst === "function"
@@ -9,24 +13,6 @@ define(
 
     function isStr(inst){
       return typeof inst === "string"
-    }
-
-    function resolve(dep) {
-      return function(req, res) {
-        var scope = this
-        require([dep], function(fn) {
-          fn.call(scope, req, res)
-        })
-      }
-    }
-
-    function resolveView(dep) {
-      return function(res) {
-        var scope = this
-        require([dep], function(fn) {
-          fn.call(scope, res)
-        })
-      }
     }
 
     function negotiateSelector(args) {
@@ -80,16 +66,22 @@ define(
       return negotiateSelector(args)
     }
 
-    return function(config) {
+    function parseResources(config) {
 
       var parsed = isStr(config) ? JSON.parse(config) : config
 
       parsed.forEach(function(resource) {
-        resource.fn = parseLevel({methods: resource.methods}, parseMethods).methods
+        resource.fn = parseLevel({fn: resource.methods}, parseMethods).fn
       })
       
       return parsed
     }
+
+    return {
+      parseMethods    : parseMethods
+    , parseMediaTypes : parseMediaTypes
+    , parseSelectors  : parseSelectors
+    , parseResources  : parseResources
+    }
   }
 )
-  

@@ -3,7 +3,14 @@
     "name" : "shell"
   , "path" : "/shell(/{publisher})(/{app})"
   , "methods" : {
-      "get" : "shell-application/shell-application"
+      "get" : {
+        "application/x.nap.view" : [
+        {
+          ".big" : "shell-application/shell-application"
+        , ".small" : "shell-application/shell-application"
+        }
+        ]
+      }
     }
   }
 , {
