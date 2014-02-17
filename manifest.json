@@ -1,0 +1,9 @@
+{
+    "type" : "library",
+    "scripts" : {
+        "am-address/address" : {
+            "debug" : "address-min.js",
+            "release" : "address-min.js"
+        }
+    }
+}
