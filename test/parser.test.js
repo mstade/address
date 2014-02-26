@@ -18,13 +18,11 @@ define(
           method : sinon.spy()
         , accept : sinon.spy()
         , selector : sinon.spy()
+        , defered : sinon.spy()
         }
       }
 
-      resolver = {
-        resolve : sinon.stub().returns(function(req, res){})
-      , resolveView : sinon.stub().returns(function(res){})
-      }
+      resolver = sinon.stub().returns(function(req, res){})
 
       injector.mock(
         'nap'
@@ -57,8 +55,9 @@ define(
         nap.negotiate.method.should.have.been.calledOnce
         nap.negotiate.accept.should.not.have.been.called
         nap.negotiate.selector.should.not.have.been.called
+        nap.negotiate.defered.should.not.have.been.called
 
-        resolver.resolve.should.have.been.calledTwice
+        resolver.should.have.been.calledTwice
       })
 
       it('should parse media types', function() {
@@ -71,14 +70,15 @@ define(
         nap.negotiate.accept.should.have.been.calledOnce
         nap.negotiate.method.should.not.have.been.called
         nap.negotiate.selector.should.not.have.been.called
+        nap.negotiate.defered.should.not.have.been.called
 
-        resolver.resolve.should.have.been.calledTwice
+        resolver.should.have.been.calledTwice
       })
 
       it('should parse view selectors', function() {
         var config = [
             { ".big" : "shell-application/shell-application"
-            , ".small":"shell-application/shell-application"
+            , ".small" : "shell-application/shell-application"
             }
           ]
         , negotiateSelector = parser.parseSelectors(config)
@@ -90,12 +90,20 @@ define(
 
         negotiateSelector(null, cbSpy)
         cbSpy.should.have.been.calledOnce
-        nap.negotiate.selector.should.have.been.calledOnce
+        nap.negotiate.defered.should.have.been.calledOnce
 
-        resolver.resolveView.should.have.been.calledTwice
+        resolver.should.have.been.calledTwice
       })
 
-      it('should parse a single resource with a simple function', function() {
+        it('should parse a single resource with a simple function', function() {
+        var config = '[{ "name" : "shell", "path" : "/shell(/{publisher})(/{app})", "methods" : "shell-application/shell-application"}]'
+          , resources = parser.parseResources(config)
+
+        resources.length.should.equal(1)
+        nap.negotiate.method.should.not.have.been.called
+      })
+
+      it('should parse a single resource with a get method and simple function', function() {
         var config = '[{ "name" : "shell", "path" : "/shell(/{publisher})(/{app})", "methods" : { "get" : "shell-application/shell-application" }}]'
           , resources = parser.parseResources(config)
 

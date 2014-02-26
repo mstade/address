@@ -13,7 +13,10 @@ define(
 
       var injector = new Squire();
 
-      web = { req : sinon.spy() }
+      web = { 
+        req : sinon.spy() 
+      , resource : sinon.spy() 
+      }
       nap = { into : sinon.spy() }
 
       injector.mock(
@@ -39,6 +42,12 @@ define(
 
       it('should store the resource in the closure', function() {
         address("/wibble").path().should.equal("/wibble")
+      })
+
+      it('should get a resource by name', function() {
+        address.resource("wibble")
+        web.resource.should.have.been.calledOnce
+        web.resource.should.have.been.calledWith("wibble")
       })
 
       it('should call web.req with the resource and callback', function() {

@@ -4,7 +4,7 @@ define(
   ]
   , function(nap, web) {
 
-    return function(r) {
+    function address(r) {
       return {
         path : function() {
           return r
@@ -17,5 +17,11 @@ define(
         }
       }
     }
+
+    address.resource = function(name) {
+      return web.resource(name)
+    }
+
+    return address
   }
 )

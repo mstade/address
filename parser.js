@@ -2,10 +2,7 @@ define(
   [ 'nap'
   , './resolver'
   ]
-  , function(nap, resolver) {
-
-    var resolve = resolver.resolve
-      , resolveView = resolver.resolveView
+  , function(nap, resolve) {
 
     function isFn(inst){
       return typeof inst === "function"
@@ -15,11 +12,41 @@ define(
       return typeof inst === "string"
     }
 
+    function bySelectorDefered(){
+      var options = [].slice.apply(arguments, [0])
+        .reduce(
+          function(curr, next){
+            if(isStr(next)) curr.push({ selector : next })
+            else curr[curr.length - 1].fn = next
+            return curr
+          }
+        , []
+        )
+      
+      return function(node){
+        var fn
+        options.some(function(option){
+          if(is(node, option.selector)) {
+            fn = option.fn
+            return true
+          }
+        })
+        return fn
+      }
+    }
+
     function negotiateSelector(args) {
+
+      var defered = nap.negotiate.defered.apply(null, args)
+
       return function(req, res) {
         res(
           null
-        , nap.negotiate.selector.apply(null, args)
+        , function(node) {
+            defered.call(null, node)(req, function(err, view) {
+              view(node)
+            })
+          }
         )
       }
     }
@@ -57,7 +84,7 @@ define(
 
       obj.forEach(function(def) {
         Object.keys(def).forEach(function(key) {
-          def[key] = resolveView(def[key])
+          def[key] = resolve(def[key])
           args.push(key)
           args.push(def[key])
         })
