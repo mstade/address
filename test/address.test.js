@@ -8,6 +8,7 @@ define(
     var address
       , web
       , nap
+      , type
 
     beforeEach(function(done) {
 
@@ -16,8 +17,23 @@ define(
       web = { 
         req : sinon.spy() 
       , resource : sinon.spy() 
+      , uri : function(uri, params) {
+          var paramsString = ""
+          Object.keys(params).forEach(function(key) {
+            paramsString += "/" + params[key]
+          })
+          return uri.split("/{")[0] + paramsString
+        }
       }
-      nap = { into : sinon.spy() }
+
+      nap = { 
+        into : sinon.spy() 
+      }
+
+      type = { 
+        isString : function(obj) { return typeof obj === "string" }
+      , isObject : function(obj) { return typeof obj !== "string" }
+      }
 
       injector.mock(
         'web'
@@ -28,6 +44,11 @@ define(
         'nap'
       , function() {
         return nap
+      })
+      .mock(
+        'type/type'
+      , function() {
+        return type
       })
       .require(
         [ 'address' ]
@@ -41,7 +62,81 @@ define(
     describe('Address', function() {
 
       it('should store the resource in the closure', function() {
-        address("/wibble").path().should.equal("/wibble")
+        address("/wibble")
+          .uri()
+          .should.equal("/wibble")
+      })
+
+      it('should set the uri', function() {
+        address()
+          .uri("/wibble")
+          .uri()
+          .should.equal("/wibble")
+      })
+
+      it('should set the method', function() {
+        address()
+          .method("get")
+          .method()
+          .should.equal("get")
+      })
+
+      it('should set the accept type', function() {
+        address()
+          .accept("json")
+          .accept()
+          .should.equal("json")
+      })
+
+      it('should add a parameter', function() {
+        address()
+          .params("foo", "bar")
+          .params()
+          .should.deep.equal({
+            foo:"bar"
+          })
+      })
+
+      it('should add a multiple parameters', function() {
+        address()
+          .params("foo", "bar")
+          .params("baz", "bing")
+          .params()
+          .should.deep.equal({
+            foo:"bar"
+          , baz:"bing"
+          })
+      })
+
+      it('should add a multiple parameters from an object', function() {
+        address()
+          .params({foo : "bar", baz : "bing"})
+          .params()
+          .should.deep.equal({
+            foo:"bar"
+          , baz:"bing"
+          })
+      })
+
+      it('should add a multiple parameters from an object in a chain', function() {
+        address()
+          .params({foo : "bar", baz : "bing"})
+          .params({wibble : "wobble"})
+          .params("sausage", "chips")
+          .params()
+          .should.deep.equal({
+            foo:"bar"
+          , baz:"bing"
+          , wibble : "wobble"
+          , sausage : "chips"}
+          )
+      })
+
+      it('should set the body', function() {
+        address()
+          .body({hello:"world!"})
+          .body()
+          .should.deep.equal({hello:"world!"})
       })
 
       it('should get a resource by name', function() {
@@ -50,13 +145,45 @@ define(
         web.resource.should.have.been.calledWith("wibble")
       })
 
-      it('should call web.req with the resource and callback', function() {
+      it('should call web.req with the configured request and callback', function() {
         var cb = sinon.spy()
+          , req = {
+            uri : "/wibble/123"
+          , method : "send"
+          , headers : {
+              accept : "application/json"
+            }
+          , body : {hello:"world!"}
+          }
+
+        address("/wibble/{id}")
+          .params("id", "123")
+          .method("send")
+          .accept("application/json")
+          .body({hello:"world!"})
+          .then(cb)
+
+        web.req.should.have.been.calledOnce
+        web.req.args[0][0].should.deep.equal(req)
+        web.req.args[0][1].should.equal(cb)
+      })
+
+      it('should use defaults', function() {
+        var cb = sinon.spy()
+          , req = {
+            uri : "/wibble"
+          , method : "get"
+          , headers : {
+              accept : "application/x.nap.view"
+            }
+          , body : {}
+          }
 
         address("/wibble").then(cb)
 
         web.req.should.have.been.calledOnce
-        web.req.should.have.been.calledWith("/wibble", cb)
+        web.req.args[0][0].should.deep.equal(req)
+        web.req.args[0][1].should.equal(cb)
       })
 
       it('should call nap.into with the node', function() {
@@ -68,7 +195,6 @@ define(
         $("body").remove(".view")
 
         web.req.should.have.been.calledOnce
-        web.req.should.have.been.calledWith("/wibble")
         nap.into.should.have.been.calledOnce
         nap.into.should.have.been.calledWith(node)
       })

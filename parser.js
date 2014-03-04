@@ -12,7 +12,9 @@ define(
       return typeof inst === "string"
     }
 
+
     function bySelectorDefered(){
+
       var options = [].slice.apply(arguments, [0])
         .reduce(
           function(curr, next){
@@ -24,29 +26,32 @@ define(
         )
       
       return function(node){
+
         var fn
+
         options.some(function(option){
-          if(is(node, option.selector)) {
+          if(nap.is(node, option.selector)) {
             fn = option.fn
             return true
           }
         })
+
         return fn
       }
     }
 
     function negotiateSelector(args) {
 
-      var defered = nap.negotiate.defered.apply(null, args)
+      var defered = bySelectorDefered.apply(null, args)
 
       return function(req, res) {
         res(
           null
-        , function(node) {
-            defered.call(null, node)(req, function(err, view) {
-              view(node)
+        , nap.responses.ok(function(node) {
+            defered.call(null, node)(req, function(err, data) {
+              data.body(node)
             })
-          }
+          })
         )
       }
     }

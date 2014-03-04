@@ -1,38 +1,22 @@
 [
   {
-    "name" : "market-rates"
-  , "path" : "/market-rates"
-  , "methods" : { 
-      "get" : "market-rates/market-rates" 
-    }
-  }
-, {
     "name" : "shell-application"
-  , "path" : "/shell(/{1}(/{2}(/{3})))"
-  , "methods" : { 
-      "get" : "shell-application/shell-application" 
-    }
-  }
-  , {
-    "name" : "legacy-shell-application"
-  , "path" : "/legacy/{legacy}/shell/{publisher}/{app}(/params/{params})"
-  , "methods" : { 
-      "get" : "shell-application/shell-application" 
-    }
-  }
-  , {
-    "name" : "layouts"
-  , "path" : "/layouts/{id}"
+  , "path" : "/shell(/{publisher}/{app}(/params/{params}))"
   , "methods" : "shell-application/shell-application" 
   }
 , {
-    "name" : "platform/app-explorer"
-  , "path" : "/platform/app-explorer(/params/{params})(/legacy)"
+    "name" : "layouts"
+  , "path" : "/layouts/{id}"
   , "methods" : "app-loader/app-loader" 
   }
 , {
-    "name" : "execution/exec-market-rates-app"
-  , "path" : "/execution/exec-market-rates-app(/params/{params})(/legacy)"
+    "name" : "platform-app-explorer-legacy"
+  , "path" : "/platform/app-explorer(/params/{params})"
+  , "methods" : "app-loader/app-loader" 
+  }
+, {
+    "name" : "execution-exec-market-rates-app-legacy"
+  , "path" : "/execution/exec-market-rates-app(/params/{params})"
   , "methods" : "app-loader/app-loader" 
   }
 , {
@@ -48,6 +32,7 @@
         "application/x.nap.view" : [
           { "div" : "people/full" }
         , { "span" : "people/summary" }
+        , { "img" : "people/avatar" }
         , { "*" : "people/summary" }
         ]
       }

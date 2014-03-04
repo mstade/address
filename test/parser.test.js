@@ -14,11 +14,14 @@ define(
       var injector = new Squire();
 
       nap = { 
-        negotiate : {
+        is : sinon.spy()
+      , negotiate : {
           method : sinon.spy()
         , accept : sinon.spy()
         , selector : sinon.spy()
-        , defered : sinon.spy()
+        }
+      , responses : {
+          ok : sinon.spy()
         }
       }
 
@@ -55,7 +58,6 @@ define(
         nap.negotiate.method.should.have.been.calledOnce
         nap.negotiate.accept.should.not.have.been.called
         nap.negotiate.selector.should.not.have.been.called
-        nap.negotiate.defered.should.not.have.been.called
 
         resolver.should.have.been.calledTwice
       })
@@ -70,7 +72,6 @@ define(
         nap.negotiate.accept.should.have.been.calledOnce
         nap.negotiate.method.should.not.have.been.called
         nap.negotiate.selector.should.not.have.been.called
-        nap.negotiate.defered.should.not.have.been.called
 
         resolver.should.have.been.calledTwice
       })
@@ -90,7 +91,6 @@ define(
 
         negotiateSelector(null, cbSpy)
         cbSpy.should.have.been.calledOnce
-        nap.negotiate.defered.should.have.been.calledOnce
 
         resolver.should.have.been.calledTwice
       })
