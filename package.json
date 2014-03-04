@@ -23,7 +23,8 @@
     "runtimeDependencies": [
       "text",
       "nap",
-      "d3"
+      "d3",
+      "type"
     ],
     "type": "library"
   }
