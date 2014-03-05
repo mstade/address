@@ -7,23 +7,38 @@ define(
 
     function address(r) {
 
-      var api = {}
-        , uri = r
+      var uri
         , name
         , method = "get"
-        , accept = "application/x.nap.view"
+        , headers = { accept : "application/x.nap.view" }
         , params = {}
         , body = {}
+        , node
+        , callback
+
+      if(r && type.isString(r)) {
+        uri = r
+      } else if(r && type.isObject(r)) {
+        uri = r.uri || uri
+        method = r.method || method
+        headers = r.headers || headers
+        body = r.body || body
+      }
 
       function req() {
         return {
           uri : web.uri(uri, params)
         , method : method
-        , headers : {
-            accept : accept
-          }
+        , headers : headers
         , body : body
         }
+      }
+
+      function api() {
+        web.req(req(), function(err, res) {
+          node && nap.into(node)(err, res)
+          callback && callback(err, res)
+        })
       }
 
       api.uri = function(u) {
@@ -38,13 +53,23 @@ define(
         return api
       }
 
-      api.accept = function(a) {
-        if(!arguments.length) return accept
-        accept = a
+      api.header = function(k, v) {
+        if(!arguments.length) return headers
+        if(type.isString(k)) {
+          headers[k] = v
+          return api
+        }
+        if(type.isObject(k)) {
+          Object.keys(k).forEach(function(key) {
+            headers[key] = k[key]
+          })
+          return api
+        }
+
         return api
       }
 
-      api.params = function(k, v) {
+      api.param = function(k, v) {
         if(!arguments.length) return params
         if(type.isString(k)) {
           params[k] = v
@@ -67,11 +92,15 @@ define(
       }
 
       api.then = function(cb) {
-        web.req(req(), cb)
+        if(!arguments.length) return callback
+        callback = cb
+        return api
       }
 
-      api.into = function(node) {
-        web.req(req(), nap.into(node))
+      api.into = function(n) {
+        if(!arguments.length) return node
+        node = n
+        return api
       }
 
       return api

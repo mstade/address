@@ -15,7 +15,17 @@ define(
       var injector = new Squire();
 
       web = { 
-        req : sinon.spy() 
+        req : sinon.spy(function(req, cb) {
+          cb( null
+            , { 
+                statusCode : 200
+              , headers: {
+                  contentType : "application/x.nap.view"
+                }
+              , body : function(node){console.log("view called")}
+              }
+            )
+        }) 
       , resource : sinon.spy() 
       , uri : function(uri, params) {
           var paramsString = ""
@@ -27,7 +37,9 @@ define(
       }
 
       nap = { 
-        into : sinon.spy() 
+        into : sinon.spy(function(node) {
+          return function(err, res) {}
+        }) 
       }
 
       type = { 
@@ -81,17 +93,32 @@ define(
           .should.equal("get")
       })
 
-      it('should set the accept type', function() {
+      it('should set a header', function() {
         address()
-          .accept("json")
-          .accept()
-          .should.equal("json")
+          .header("accept", "application/json")
+          .header()
+          .should.deep.equal({accept:"application/json"})
+      })
+
+      it('should set multiple headers', function() {
+        address()
+          .header("accept", "application/json")
+          .header("foo", "bar")
+          .header()
+          .should.deep.equal({accept:"application/json", foo:"bar"})
+      })
+
+      it('should set multiple headers from an object', function() {
+        address()
+          .header({accept : "application/json", foo : "bar"})
+          .header()
+          .should.deep.equal({accept:"application/json", foo:"bar"})
       })
 
       it('should add a parameter', function() {
         address()
-          .params("foo", "bar")
-          .params()
+          .param("foo", "bar")
+          .param()
           .should.deep.equal({
             foo:"bar"
           })
@@ -99,9 +126,9 @@ define(
 
       it('should add a multiple parameters', function() {
         address()
-          .params("foo", "bar")
-          .params("baz", "bing")
-          .params()
+          .param("foo", "bar")
+          .param("baz", "bing")
+          .param()
           .should.deep.equal({
             foo:"bar"
           , baz:"bing"
@@ -110,8 +137,8 @@ define(
 
       it('should add a multiple parameters from an object', function() {
         address()
-          .params({foo : "bar", baz : "bing"})
-          .params()
+          .param({foo : "bar", baz : "bing"})
+          .param()
           .should.deep.equal({
             foo:"bar"
           , baz:"bing"
@@ -120,10 +147,10 @@ define(
 
       it('should add a multiple parameters from an object in a chain', function() {
         address()
-          .params({foo : "bar", baz : "bing"})
-          .params({wibble : "wobble"})
-          .params("sausage", "chips")
-          .params()
+          .param({foo : "bar", baz : "bing"})
+          .param({wibble : "wobble"})
+          .param("sausage", "chips")
+          .param()
           .should.deep.equal({
             foo:"bar"
           , baz:"bing"
@@ -137,6 +164,22 @@ define(
           .body({hello:"world!"})
           .body()
           .should.deep.equal({hello:"world!"})
+      })
+
+      it('should set fields from a req object', function() {
+        var a = address({
+          uri : "/wibble"
+        , method : "send"
+        , headers : {
+            accept : "application/json"
+          }
+        , body : "hello"
+        })
+        
+        a.uri().should.equal("/wibble")
+        a.method().should.equal("send")
+        a.header().should.deep.equal({accept:"application/json"})
+        a.body().should.equal("hello")
       })
 
       it('should get a resource by name', function() {
@@ -156,16 +199,18 @@ define(
           , body : {hello:"world!"}
           }
 
-        address("/wibble/{id}")
-          .params("id", "123")
+        var update = address("/wibble/{id}")
+          .param("id", "123")
           .method("send")
-          .accept("application/json")
+          .header("accept","application/json")
           .body({hello:"world!"})
           .then(cb)
 
+        update()
+
         web.req.should.have.been.calledOnce
         web.req.args[0][0].should.deep.equal(req)
-        web.req.args[0][1].should.equal(cb)
+        cb.should.have.been.calledOnce
       })
 
       it('should use defaults', function() {
@@ -179,11 +224,11 @@ define(
           , body : {}
           }
 
-        address("/wibble").then(cb)
+        address("/wibble").then(cb)()
 
         web.req.should.have.been.calledOnce
+        cb.should.have.been.calledOnce
         web.req.args[0][0].should.deep.equal(req)
-        web.req.args[0][1].should.equal(cb)
       })
 
       it('should call nap.into with the node', function() {
@@ -191,10 +236,13 @@ define(
           , node = $("<div class='view'></div>")["0"]
 
         $("body").append(node)
-        address("/wibble").into(node)
+
+        address("/wibble").into(node).then(cb)()
+
         $("body").remove(".view")
 
         web.req.should.have.been.calledOnce
+        cb.should.have.been.calledOnce
         nap.into.should.have.been.calledOnce
         nap.into.should.have.been.calledWith(node)
       })
