@@ -1,7 +1,7 @@
 [
   {
     "name" : "shell-application"
-  , "path" : "/shell(/{publisher}/{app}(/params/{params}))"
+  , "path" : "/shell"
   , "methods" : "shell-application/shell-application" 
   }
 , {
@@ -15,14 +15,14 @@
   , "methods" : "app-loader/app-loader" 
   }
 , {
-    "name" : "execution-exec-market-rates-app-legacy"
-  , "path" : "/execution/exec-market-rates-app(/params/{params})"
+    "name" : "platform-legal-acceptance-legacy"
+  , "path" : "/platform/legal-acceptance(/params/{params})"
   , "methods" : "app-loader/app-loader" 
   }
 , {
-    "name" : "people"
-  , "path" : "/people"
-  , "methods" : "people/people"
+    "name" : "execution-exec-market-rates-app-legacy"
+  , "path" : "/execution/exec-market-rates-app(/params/{params})"
+  , "methods" : "app-loader/app-loader" 
   }
 , {
     "name" : "person"
@@ -30,12 +30,18 @@
   , "methods" : {
       "get" : {
         "application/x.nap.view" : [
-          { "div" : "people/full" }
-        , { "span" : "people/summary" }
+          { ".internal div" : "people/full-internal" }
+        , { "div" : "people/full" }
+        , { "span" : "people/inline" }
         , { "img" : "people/avatar" }
-        , { "*" : "people/summary" }
+        , { "*" : "people/inline" }
         ]
       }
     }
+  }
+, {
+    "name" : "people"
+  , "path" : "/people"
+  , "methods" : "people/people"
   }
 ]

@@ -34,9 +34,14 @@ define(
         }
       }
 
+      function into(node, err, res) {
+        if(res.headers.contentType == "application/x.am.view") res.headers.contentType = "application/x.nap.view"
+        nap.into(node)(err, res)
+      }
+
       function api() {
         web.req(req(), function(err, res) {
-          node && nap.into(node)(err, res)
+          node && into(node, err, res)
           callback && callback(err, res)
         })
       }
