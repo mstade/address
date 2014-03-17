@@ -3,6 +3,7 @@
 Address is the API library for the Agile Markets Resource Oriented Architecture.
 
 It provides 
+
 * an api for configuring and invoking requests for resources
 * utilities for creating appropriate responses from resources
 * utilities for displaying resources in the DOM
