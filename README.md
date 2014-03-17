@@ -38,7 +38,7 @@ Assuming we want to use a resource named **price** which has both a data and a v
 /price/{ccy1}/{ccy2}
 ```
 
-we can request the resource in a number of ways.
+the api allows us to request the resource in a number of ways.
 
 ### Using the path directly
 
