@@ -215,27 +215,24 @@ As can be seen, this resource is returning a function which should be invoked wi
 We can use it like this:
 
 ```
-address("/price/usd/gbp").then(function(err, data) {
+var node = d3.select(".price").node()
 
-  var node = d3.select(".price").node()
-    , view = data.body
-  
-  view(node)
+address("/price/usd/gbp").then(function(err, data) {
+  data.body(node)
 })
 ```
 
 ## into utility
 
-The ```into``` utility removes the need for this boilerplate whilst also checking for error status codes and vaslidating the content type of the response.
+The ```into``` utility removes the need for this boilerplate whilst also checking for error status codes and validating the content type of the response.
+Using the ```into``` api also triggers an ```update``` event on the target node as a hook for existing views.
+
 The above example can be re-written using the address api as follows:
 
 ```
-var node = d3.select(".price").node()
-
-address("/price/usd/gbp")
-  .into(node)
-  .then( // optional callback )
+address("/price/usd/gbp").into(node)
 ```
+
 
 ## ok, error utlities
 
