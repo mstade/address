@@ -167,6 +167,63 @@ var request =
 request()
 ```
 
+## Adding a resource view to the DOM
+
+Often you will be requesting a view of a paticular resource which you want to display in the page.
+As mentioned, the default accept type of a reauest is "application/x.nap.view". 
+The response to a request with this header will be a response object in which the ```.body``` property will contain a view function which can be invoked on a DOM node.
+
+As an example, our **price** resource may expose a view representation of the price defined by the path parameters. The resource function definition would then look as follows:
+
+```
+define(
+  [ 'am-address/ok'
+  ]
+  , function(ok) {
+
+    return function(req, res) {
+
+      var ccy1 = req.params.ccy1
+        , ccy2 = req.params.ccy2
+
+      var price = price_service.getPrice(ccy1, ccy2)
+
+      var view = function(node) {
+        node.innerHTML(price)
+      }
+
+      res( ok(view) )
+    }
+    
+  }
+)
+```
+As can be seen, this resource is returning afunction which should be invoked with a DOM node as a parameter.
+We can use it like this:
+
+```
+address("/price/usd/gbp").then(function(err, data) {
+
+  var node = d3.select(".price").node()
+    , view = data.body
+  
+  view(node)
+})
+```
+
+## into utility
+
+The ```into``` utility removes the need for this boilerplate whilst also checking for error status codes and vaslidating the content type of the response.
+The above example can be re-written using the address api as follows:
+
+```
+var node = d3.select(".price").node()
+
+address("/price/usd/gbp")
+  .into(node)
+  .then( // optional callback )
+```
+
 ## ok, error utlities
 
 A resource function **must** call the response function with an appropriate response.
@@ -214,6 +271,8 @@ address.resource("price")
       methods : function() { ... }
     }
 ```
+
+
 
 
 
