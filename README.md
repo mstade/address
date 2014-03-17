@@ -116,6 +116,13 @@ var request =
 request()
 ```
 
+Supported methods are
+
+* GET
+* SEND
+* PUT
+* REMOVE
+
 If the requested resource does not support the specified method a [405](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) error response will be returned.
 
 ### Adding headers
@@ -134,6 +141,14 @@ var request =
 
 request()
 ```
+
+Supported headers are
+
+* accept-type
+
+Accept types must conform to the [HTTP field definition](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html)
+
+The default accept type for requests is "application/x.nap.view" which is the type for a 
 
 If the requested resource does not support the specified accept type a [415](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) error response will be returned.
 
