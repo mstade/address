@@ -42,7 +42,7 @@ we can request the resource in a number of ways.
 
 ### Using the path directly
 
-Here configure the request by using the resource path with the path variables filled in.
+Here we configure the request by using the resource path with the path variables filled in.
 We add a callback using the ```.then()``` method. The callback will be invoked when the resource responds. The data parameter will be populated with the response object. Any data returned form the resource will be in the ```response.body``` property
 
 ```
