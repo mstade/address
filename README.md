@@ -136,6 +136,8 @@ Supported methods are
 * PUT
 * REMOVE
 
+The semantics of these methods are equivalent to the standard [HTTP verbs](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html)
+
 If the requested resource does not support the specified method a [405](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) error response will be returned.
 
 ### Adding headers
