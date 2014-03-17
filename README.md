@@ -33,7 +33,9 @@ define(
 
 Assuming we want to use a resource named **price** which has both a data and a view representation and is defined with the following path:
 
-```/price/{ccy1}/{ccy2}```
+```
+/price/{ccy1}/{ccy2}
+```
 
 we can request the resource in a number of ways.
 
