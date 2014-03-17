@@ -1,6 +1,6 @@
 # am-address
 
-Address is the API library for the Agile Markets Resource Oriented Architecture.
+Address is the API library for the Agile Markets Resource Oriented Architecture (ROA).
 
 It provides 
 
