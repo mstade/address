@@ -8,7 +8,7 @@ It provides
 * utilities for creating appropriate responses from resources
 * utilities for displaying resources in the DOM
 
-For more information and tutorials about how to define and expose resources in the Agile Markets platform please see the [Hello World tutorial](https://stash.dts.fm.rbsgrp.net/projects/ZAP/repos/hello-world/browse).
+For more information and tutorials about how to define and expose resources in the Agile Markets platform please see the [Hello World tutorial](https://stash.dts.fm.rbsgrp.net/projects/ZAP/repos/hello-world-new/browse).
 
 ## Usage
 
