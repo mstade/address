@@ -3,9 +3,9 @@
 Address is the API library for the Agile Markets Resource Oriented Architecture.
 
 It provides 
-*an api for configuring and invoking requests for resources
-*utilities for creating appropriate responses from resources
-*utilities for displaying resources in the DOM
+* an api for configuring and invoking requests for resources
+* utilities for creating appropriate responses from resources
+* utilities for displaying resources in the DOM
 
 For more information and tutorials about how to define and expose resources ni the Agile MArkets platform please see the Hello World tutorial [here](https://stash.dts.fm.rbsgrp.net/projects/ZAP/repos/hello-world/browse).
 
