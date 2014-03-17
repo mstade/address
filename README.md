@@ -170,7 +170,7 @@ request()
 ## Adding a resource view to the DOM
 
 Often you will be requesting a view of a paticular resource which you want to display in the page.
-As mentioned, the default accept type of a reauest is "application/x.nap.view". 
+As mentioned, the default accept type of a request is "application/x.nap.view". 
 The response to a request with this header will be a response object in which the ```.body``` property will contain a view function which can be invoked on a DOM node.
 
 As an example, our **price** resource may expose a view representation of the price defined by the path parameters. The resource function definition would then look as follows:
