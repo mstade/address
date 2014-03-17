@@ -73,6 +73,8 @@ var request =
       // use data from resource
     }))
 
+request()
+
 // multpile params
 
 var request = 
@@ -81,6 +83,8 @@ var request =
     .then(function(err, data) {
       // use data from resource
     }))
+
+request()
 ```
 
 We can also request the resource by it's name
@@ -112,6 +116,8 @@ var request =
 request()
 ```
 
+If the requested resource does not support the specified method a [405](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) error response will be returned.
+
 ### Adding headers
 
 Request headers convey further information about how the reuqest should be handled.
@@ -128,6 +134,8 @@ var request =
 
 request()
 ```
+
+If the requested resource does not support the specified accept type a [415](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) error response will be returned.
 
 ### Adding a body
 
