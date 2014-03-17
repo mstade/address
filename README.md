@@ -58,6 +58,19 @@ request()
 
 ```
 
+Alternatively we could set the path using the ```.uri()``` method
+
+```
+var request = address()
+  .uri("/price/usd/gbp")
+  .then(function(err, data) {
+    // use data from resource
+  }))
+
+request()
+
+```
+
 ### Adding parameters
 
 Path parameters can be added through the ```.param()``` method.
@@ -198,7 +211,7 @@ define(
   }
 )
 ```
-As can be seen, this resource is returning afunction which should be invoked with a DOM node as a parameter.
+As can be seen, this resource is returning a function which should be invoked with a DOM node as a parameter.
 We can use it like this:
 
 ```
