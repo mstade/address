@@ -207,7 +207,7 @@ define(
         node.innerHTML(price)
       }
 
-      res( ok(view) )
+      res( null, ok(view) )
     }
     
   }
@@ -258,12 +258,12 @@ define(
       // resource logic goes here...
 
       if( // bad request ) {
-        res( error(400) )
+        res( null, error(400) )
         return
       }
 
       // all ok
-      res( ok("hello world!") )
+      res( null, ok("hello world!") )
     }
 
   }

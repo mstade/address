@@ -26,6 +26,8 @@ define(
 
           var resources = parser.parseResources(data)
 
+          console.log("resources: " + resources)
+
           resources.forEach(function(resource) {
             var args = resource.name ? [resource.name] : []
             web.resource.apply(null, args.concat([resource.path, resource.fn]))
