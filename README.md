@@ -227,7 +227,7 @@ address("/price/usd/gbp").then(function(err, data) {
 The ```into``` utility removes the need for this boilerplate whilst also checking for error status codes and validating the content type of the response.
 Using the ```into``` api also triggers an ```update``` event on the target node as a hook for existing views.
 
-The above example can be re-written using the address api as follows:
+The above example can be re-written using the 'into' api as follows:
 
 ```
 address("/price/usd/gbp").into(node)
