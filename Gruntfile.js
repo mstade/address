@@ -6,7 +6,6 @@ module.exports = function (grunt) {
                 include: ["address", "ok", "error"],
                 plugins: {
                   "text": '../node_modules/text/text'
-                , "web": 'empty:'
                 }
             }
         },
