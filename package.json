@@ -24,7 +24,8 @@
       "text",
       "nap",
       "d3",
-      "type"
+      "type",
+      "logger"
     ],
     "type": "library"
   }
