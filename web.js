@@ -7,7 +7,7 @@ define(
   ]
 , function(nap, parser, middleware, d3, type) {
 
-    var web = nap.web().use(middleware.requestTimeout)
+    var web
 
     return {
       load: function (name, req, onload, config) {
@@ -16,6 +16,8 @@ define(
           onload()
           return
         }
+
+        web = nap.web().use(middleware.requestTimeout)
 
         d3.json("/api/apps/v1/resources", function(err, data) {
 
