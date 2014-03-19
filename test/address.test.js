@@ -50,7 +50,11 @@ define(
       injector.mock(
         'web'
       , function() {
-        return web
+        return {
+          load: function(name, req, onload, config) {
+            onload(web)
+          }
+        }
       })
       .mock(
         'nap'
