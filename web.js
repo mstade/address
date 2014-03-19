@@ -4,7 +4,6 @@ define(
   , './middleware'
   , 'd3'
   , 'type/type'
-  , 'logger/log!platform/address'
   ]
 , function(nap, parser, middleware, d3, type) {
 
@@ -23,7 +22,7 @@ define(
         d3.json("/api/apps/v1/resources", function(err, data) {
 
           if(err || !data.resources || !type.isArray(data.resources)) {
-            log.error("Failed to retrieve resources")
+            //log.error("Failed to retrieve resources")
             data = { resources : [] }
           }
 
