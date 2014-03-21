@@ -8,6 +8,7 @@ define(
 , function(nap, parser, middleware, d3, type) {
 
     var web
+      , legacyApps
 
     return {
       load: function (name, req, onload, config) {
@@ -18,6 +19,7 @@ define(
         }
 
         web = nap.web().use(middleware.requestTimeout)
+        web.legacyApps = {}
 
         d3.json("/api/apps/v1/resources", function(err, data) {
 
@@ -31,6 +33,12 @@ define(
           resources.forEach(function(resource) {
             var args = resource.name ? [resource.name] : []
             web.resource.apply(null, args.concat([resource.path, resource.fn]))
+
+            // Record which resources are legacy apps
+            if(resource.methods == "app-loader/app-loader") {
+              var id = resource.path.match(/\/?([^\/]+\/[^\/(]+).*/)
+              if(id) web.legacyApps[id[1]] = true
+            }
           })
 
           onload(web)

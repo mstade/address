@@ -119,6 +119,10 @@ define(
     address.resource = function(name) {
       return web.resource(name)
     }
+
+    address.legacy = function(id) {
+      return web.legacyApps[id] || /^layouts/.test(id)
+    }
     
     return address
   }
