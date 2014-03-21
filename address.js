@@ -35,7 +35,12 @@ define(
       }
 
       function into(node, err, res) {
-        if(res.headers.contentType == "application/x.am.view") res.headers.contentType = "application/x.nap.view"
+
+        // Make AM legacy apps work with nap.into
+        if(res.statusCode == 200) {
+          res.headers.contentType = res.headers.contentType.replace("x.am.app", "x.nap.view")
+        } 
+
         nap.into(node)(err, res)
       }
 
