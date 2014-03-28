@@ -49,6 +49,10 @@ define(
           null
         , nap.responses.ok(function(node) {
             defered.call(null, node)(req, function(err, data) {
+              if(!isFn(data.body)) {
+                console.debug("response body is not a function:", req.uri, req.method, req.headers.accept)
+                return
+              }
               data.body(node)
             })
           })
