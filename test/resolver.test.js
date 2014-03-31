@@ -39,19 +39,17 @@ define(
           , type = typeof resolve
           , req = {}
           , res = {}
-          , scope = {}
 
         type.should.equal('function')
         resolve.length.should.equal(2)
 
-        resolve.call(scope, req, res)
+        resolve.call(null, req, res)
         
         requireStub.should.have.been.calledOnce
         requireStub.should.have.been.calledWith(["require/module"])
 
         cbSpy.should.have.been.calledOnce
         cbSpy.should.have.been.calledWith(req, res)
-        cbSpy.should.have.been.calledOn(scope)
       })
     })
   }

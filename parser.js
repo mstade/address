@@ -13,18 +13,14 @@ define(
     }
 
 
-    function bySelectorDefered(){
+    function bySelectorDefered(options){
 
-      var options = [].slice.apply(arguments, [0])
-        .reduce(
-          function(curr, next){
-            if(isStr(next)) curr.push({ selector : next })
-            else curr[curr.length - 1].fn = next
-            return curr
-          }
-        , []
-        )
-      
+      options = options.map(function(item) {
+        return Object.keys(item).reduce(function(_, k) { 
+          return { selector: k, fn: resolve(item[k]) } 
+        }, {}) 
+      })
+
       return function(node){
 
         var fn
@@ -42,7 +38,7 @@ define(
 
     function negotiateSelector(args) {
 
-      var defered = bySelectorDefered.apply(null, args)
+      var defered = bySelectorDefered(args)
 
       return function(req, res) {
         res(
@@ -86,20 +82,8 @@ define(
     }
 
     function parseSelectors(obj) {
-
       if(isStr(obj)) return resolve(obj)
-
-      var args = []
-
-      obj.forEach(function(def) {
-        Object.keys(def).forEach(function(key) {
-          def[key] = resolve(def[key])
-          args.push(key)
-          args.push(def[key])
-        })
-      })
-
-      return negotiateSelector(args)
+      return negotiateSelector(obj)
     }
 
     function parseResources(config) {

@@ -66,6 +66,15 @@ define(
       , function() {
         return type
       })
+      .mock(
+        'logger/log!'
+      , function() {
+        return {
+          load: function(name, req, onload, config) {
+            onload(console)
+          }
+        }
+      })
       .require(
         [ 'address' ]
       , function(a) {

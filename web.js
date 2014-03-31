@@ -18,7 +18,10 @@ define(
           return
         }
 
-        web = nap.web().use(middleware.requestTimeout)
+        web = nap.web()
+          .use(middleware.logger)
+          .use(middleware.requestTimeout)
+
         web.legacyApps = {}
 
         d3.json("/api/apps/v1/resources", function(err, data) {

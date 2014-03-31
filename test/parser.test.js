@@ -78,9 +78,8 @@ define(
 
       it('should parse view selectors', function() {
         var config = [
-            { ".big" : "shell-application/shell-application"
-            , ".small" : "shell-application/shell-application"
-            }
+            { ".big" : "shell-application/shell-application" }
+          , { ".small" : "shell-application/shell-application" }
           ]
         , negotiateSelector = parser.parseSelectors(config)
         , type = typeof negotiateSelector

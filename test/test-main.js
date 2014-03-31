@@ -14,7 +14,8 @@ requirejs.config(
         paths: {
             'Squire': 'test/Squire',
             'jquery': 'test/jquery',
-            'sinon': 'test/sinon'
+            'sinon': 'test/sinon',
+            'logger/log' : "test/log"
         }, 
         shim : {
             sinon: {
