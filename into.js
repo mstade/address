@@ -1,5 +1,5 @@
 define(
-  [ 'am-address'
+  [ './address'
   ]
   , function(address) {
 
