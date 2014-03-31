@@ -3,7 +3,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
         build: {
             options: {
-                include: ["address", "ok", "error"],
+                include: ["address", "ok", "error", "into"],
                 plugins: {
                   "text": '../node_modules/text/text'
                 , "logger/log": 'empty:'
