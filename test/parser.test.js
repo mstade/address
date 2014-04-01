@@ -22,6 +22,7 @@ define(
         }
       , responses : {
           ok : sinon.spy()
+        , error : sinon.spy()
         }
       }
 
@@ -88,7 +89,7 @@ define(
         type.should.equal('function')
         negotiateSelector.length.should.equal(2)
 
-        negotiateSelector(null, cbSpy)
+        negotiateSelector({context:null}, cbSpy)
         cbSpy.should.have.been.calledOnce
 
         resolver.should.have.been.calledTwice

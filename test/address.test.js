@@ -210,6 +210,7 @@ define(
               accept : "application/json"
             }
           , body : {hello:"world!"}
+          , context : undefined
           }
 
         var update = address("/wibble/{id}")
@@ -235,6 +236,7 @@ define(
               accept : "application/x.nap.view"
             }
           , body : {}
+          , context : undefined
           }
 
         address("/wibble").then(cb)()
