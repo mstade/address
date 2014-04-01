@@ -1,8 +1,9 @@
 define(
   [ 'nap'
   , './resolver'
+  , 'logger/log!platform/am-address'
   ]
-  , function(nap, resolve) {
+  , function(nap, resolve, log) {
 
     function isFn(inst){
       return typeof inst === "function"
@@ -41,18 +42,20 @@ define(
       var defered = bySelectorDefered(args)
 
       return function(req, res) {
-        res(
-          null
-        , nap.responses.ok(function(node) {
-            defered.call(null, node)(req, function(err, data) {
-              if(!isFn(data.body)) {
-                console.debug("response body is not a function:", req.uri, req.method, req.headers.accept)
-                return
-              }
-              data.body(node)
-            })
-          })
-        )
+
+        if(!req.context) {
+          res(null, nap.responses.error(400))
+          return
+        }
+
+        var view = defered.call(null, req.context)
+
+        if(!view) {
+          res(null, nap.responses.error(404))
+          return
+        }
+        
+        view(req, res)
       }
     }
 

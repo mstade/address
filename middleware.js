@@ -10,7 +10,7 @@ define(
           , timeout = setTimeout(function() {
               responded = true
               res(null, nap.responses.error(408))
-            }, 1000) 
+            }, 5000) 
 
         next(req, function(err, data) {
           clearTimeout(timeout)
