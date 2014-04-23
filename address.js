@@ -114,6 +114,10 @@ define(
         return api
       }
 
+      api.navigate = function() {
+        document.location.hash = "#" + req().uri
+      }
+
       return api
     }
 
