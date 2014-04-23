@@ -284,6 +284,14 @@ address.resource("price")
     }
 ```
 
+## Performing a top level navigation
+
+Sometimes it is neccessary to perform a top level navigation by updating the browser address bar. This can be accomplished by using the ```address.navigate()``` method.
+
+```
+address("/price/usd/gbp").navigate()
+```
+
 
 
 
