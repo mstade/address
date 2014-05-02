@@ -27,12 +27,17 @@ define(
 
       function req() {
         return {
-          uri : (params ? web.uri(uri, params) : uri)
+          uri : interpolate(uri, params)
         , method : method
         , headers : headers
         , body : body
         , context : node
         }
+      }
+
+      function interpolate(uri, params) {
+        if(!Object.keys(params).length) return uri
+        return web.uri(uri, params)
       }
 
       function into(node, err, res) {
