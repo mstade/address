@@ -27,7 +27,7 @@ define(
 
       function req() {
         return {
-          uri : web.uri(uri, params)
+          uri : params ? web.uri(uri, params) : uri
         , method : method
         , headers : headers
         , body : body
