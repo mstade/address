@@ -15,6 +15,7 @@ define(
         , body = {}
         , node
         , callback
+        , target
 
       if(r && type.isString(r)) {
         uri = r
@@ -119,8 +120,24 @@ define(
         return api
       }
 
+      api.target = function(t) {
+        if(!arguments.length) return target
+        target = t
+        return api
+      }
+
       api.navigate = function() {
-        document.location.hash = "#" + req().uri
+
+        var hash = "#" + req().uri
+
+        if(!target) {
+          document.location.hash = hash
+          return
+        }
+        
+        var href = document.location.href
+        href = document.location.hash ? href.replace(/#.*/, hash) : href + hash
+        window.open(href, target, '')
       }
 
       return api
