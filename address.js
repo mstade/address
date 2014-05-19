@@ -136,7 +136,7 @@ define(
         }
         
         var href = document.location.href
-        href = document.location.hash ? href.replace(/#.*/, hash) : href + hash
+        href = /#/.test(href) ? href.replace(/#.*/, hash) : href + hash
         window.open(href, target, '')
       }
 
