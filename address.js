@@ -5,6 +5,12 @@ define(
   ]
   , function(nap, web, type) {
 
+    var viewTypes = {
+      "application/x.nap.view" : true
+    , "application/x.am.app" : true
+    , "application/x.am.legacy-app" : true
+    }
+
     function address(r) {
 
       var uri
@@ -42,13 +48,14 @@ define(
       }
 
       function into(node, err, res) {
+        if(res.statusCode != 200) return
+        if(!res.headers.contentType) return
+        if(!viewTypes[res.headers.contentType]) return
+        if(!type.isFunction(res.body)) return
+        if(!node) return
 
-        // Make AM legacy apps work with nap.into
-        if(res.statusCode == 200) {
-          res.headers.contentType = res.headers.contentType.replace("x.am.app", "x.nap.view")
-        } 
-
-        nap.into(node)(err, res)
+        node.dispatchEvent && node.dispatchEvent(new CustomEvent("update"))
+        res.body(node)
       }
 
       function api() {
@@ -143,14 +150,6 @@ define(
       return api
     }
 
-    address.resource = function(name) {
-      return web.resource(name)
-    }
-
-    address.legacy = function(id) {
-      return web.legacyApps[id] || /^layouts/.test(id)
-    }
-    
     return address
   }
 )

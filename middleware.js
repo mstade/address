@@ -22,7 +22,7 @@ define(
        // if(!log.isDebug()) return next(req, res)
 
         next(req, function(err, data) {
-          if(data.statusCode >= 400) log.debug(data.statusCode, req.uri)
+          if(data.statusCode >= 400) log.debug(data.statusCode, req.uri, req.method)
           res(err, data)
         })
       }

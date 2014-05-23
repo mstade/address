@@ -36,12 +36,6 @@ define(
           resources.forEach(function(resource) {
             var args = resource.name ? [resource.name] : []
             web.resource.apply(null, args.concat([resource.path, resource.fn]))
-
-            // Record which resources are legacy apps
-            if(resource.methods == "app-loader/app-loader") {
-              var id = resource.path.match(/\/?([^\/]+\/[^\/(]+).*/)
-              if(id) web.legacyApps[id[1]] = true
-            }
           })
 
           onload(web)

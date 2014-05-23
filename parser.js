@@ -94,6 +94,12 @@ define(
       var parsed = isStr(config) ? JSON.parse(config) : config
 
       parsed.forEach(function(resource) {
+        if(resource.methods == "app-loader/app-loader") {
+          resource.methods = {
+            "send" : "app-loader/app-loader"
+          , "remove" : "app-loader/app-loader"
+          }
+        }
         resource.fn = parseLevel({fn: resource.methods}, parseMethods).fn
       })
       
