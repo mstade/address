@@ -150,6 +150,10 @@ define(
       return api
     }
 
+    address.find = function(uri) {
+      return web.find(uri)
+    }
+
     return address
   }
 )

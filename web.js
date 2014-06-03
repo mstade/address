@@ -1,14 +1,26 @@
 define(
   [ 'nap'
+  , 'rhumb'
   , './parser' 
   , './middleware'
   , 'd3'
   , 'type/type'
   ]
-, function(nap, parser, middleware, d3, type) {
+, function(nap, rhumb, parser, middleware, d3, type) {
 
     var web
-      , legacyApps
+      , routes = rhumb.create()
+
+    function store(resource) {
+      routes.add(resource.path, function(params){
+        return {
+          name : resource.name
+        , path : resource.path
+        , methods : Object.keys(resource.methods)
+        , params : resource.path.match(/\w+(?=})/g)
+        }
+      })
+    }
 
     return {
       load: function (name, req, onload, config) {
@@ -22,8 +34,6 @@ define(
           .use(middleware.logger)
           .use(middleware.requestTimeout)
 
-        web.legacyApps = {}
-
         d3.json("/api/apps/v1/resources", function(err, data) {
 
           if(err || !data.resources || !type.isArray(data.resources)) {
@@ -34,9 +44,14 @@ define(
           var resources = parser.parseResources(data.resources)
 
           resources.forEach(function(resource) {
+            store(resource)
             var args = resource.name ? [resource.name] : []
             web.resource.apply(null, args.concat([resource.path, resource.fn]))
           })
+
+          web.find = function(uri) {
+            return routes.match(uri)
+          }
 
           onload(web)
         })
