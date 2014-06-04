@@ -22,6 +22,7 @@ define(
        // if(!log.isDebug()) return next(req, res)
 
         next(req, function(err, data) {
+          if(data.statusCode == 302) log.debug(data.statusCode, req.uri, data.headers.location)
           if(data.statusCode >= 400) log.debug(data.statusCode, req.uri)
           res(err, data)
         })
