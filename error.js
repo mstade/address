@@ -1,8 +1,12 @@
 define(
-  [ 'nap'
-  ]
-  , function(nap) {
-    return nap.responses.error
+  []
+  , function() {
+    return function(code, body) {
+      return {
+        statusCode : code
+      , body : body
+      }
+    }
   }
 )
   
