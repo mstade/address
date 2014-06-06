@@ -27,6 +27,7 @@ define(
             var args = [data.statusCode, req.uri, req.method]
             data.body && args.concat(data.body)
             log.debug.apply(log, args)
+          }
           res(err, data)
         })
       }
