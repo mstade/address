@@ -70,6 +70,18 @@ define(
         return api
       }
 
+      api.json = function() {
+        return api.header('accept','application/json')
+      }
+
+      api.xml = function() {
+        return api.header('accept','text/xml')
+      }
+
+      api.text = function() {
+        return api.header('accept','text/plain')
+      }
+
       api.header = function(k, v) {
         if(!arguments.length) return headers
         if(type.isString(k)) {
