@@ -1,9 +1,10 @@
 define(
   [ 'nap'
+  , 'd3'
   , './web!'
   , 'type/type'
   ]
-  , function(nap, web, type) {
+  , function(nap, d3, web, type) {
 
     function address(r) {
 
@@ -128,6 +129,8 @@ define(
 
       api.into = function(n) {
         if(!arguments.length) return node
+        if(type.isString(n)) n = d3.select(n).node()
+
         node = n
         return api
       }
