@@ -4,6 +4,7 @@ define(
     return function(code, body) {
       return {
         statusCode : code
+      , headers : {}
       , body : body
       }
     }

@@ -76,6 +76,7 @@ define(
 
     function parseMethods(obj) {
       obj = parseLevel(obj, parseMediaTypes)
+      expand(obj)
       return nap.negotiate.method(obj)
     }
 
@@ -89,6 +90,19 @@ define(
       return negotiateSelector(obj)
     }
 
+    function expand(obj) {
+      Object.keys(obj).forEach(function(key) {
+        var multi = key.split(',')
+        if(multi.length > 1) {
+          key.split(',').forEach(function(k) {
+            obj[k.trim()] = obj[key]
+          })
+          delete obj[key]
+        }
+      })
+      return obj
+    }
+
     function parseResources(config) {
 
       var parsed = isStr(config) ? JSON.parse(config) : config
@@ -96,7 +110,10 @@ define(
       parsed.forEach(function(resource) {
         if(resource.methods == "app-loader/app-loader") {
           resource.methods = {
-            "send" : "app-loader/app-loader"
+            "get" : {
+              "application/x.am.app" : "app-loader/app-loader"
+            }
+          , "send" : "app-loader/app-loader"
           , "remove" : "app-loader/app-loader"
           }
         }
