@@ -18,6 +18,7 @@ define(
         , method = "get"
         , headers = { accept : "application/x.nap.view" }
         , params = {}
+        , query = {}
         , body = {}
         , node
         , callback
@@ -34,7 +35,7 @@ define(
 
       function req() {
         return {
-          uri : interpolate(uri, params)
+          uri : interpolate(uri, params) + serialize(query)
         , method : method
         , headers : headers
         , body : body
@@ -45,6 +46,14 @@ define(
       function interpolate(uri, params) {
         if(!Object.keys(params).length) return uri
         return web.uri(uri, params)
+      }
+
+      function serialize(query) {
+        var params = Object.keys(query).reduce(function(a,k) {
+          a.push(k + '=' + query[k])
+          return a
+        },[])
+        return params.length ? '?' + params.join('&') : ''
       }
 
       function into(node, err, res) {
@@ -102,6 +111,22 @@ define(
         if(type.isObject(k)) {
           Object.keys(k).forEach(function(key) {
             params[key] = k[key]
+          })
+          return api
+        }
+
+        return api
+      }
+
+      api.query = function(k, v) {
+        if(!arguments.length) return query
+        if(type.isString(k)) {
+          query[k] = v
+          return api
+        }
+        if(type.isObject(k)) {
+          Object.keys(k).forEach(function(key) {
+            query[key] = k[key]
           })
           return api
         }
