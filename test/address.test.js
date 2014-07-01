@@ -113,6 +113,27 @@ define(
           .should.deep.equal({accept:"application/json"})
       })
 
+      it('should set a the accept header to be application/json using the convenience method', function() {
+        address()
+          .json()
+          .header()
+          .should.deep.equal({accept:"application/json"})
+      })
+
+      it('should set a the accept header to be text/xml using the convenience method', function() {
+        address()
+          .xml()
+          .header()
+          .should.deep.equal({accept:"text/xml"})
+      })
+
+      it('should set a the accept header to be text/plain using the convenience method', function() {
+        address()
+          .text()
+          .header()
+          .should.deep.equal({accept:"text/plain"})
+      })
+
       it('should set multiple headers', function() {
         address()
           .header("accept", "application/json")

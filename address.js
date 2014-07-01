@@ -1,9 +1,10 @@
 define(
   [ 'nap'
+  , 'd3'
   , './web!'
   , 'type/type'
   ]
-  , function(nap, web, type) {
+  , function(nap, d3, web, type) {
 
     var viewTypes = {
       "application/x.nap.view" : true
@@ -86,6 +87,18 @@ define(
         return api
       }
 
+      api.json = function() {
+        return api.header('accept','application/json')
+      }
+
+      api.xml = function() {
+        return api.header('accept','text/xml')
+      }
+
+      api.text = function() {
+        return api.header('accept','text/plain')
+      }
+
       api.header = function(k, v) {
         if(!arguments.length) return headers
         if(type.isString(k)) {
@@ -148,6 +161,8 @@ define(
 
       api.into = function(n) {
         if(!arguments.length) return node
+        if(type.isString(n)) n = d3.select(n).node()
+
         node = n
         return api
       }
