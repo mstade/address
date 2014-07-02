@@ -15,6 +15,7 @@ requirejs.config(
             'Squire': 'test/Squire',
             'jquery': 'test/jquery',
             'sinon': 'test/sinon',
+            'd3': 'test/d3',
             'logger/log' : "test/log"
         }, 
         shim : {
