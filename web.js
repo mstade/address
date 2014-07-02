@@ -9,9 +9,11 @@ define(
 , function(nap, rhumb, parser, middleware, d3, type) {
 
     var web
-      , routes = rhumb.create()
+      , routes
 
     function store(resource) {
+      routes = routes || rhumb.create()
+
       routes.add(resource.path, function(params){
         return {
           name : resource.name

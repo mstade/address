@@ -23,6 +23,7 @@
     "runtimeDependencies": [
       "text",
       "nap",
+      "rhumb",
       "d3",
       "type",
       "logger"
