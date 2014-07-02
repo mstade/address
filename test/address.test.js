@@ -9,24 +9,24 @@ define(
       , web
       , nap
       , type
+      , reponse
 
     beforeEach(function(done) {
 
       var injector = new Squire();
 
+      response = { 
+        statusCode : 200
+      , headers: {
+          contentType : "application/x.nap.view"
+        }
+      , body : sinon.spy(function(node){console.log("view called")})
+      }
+
       web = { 
         req : sinon.spy(function(req, cb) {
-          cb( null
-            , { 
-                statusCode : 200
-              , headers: {
-                  contentType : "application/x.nap.view"
-                }
-              , body : function(node){console.log("view called")}
-              }
-            )
+          cb( null, response )
         }) 
-      , resource : sinon.spy() 
       , uri : function(uri, params) {
           var paramsString = ""
           Object.keys(params).forEach(function(key) {
@@ -262,7 +262,7 @@ define(
         web.req.args[0][0].should.deep.equal(req)
       })
 
-      it('should call nap.into with the node', function() {
+      it('should call the respnse body with the node', function() {
         var cb = sinon.spy()
           , node = $("<div class='view'></div>")["0"]
 
@@ -274,8 +274,8 @@ define(
 
         web.req.should.have.been.calledOnce
         cb.should.have.been.calledOnce
-        nap.into.should.have.been.calledOnce
-        nap.into.should.have.been.calledWith(node)
+        response.body.should.have.been.calledOnce
+        response.body.should.have.been.calledWith(node)
       })
     })
   }
