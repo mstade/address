@@ -45,6 +45,7 @@ define(
       type = { 
         isString : function(obj) { return typeof obj === "string" }
       , isObject : function(obj) { return typeof obj !== "string" }
+      , isFunction : function(obj) { return true }
       }
 
       injector.mock(
@@ -214,12 +215,6 @@ define(
         a.method().should.equal("send")
         a.header().should.deep.equal({accept:"application/json"})
         a.body().should.equal("hello")
-      })
-
-      it('should get a resource by name', function() {
-        address.resource("wibble")
-        web.resource.should.have.been.calledOnce
-        web.resource.should.have.been.calledWith("wibble")
       })
 
       it('should call web.req with the configured request and callback', function() {
