@@ -20,7 +20,7 @@ define(
         , headers = { accept : "application/x.nap.view" }
         , params = {}
         , query = {}
-        , body = {}
+        , body
         , node
         , callback
         , target
@@ -85,18 +85,6 @@ define(
         if(!arguments.length) return method
         method = m
         return api
-      }
-
-      api.json = function() {
-        return api.header('accept','application/json')
-      }
-
-      api.xml = function() {
-        return api.header('accept','text/xml')
-      }
-
-      api.text = function() {
-        return api.header('accept','text/plain')
       }
 
       api.header = function(k, v) {
@@ -185,6 +173,38 @@ define(
         var href = document.location.href
         href = /#/.test(href) ? href.replace(/#.*/, hash) : href + hash
         window.open(href, target, '')
+      }
+
+      api.json = function() {
+        return api.header('accept','application/json')
+      }
+
+      api.xml = function() {
+        return api.header('accept','text/xml')
+      }
+
+      api.text = function() {
+        return api.header('accept','text/plain')
+      }
+
+      api.get = function() {
+        return api.method('get')
+      }
+
+      api.post = function(body) {
+        return api.method('post').body(body)
+      }
+
+      api.put = function(body) {
+        return api.method('put').body(body)
+      }
+
+      api.patch = function(body) {
+        return api.method('patch').body(body)
+      }
+
+      api.remove = function() {
+        return api.method('remove')
       }
 
       return api
