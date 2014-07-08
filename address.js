@@ -7,8 +7,7 @@ define(
   ]
   , function(nap, d3, web, type, codes) {
 
-    var dispatcher = d3.dispatch.apply(null, codes.range().concat(['err', 'done']))
-      , viewTypes = {
+    var viewTypes = {
         "application/x.nap.view" : true
       , "application/x.am.app" : true
       , "application/x.am.legacy-app" : true
@@ -26,6 +25,7 @@ define(
         , node
         , callback
         , target
+        , dispatcher = d3.dispatch.apply(null, codes.range().concat(['err', 'done']))
 
       if(r && type.isString(r)) {
         uri = r
