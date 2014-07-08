@@ -3,14 +3,16 @@ define(
   , 'd3'
   , './web!'
   , 'type/type'
+  , './http-status-code'
   ]
-  , function(nap, d3, web, type) {
+  , function(nap, d3, web, type, codes) {
 
-    var viewTypes = {
-      "application/x.nap.view" : true
-    , "application/x.am.app" : true
-    , "application/x.am.legacy-app" : true
-    }
+    var dispatcher = d3.dispatch.apply(null, codes.range().concat(['err', 'done']))
+      , viewTypes = {
+        "application/x.nap.view" : true
+      , "application/x.am.app" : true
+      , "application/x.am.legacy-app" : true
+      }
 
     function address(r) {
 
@@ -72,6 +74,11 @@ define(
         web.req(req(), function(err, res) {
           node && into(node, err, res)
           callback && callback(err, res)
+
+          if(err) return dispatcher.err(err), null
+
+          codes(res.statusCode).forEach(function(type) { dispatcher[type](res) })
+          dispatcher.done(res)
         })
       }
 
@@ -142,6 +149,7 @@ define(
       }
 
       api.then = function(cb) {
+        console.log("deprecated : address.then(). please use event api instead.")
         if(!arguments.length) return callback
         callback = cb
         return api
@@ -207,7 +215,7 @@ define(
         return api.method('remove')
       }
 
-      return api
+      return d3.rebind(api, dispatcher, 'on')
     }
 
     address.find = function(uri) {
