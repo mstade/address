@@ -26,7 +26,8 @@
       "rhumb",
       "d3",
       "type",
-      "logger"
+      "logger",
+      "underscore"
     ],
     "type": "library"
   }
