@@ -77,7 +77,9 @@ define(
 
           if(err) return dispatcher.err(err), null
 
-          codes(res.statusCode).forEach(function(type) { dispatcher[type](res) })
+          codes(res.statusCode).forEach(function(type) { 
+            dispatcher[type](res) 
+          })
           dispatcher.done(res)
         })
       }
@@ -211,8 +213,8 @@ define(
         return api.method('patch').body(body)
       }
 
-      api.remove = function() {
-        return api.method('remove')
+      api.remove = function(body) {
+        return api.method('remove').body(body)
       }
 
       return d3.rebind(api, dispatcher, 'on')
