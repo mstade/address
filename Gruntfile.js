@@ -3,7 +3,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
         build: {
             options: {
-                include: [ "address", "ok", "error", "redirect", "into", "http-status-code" ],
+                include: [ "address", "ok", "error", "redirect", "created", "into", "http-status-code" ],
                 plugins: {
                   "text": '../node_modules/text/text'
                 , "logger/log": 'empty:'
