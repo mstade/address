@@ -20,9 +20,9 @@ requirejs.config(
             'underscore' : 'test/underscore-min'
         }, 
         shim : {
-            sinon: {
-                exports: 'sinon'
-            }
+            sinon: { exports: 'sinon' }
+        ,   d3: { exports: 'd3' }        
+        ,   underscore: { exports: 'underscore'  }
         }
     }
 );

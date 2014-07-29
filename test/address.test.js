@@ -251,7 +251,7 @@ define(
           , headers : {
               accept : "application/x.nap.view"
             }
-          , body : {}
+          , body : undefined
           , context : undefined
           }
 
