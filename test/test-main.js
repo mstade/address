@@ -16,7 +16,8 @@ requirejs.config(
             'jquery': 'test/jquery',
             'sinon': 'test/sinon',
             'd3': 'test/d3',
-            'logger/log' : "test/log"
+            'logger/log' : "test/log",
+            'underscore' : 'test/underscore-min'
         }, 
         shim : {
             sinon: {
