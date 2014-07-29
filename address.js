@@ -185,6 +185,18 @@ define(
         window.open(href, target, '')
       }
 
+      api.view = function() {
+        return api.header('accept','application/x.nap.view')
+      }
+
+      api.app = function() {
+        return api.header('accept','application/x.am.app')
+      }
+
+      api.stream = function() {
+        return api.header('accept','application/x.am.stream')
+      }
+
       api.json = function() {
         return api.header('accept','application/json')
       }
@@ -198,23 +210,27 @@ define(
       }
 
       api.get = function() {
-        return api.method('get')
+        api.method('get')()
       }
 
       api.post = function(body) {
-        return api.method('post').body(body)
+        api.method('post').body(body)()
+      }      
+
+      api.send = function(body) {
+        api.method('send').body(body)()
       }
 
       api.put = function(body) {
-        return api.method('put').body(body)
+        api.method('put').body(body)()
       }
 
       api.patch = function(body) {
-        return api.method('patch').body(body)
+        api.method('patch').body(body)()
       }
 
       api.remove = function(body) {
-        return api.method('remove').body(body)
+        api.method('remove').body(body)()
       }
 
       return d3.rebind(api, dispatcher, 'on')
