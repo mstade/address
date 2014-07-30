@@ -171,7 +171,9 @@ define(
         return api
       }
 
-      api.navigate = function() {
+      api.navigate = function(t) {
+
+        t && api.target(t)
 
         var hash = "#" + req().uri
 
