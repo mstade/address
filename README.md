@@ -280,8 +280,16 @@ define(
 
 Sometimes it is neccessary to perform a top level navigation by updating the browser address bar. This can be accomplished by using the ```address.navigate()``` method.
 
+If a target is specified the request will be opened in the target window.
+
 ```
 address("/price/usd/gbp").navigate()
+
+address("/price/usd/gbp").navigate('_blank')
+
+address("/price/usd/gbp")
+  .target('_blank')
+  .navigate()
 ```
 
 
