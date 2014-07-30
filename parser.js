@@ -108,15 +108,6 @@ define(
       var parsed = isStr(config) ? JSON.parse(config) : config
 
       parsed.forEach(function(resource) {
-        if(resource.methods == "app-loader/app-loader") {
-          resource.methods = {
-            "get" : {
-              "application/x.am.app" : "app-loader/app-loader"
-            }
-          , "send" : "app-loader/app-loader"
-          , "remove" : "app-loader/app-loader"
-          }
-        }
         resource.fn = parseLevel({fn: resource.methods}, parseMethods).fn
       })
       
