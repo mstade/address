@@ -237,8 +237,16 @@ Using the ```into``` api also triggers an ```update``` event on the target node 
 The above example can be re-written using the 'into' api as follows:
 
 ```
+var node = d3.select(".price").node()
 address("/price/usd/gbp").into(node).get()
 ```
+```.into()``` also accepts a valid CSS selector ni place of a document element reference, so the above example could be re-written as
+
+```
+address("/price/usd/gbp").into(".price").get()
+```
+
+Note that in this case the selection will be performed in the context of the document.
 
 
 ## response utlities
