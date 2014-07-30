@@ -12,10 +12,11 @@ For more information and tutorials about how to define and expose resources in t
 
 ## API versions
 
-This document is for v2.x of the api.
-For v1.x documentation please see [here](v1/README.md)
+This document is for v2.x of the api which is currently only in the dev environment.
+
 
 v2.x is fully backwards compatible with v1.x
+For v1.x documentation please see [here](v1/README.md)
 
 ## Usage
 
@@ -280,8 +281,16 @@ define(
 
 Sometimes it is neccessary to perform a top level navigation by updating the browser address bar. This can be accomplished by using the ```address.navigate()``` method.
 
+If a target is specified the request will be opened in the target window.
+
 ```
 address("/price/usd/gbp").navigate()
+
+address("/price/usd/gbp").navigate('_blank')
+
+address("/price/usd/gbp")
+  .target('_blank')
+  .navigate()
 ```
 
 
