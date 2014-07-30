@@ -10,13 +10,6 @@ It provides
 
 For more information and tutorials about how to define and expose resources in the Agile Markets platform please see the [Hello World tutorial](https://stash.dts.fm.rbsgrp.net/projects/ZAP/repos/hello-world-new/browse).
 
-## API versions
-
-This document is for v2.x of the api.
-For v1.x documentation please see [here](v1/README.md)
-
-v2.x is fully backwards compatible with v1.x
-
 ## Usage
 
 Include the address library as a dependency to your AMD module using the namespaced module name 'am-address/address'.
@@ -25,8 +18,10 @@ Optionally include the 'ok' and 'error' utilites
 ```
 define(
   [ 'am-address/address'
+  , 'am-address/ok'
+  , 'am-address/error'
   ]
-  , function(address) {
+  , function(address, ok, error) {
 
     ...
     
@@ -47,140 +42,144 @@ the api allows us to request the resource in a number of ways.
 
 ### Using the path directly
 
-Configure the request by using the resource path with the path variables filled in.
-We add a callback for a specific [response type](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) using the ```.on()``` method. The callback will be invoked when the resource responds with the specified response type. The parameter will be the response object. Any data returned form the resource will be in the ```response.body``` property.
+Here we configure the request by using the resource path with the path variables filled in.
+We add a callback using the ```.then()``` method. The callback will be invoked when the resource responds. The data parameter will be populated with the response object. Any data returned form the resource will be in the ```response.body``` property
 
 ```
-// Configure the request and invoke the appropriate request method
+// Configure the request
 
-address("/price/usd/gbp")
-  .on('ok', function(response) {
-    // use data from response
-  })
-  .get()
+var request = address("/price/usd/gbp").then(function(err, data) {
+  // use data from resource
+}))
+
+// make the request by invoking the function
+
+request()
 
 ```
 
 Alternatively we could set the path using the ```.uri()``` method
 
 ```
-address()
+var request = address()
   .uri("/price/usd/gbp")
-  .on('ok', function(response) {
-    // use data from response
-  })
-  .get()
+  .then(function(err, data) {
+    // use data from resource
+  }))
+
+request()
 
 ```
 
 ### Adding parameters
 
-Path parameters can be added through the ```.param()``` method and will be interpolated into the path.
+Path parameters can be added through the ```.param()``` method.
 
 ```
 // individual params
 
-address("/price/{ccy1}/{ccy2}")
-  .param("ccy1", "usd")
-  .param("ccy2", "gbp")
-  .get()
+var request = 
+  address("/price/{ccy1}/{ccy2}")
+    .param("ccy1", "usd")
+    .param("ccy2", "gbp")
+    .then(function(err, data) {
+      // use data from resource
+    }))
+
+request()
 
 // multpile params
 
-address("/price/{ccy1}/{ccy2}")
-  .param({ccy1 : "usd", ccy2 : "gbp"})
-  .get()
+var request = 
+  address("/price/{ccy1}/{ccy2}")
+    .param({ccy1 : "usd", ccy2 : "gbp"})
+    .then(function(err, data) {
+      // use data from resource
+    }))
+
+request()
 ```
 
-Search parameters can be added through the ```.query()``` method and will be appended to the path.
+We can also request the resource by it's name
 
 ```
-address("/price/usd/gbp")
-  .query("ccy1", "usd")
-  .query("ccy2", "gbp")
+var request = 
+  address("price")
+    .param("ccy1", "usd")
+    .param("ccy2", "gbp")
+    .then(function(err, data) {
+      // use data from resource
+    }))
 
--> /price/usd/gbp?ccy1=usd&ccy2=gbp
+request()
 ```
 
 ### Specifying a method
 
-Different resource methods can either be specified explicitly or invoked by calling a ```request method``` on the request.
+Different resource methods can be invoked by specifying a ```method``` on the request.
 
 ```
-address("/price/usd/gbp").post( // some data // )
+var request = 
+  address("/price/usd/gbp")
+    .method("send")
+    .then(function(err, data) {
+      // use data from resource
+    }))
 
-//
-
-address("/price/usd/gbp")
-  .method('post')
-  .body( // some data // )
-  () // invoke request
+request()
 ```
 
 Supported methods are
 
 * GET
-* POST
 * SEND
 * PUT
 * REMOVE
 
-The semantics of these methods should be equivalent to the standard [HTTP verbs](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html)
+The semantics of these methods are equivalent to the standard [HTTP verbs](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html)
 
 If the requested resource does not support the specified method a [405](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) error response will be returned.
 
 ### Adding headers
 
-Request headers convey further information about how the request should be handled.
+Request headers convey further information about how the reuqest should be handled.
 For example, resources may route requests to different handlers based on the ```accept type``` of the request.
 Specify the ```accept type``` header using the ```.header()``` api.
 
 ```
-address("/price/usd/gbp")
-  .header("accept-type", "application/json")
-  .on('ok', function(response) {
-    // use data from response
-  })
-  .get()
+var request = 
+  address("/price/usd/gbp")
+    .header("accept-type", "application/json")
+    .then(function(err, data) {
+      // use data from resource
+    }))
+
+request()
 ```
+
+Supported headers are
+
+* accept-type
 
 Accept types must conform to the [HTTP field definition](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html)
 
-The default accept type for requests is "application/x.nap.view" which is the type for a view resource.
+The default accept type for requests is "application/x.nap.view" which is the type for a 
 
 If the requested resource does not support the specified accept type a [415](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) error response will be returned.
-
-Convenience methods are provided for common accept types. e.g.
-
-```
-address("/price/usd/gbp")
-  .json()
-  .get()
-```
-
-Currently supported methods are:
-
-```
-.json()
-.xml()
-.text()
-.view()
-.app()
-.stream()
-```
 
 ### Adding a body
 
 You may wish to send a body with your request. This can be any object and will be accessible to the resource through the ```request.body``` property.
-This can either be set explicitly using the ```.body()``` method, or by passing the payload to the request method.
 
 ```
-address("/price/usd/gbp")
-  .body({foo:"bar"})
-  .post()
+var request = 
+  address("/price/usd/gbp")
+    .body({foo:"bar"})
+    .then(function(err, data) {
+      // use data from resource
+    }))
 
-address("/price/usd/gbp")
-  .post({foo:"bar"})
+request()
 ```
 
 ## Adding a resource view to the DOM
@@ -220,12 +219,9 @@ We can use it like this:
 ```
 var node = d3.select(".price").node()
 
-address("/price/usd/gbp")
-  .on('ok', function(response) {
-    var view = response.body
-    view(node)
-  })
-  .get()
+address("/price/usd/gbp").then(function(err, data) {
+  data.body(node)
+})
 ```
 
 ## into utility
@@ -236,20 +232,18 @@ Using the ```into``` api also triggers an ```update``` event on the target node 
 The above example can be re-written using the 'into' api as follows:
 
 ```
-address("/price/usd/gbp").into(node).get()
+address("/price/usd/gbp").into(node)
 ```
 
 
-## response utlities
+## ok, error utlities
 
 A resource function **must** call the response function with an appropriate response.
-Use the 'ok',  'error' and other utilites to generate a response object with your data.
+Use the 'ok' and 'error' utilites to generate a response object with your data or an error response.
 
 ```
-ok(BODY)
-error(ERROR CODE, BODY)
-created(LOCATION, BODY)
-redirect(LOCATION)
+ok(DATA)
+error(ERROR CODE)
 ```
 
 ```
@@ -264,7 +258,7 @@ define(
       // resource logic goes here...
 
       if( // bad request ) {
-        res( null, error(400, 'something went wrong') )
+        res( null, error(400) )
         return
       }
 
@@ -274,6 +268,20 @@ define(
 
   }
 )
+```
+
+## Look up a resource by name
+
+The ```address.resource()``` api provides a way to look up an existing resource. It takes a resource name as a parameter and returns the resource definition object.
+
+```
+address.resource("price")
+
+->  {
+      name : "price"
+      path : "/price/{ccy1}/{ccy2}"
+      methods : function() { ... }
+    }
 ```
 
 ## Performing a top level navigation
