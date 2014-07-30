@@ -16,7 +16,7 @@ This document is for v1.x of the api which is currently only in the dev environm
 
 
 v1.x is fully backwards compatible with v0.x
-For v0.x documentation please see [here](v1/README.md)
+For v0.x documentation please see [here](v0/README.md)
 
 ## Usage
 
