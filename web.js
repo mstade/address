@@ -15,10 +15,13 @@ define(
       routes = routes || rhumb.create()
 
       routes.add(resource.path, function(params){
+
+        var methods = type.isObject(resource.methods) ? Object.keys(resource.methods) : null
+        
         return {
           name : resource.name
         , path : resource.path
-        , methods : Object.keys(resource.methods)
+        , methods : methods
         , params : resource.path.match(/\w+(?=})/g)
         }
       })
