@@ -12,11 +12,11 @@ For more information and tutorials about how to define and expose resources in t
 
 ## API versions
 
-This document is for v2.x of the api which is currently only in the dev environment.
+This document is for v1.x of the api which is currently only in the dev environment.
 
 
-v2.x is fully backwards compatible with v1.x
-For v1.x documentation please see [here](v1/README.md)
+v1.x is fully backwards compatible with v0.x
+For v0.x documentation please see [here](v1/README.md)
 
 ## Usage
 
