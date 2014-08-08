@@ -36,7 +36,7 @@ define(
 
 ``` 
 
-## Requesting a resource
+### Requesting a resource
 
 Assuming we want to use a resource named **price** which has both a data and a view representation and is defined with the following path:
 
