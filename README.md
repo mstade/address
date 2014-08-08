@@ -74,6 +74,8 @@ address()
 
 ```
 
+### Handling the response
+
 Listeners can be added for any response type as specified in the [HTTP/1.1 specification](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html).
 
 
