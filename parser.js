@@ -1,9 +1,10 @@
 define(
   [ 'nap'
   , './resolver'
+  , './error'
   , 'logger/log!platform/am-address'
   ]
-  , function(nap, resolve, log) {
+  , function(nap, resolve, error, log) {
 
     function isFn(inst){
       return typeof inst === "function"
@@ -44,14 +45,14 @@ define(
       return function(req, res) {
 
         if(!req.context) {
-          res(null, nap.responses.error(400))
+          res(null, error(400, 'invalid target node'))
           return
         }
 
         var view = defered.call(null, req.context)
 
         if(!view) {
-          res(null, nap.responses.error(404))
+          res(null, error(404, 'no view found for selector'))
           return
         }
         
