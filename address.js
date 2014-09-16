@@ -7,7 +7,8 @@ define(
   ]
   , function(nap, d3, web, type, codes) {
 
-    var viewTypes = {
+    var root
+      , viewTypes = {
         "application/x.nap.view" : true
       , "application/x.am.app" : true
       , "application/x.am.legacy-app" : true
@@ -37,13 +38,40 @@ define(
       }
 
       function req() {
+
+        var requestUri = interpolate(uri, params) 
+        
+        if(node && node == root && node.__resource__) {
+
+          var rootUri = node.__resource__
+            , rootResource = web.find(rootUri)
+            , rootParams = rootResource.params
+            , rootPath = rootResource.path
+            , resource = web.find(requestUri)
+            , resourcePath = resource.path
+            , resourceParams = resource.params
+
+          if(rootResource.composes && !!~rootResource.composes.indexOf(resourcePath)) {
+            var composedParams = mergeParams(resourceParams, rootParams)
+            requestUri = interpolate(rootPath, composedParams)
+          }
+        }
+
         return {
-          uri : interpolate(uri, params) + serialize(query)
+          uri : requestUri + serialize(query)
         , method : method
         , headers : headers
         , body : body
         , context : node
         }
+      }
+
+      function mergeParams(source, target) {
+        var composedParams = {}
+        Object.keys(target).forEach(function(key) {
+          composedParams[key] = source[key] || target[key]
+        })
+        return composedParams
       }
 
       function interpolate(uri, params) {
@@ -59,7 +87,7 @@ define(
         return params.length ? '?' + params.join('&') : ''
       }
 
-      function into(node, err, res) {
+      function into(node, err, res, uri) {
         if(res.statusCode != 200) return
         if(!res.headers.contentType) return
         if(!viewTypes[res.headers.contentType]) return
@@ -68,11 +96,14 @@ define(
 
         node.dispatchEvent && node.dispatchEvent(new CustomEvent("update"))
         res.body(node)
+
+        if(node == root) window.history.pushState({}, "", "#" + uri)
       }
 
       function api() {
-        web.req(req(), function(err, res) {
-          node && into(node, err, res)
+        var request = req()
+        web.req(request, function(err, res) {
+          node && into(node, err, res, request.uri)
           callback && callback(err, res)
 
           if(err) return dispatcher.err(err), null
@@ -157,11 +188,22 @@ define(
         return api
       }
 
+      api.root = function(r) {
+        if(!arguments.length || root) return root
+        if(type.isString(r)) r = d3.select(r).node()
+
+        root = r
+        d3.select(root).on("click", handleClick)
+        return api
+      }
+
       api.into = function(n) {
-        if(!arguments.length) return node
+
+        api.root(d3.select('.shell-resource').node())
+
         if(type.isString(n)) n = d3.select(n).node()
 
-        node = n
+        node = n || root
         return api
       }
 
@@ -175,14 +217,14 @@ define(
 
         t && api.target(t)
 
-        var hash = "#" + req().uri
-
         if(!target) {
-          document.location.hash = hash
+          api.into().get()
           return
         }
         
-        var href = document.location.href
+        var hash = "#" + req().uri
+          , href = document.location.href
+
         href = /#/.test(href) ? href.replace(/#.*/, hash) : href + hash
         window.open(href, target, '')
       }
@@ -243,5 +285,17 @@ define(
     }
 
     return address
+
+    function handleClick() {
+      var event = d3.event
+        , target = event.target
+
+      if(!target.href) return
+      event.preventDefault()
+      var resource = target.href.split('#')[1]
+      console.log("intercept: ", resource)
+
+      address(resource).into().get()
+    }
   }
 )

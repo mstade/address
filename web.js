@@ -22,7 +22,8 @@ define(
           name : resource.name
         , path : resource.path
         , methods : methods
-        , params : resource.path.match(/\w+(?=})/g)
+        , params : params
+        , composes : resource.composes
         }
       })
     }
