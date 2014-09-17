@@ -56,6 +56,8 @@ define(
               , oldUri = requestUri
             requestUri = interpolate(rootPath, composedParams)
             console.log("rewrite: " + oldUri + " to: " + requestUri)
+            headers['x-original-request-uri'] = oldUri
+            headers['x-original-request-params'] = resourceParams
           }
         }
 
@@ -74,11 +76,6 @@ define(
           composedParams[key] = source[key] || target[key]
         })
         return composedParams
-      }
-
-      function interpolate(uri, params) {
-        if(!Object.keys(params).length) return uri
-        return web.uri(uri, params)
       }
 
       function serialize(query) {
@@ -198,7 +195,7 @@ define(
 
         root = r
         d3.select(root).on("click", handleClick)
-        
+
         return api
       }
 
@@ -286,7 +283,14 @@ define(
       return web.find(uri)
     }
 
+    address.interpolate = interpolate
+
     return address
+
+    function interpolate(uri, params) {
+      if(!Object.keys(params).length) return uri
+      return web.uri(uri, params)
+    }
 
     function handleClick() {
       var event = d3.event
@@ -298,7 +302,18 @@ define(
       var resource = target.href.split('#')[1]
       console.log("intercept: ", resource)
 
-      address(resource).into().get()
+      address(resource)
+        .into()
+        .on('redirection', handleRedirect)
+        .get()
+    }
+
+    function handleRedirect(res) {
+
+      address(res.headers.location)
+        .into()
+        .on('redirection', handleRedirect)
+        .get()
     }
   }
 )
