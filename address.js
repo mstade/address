@@ -1,11 +1,12 @@
 define(
   [ 'nap'
   , 'd3'
+  , 'underscore'
   , './web!'
   , 'type/type'
   , './http-status-code'
   ]
-  , function(nap, d3, web, type, codes) {
+  , function(nap, d3, _, web, type, codes) {
 
     var root = d3.select('.shell-resource').on('click', handleClick).node()
       , viewTypes = {
@@ -40,26 +41,7 @@ define(
       function req() {
 
         var requestUri = interpolate(uri, params) 
-        
-        if(node && node == root && node.__resource__) {
-
-          var rootUri = node.__resource__
-            , rootResource = web.find(rootUri)
-            , rootParams = rootResource.params
-            , rootPath = rootResource.path
-            , resource = web.find(requestUri)
-            , resourcePath = resource.path
-            , resourceParams = resource.params
-
-          if(rootResource.composes && !!~rootResource.composes.indexOf(resourcePath)) {
-            var composedParams = mergeParams(resourceParams, rootParams)
-              , oldUri = requestUri
-            requestUri = interpolate(rootPath, composedParams)
-            console.log("rewrite: " + oldUri + " to: " + requestUri)
-            headers['x-original-request-uri'] = oldUri
-            headers['x-original-request-params'] = resourceParams
-          }
-        }
+        if(node == root) requestUri = compose(requestUri, node.__resource__)
 
         return {
           uri : requestUri + serialize(query)
@@ -70,12 +52,22 @@ define(
         }
       }
 
-      function mergeParams(source, target) {
-        var composedParams = {}
-        Object.keys(target).forEach(function(key) {
-          composedParams[key] = source[key] || target[key]
-        })
-        return composedParams
+      function compose(requestUri, rootUri) {
+
+        if(!rootUri) return requestUri
+
+        var rootResource = web.find(rootUri)
+          , resource = web.find(requestUri)
+
+        if(_.contains(rootResource.composes, resource.path)) {
+          api.header({ 
+            'x-original-request-uri' : requestUri
+          , 'x-original-request-params' : resource.params 
+          })
+          return interpolate(rootResource.path, _.extend(rootResource.params, resource.params))
+        }
+
+        return requestUri
       }
 
       function serialize(query) {
