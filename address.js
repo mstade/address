@@ -7,7 +7,7 @@ define(
   ]
   , function(nap, d3, web, type, codes) {
 
-    var root
+    var root = d3.select('.shell-resource').on('click', handleClick).node()
       , viewTypes = {
         "application/x.nap.view" : true
       , "application/x.am.app" : true
@@ -53,7 +53,9 @@ define(
 
           if(rootResource.composes && !!~rootResource.composes.indexOf(resourcePath)) {
             var composedParams = mergeParams(resourceParams, rootParams)
+              , oldUri = requestUri
             requestUri = interpolate(rootPath, composedParams)
+            console.log("rewrite: " + oldUri + " to: " + requestUri)
           }
         }
 
@@ -192,18 +194,18 @@ define(
         if(!arguments.length || root) return root
         if(type.isString(r)) r = d3.select(r).node()
 
+        root && root.on('click', null)
+
         root = r
         d3.select(root).on("click", handleClick)
+        
         return api
       }
 
       api.into = function(n) {
-
-        api.root(d3.select('.shell-resource').node())
-
         if(type.isString(n)) n = d3.select(n).node()
 
-        node = n || root
+        node = !arguments.length ? root : n
         return api
       }
 
@@ -292,6 +294,7 @@ define(
 
       if(!target.href) return
       event.preventDefault()
+      event.stopPropagation()
       var resource = target.href.split('#')[1]
       console.log("intercept: ", resource)
 
