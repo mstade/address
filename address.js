@@ -209,7 +209,7 @@ define(
         t && api.target(t)
 
         if(!target) {
-          api.into().get()
+          api.into().on('redirection', handleRedirect).get()
           return
         }
         
