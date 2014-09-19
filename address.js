@@ -78,7 +78,7 @@ define(
         return params.length ? '?' + params.join('&') : ''
       }
 
-      function into(node, err, res, uri) {
+      function into(node, err, res) {
         if(res.statusCode != 200) return
         if(!res.headers.contentType) return
         if(!viewTypes[res.headers.contentType]) return
@@ -88,13 +88,24 @@ define(
         node.dispatchEvent && node.dispatchEvent(new CustomEvent("update"))
         res.body(node)
 
-        if(node == root) window.history.pushState({}, "", "#" + uri)
       }
 
       function api() {
         var request = req()
         web.req(request, function(err, res) {
-          node && into(node, err, res, request.uri)
+
+          if(viewTypes[res.headers.contentType]) {
+            var view = res.body
+            res.body = function(node) {
+              if(node == root && root.__resource__ != request.uri) {
+                window.history.pushState({}, "", "#" + request.uri)
+              }
+              node.__resource__ = request.uri
+              view(node)
+            }
+          }
+          node && into(node, err, res)
+
           callback && callback(err, res)
 
           if(err) return dispatcher.err(err), null
@@ -292,7 +303,6 @@ define(
       event.preventDefault()
       event.stopPropagation()
       var resource = target.href.split('#')[1]
-      console.log("intercept: ", resource)
 
       address(resource)
         .into()

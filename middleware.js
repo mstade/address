@@ -1,7 +1,10 @@
 define(
   [ 'logger/log!platform/am-address'
+  , 'd3'
   ]
-  , function(log) {
+  , function(log, d3) {
+
+    var root = d3.select('.shell-resource').node()
 
     return {
       requestTimeout : function(req, res, next) {
@@ -33,7 +36,6 @@ define(
         })
       }
     }
-
   }
 )
 

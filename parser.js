@@ -56,7 +56,6 @@ define(
           return
         }
         
-        req.context.__resource__ = req.uri
         view(req, res)
       }
     }
