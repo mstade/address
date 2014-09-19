@@ -28,6 +28,7 @@ define(
         , callback
         , target
         , dispatcher = d3.dispatch.apply(null, codes.range().concat(['err', 'done']))
+        , resource = _.property('__resource__')
 
       if(r && type.isString(r)) {
         uri = r
@@ -38,83 +39,9 @@ define(
         body = r.body || body
       }
 
-      function req() {
-
-        var requestUri = interpolate(uri, params) 
-        if(node == root) requestUri = compose(requestUri, node.__resource__)
-
-        return {
-          uri : requestUri + serialize(query)
-        , method : method
-        , headers : headers
-        , body : body
-        , context : node
-        }
-      }
-
-      function compose(requestUri, rootUri) {
-
-        if(!rootUri) return requestUri
-
-        var rootResource = web.find(rootUri)
-          , resource = web.find(requestUri)
-
-        if(_.contains(rootResource.composes, resource.path)) {
-          api.header({ 
-            'x-original-request-uri' : requestUri
-          , 'x-original-request-params' : resource.params 
-          })
-          return interpolate(rootResource.path, _.extend(rootResource.params, resource.params))
-        }
-
-        return requestUri
-      }
-
-      function serialize(query) {
-        var params = Object.keys(query).reduce(function(a,k) {
-          a.push(k + '=' + query[k])
-          return a
-        },[])
-        return params.length ? '?' + params.join('&') : ''
-      }
-
-      function into(node, err, res) {
-        if(res.statusCode != 200) return
-        if(!res.headers.contentType) return
-        if(!viewTypes[res.headers.contentType]) return
-        if(!type.isFunction(res.body)) return
-        if(!node) return
-
-        node.dispatchEvent && node.dispatchEvent(new CustomEvent("update"))
-        res.body(node)
-
-      }
-
       function api() {
         var request = req()
-        web.req(request, function(err, res) {
-
-          if(viewTypes[res.headers.contentType]) {
-            var view = res.body
-            res.body = function(node) {
-              if(node == root && root.__resource__ != request.uri) {
-                window.history.pushState({}, "", "#" + request.uri)
-              }
-              node.__resource__ = request.uri
-              view(node)
-            }
-          }
-          node && into(node, err, res)
-
-          callback && callback(err, res)
-
-          if(err) return dispatcher.err(err), null
-
-          codes(res.statusCode).forEach(function(type) { 
-            dispatcher[type](res) 
-          })
-          dispatcher.done(res)
-        })
+        web.req(request, handleResponse(request.uri))
       }
 
       api.uri = function(u) {
@@ -280,6 +207,90 @@ define(
       }
 
       return d3.rebind(api, dispatcher, 'on')
+
+      function req() {
+
+        var requestUri = interpolate(uri, params) 
+        if(isRoot(node)) requestUri = compose(requestUri, resource(node))
+
+        return {
+          uri : requestUri + serialize(query)
+        , method : method
+        , headers : headers
+        , body : body
+        , context : node
+        }
+      }
+
+      function compose(requestUri, rootUri) {
+
+        if(!rootUri) return requestUri
+
+        var rootResource = web.find(rootUri)
+          , resource = web.find(requestUri)
+
+        if(_.contains(rootResource.composes, resource.path)) {
+          api.header({ 
+            'x-original-request-uri' : requestUri
+          , 'x-original-request-params' : resource.params 
+          })
+          return interpolate(rootResource.path, _.extend(rootResource.params, resource.params))
+        }
+
+        return requestUri
+      }
+
+      function serialize(query) {
+        var params = Object.keys(query).reduce(function(a,k) {
+          a.push(k + '=' + query[k])
+          return a
+        },[])
+        return params.length ? '?' + params.join('&') : ''
+      }
+
+
+      function handleResponse(req) {
+        return function(err, res) {
+
+          if(isView(res)) handleView(res, req.rui)
+
+          // deprecated
+          callback && callback(err, res)
+
+          if(err) return dispatcher.err(err), null
+
+          codes(res.statusCode).forEach(function(type) { 
+            dispatcher[type](res) 
+          })
+          dispatcher.done(res)
+        }
+      }
+
+      function handleView(res, requestUri) {
+        var view = res.body
+
+        if(!type.isFunction(view)) return
+          
+        res.body = function(node) {
+          if(isRoot(node) && resource(node) != requestUri) {
+            window.history.pushState({}, "", "#" + requestUri)
+          }
+          node.__resource__ = requestUri
+          view(node)
+        }
+        
+        node && into(node, res)
+      }
+
+      function into(node, res) {
+        if(res.statusCode != 200) return
+        node.dispatchEvent && node.dispatchEvent(new CustomEvent("update"))
+        res.body(node)
+      }
+
+      function isRoot(node) {
+        return node == root
+      }
     }
 
     address.find = function(uri) {
@@ -293,6 +304,11 @@ define(
     function interpolate(uri, params) {
       if(!Object.keys(params).length) return uri
       return web.uri(uri, params)
+    }
+
+    function isView(res) {
+      if(!res.headers.contentType) return
+      return !!viewTypes[res.headers.contentType]
     }
 
     function handleClick() {
