@@ -23,7 +23,8 @@ define(
         , path : resource.path
         , methods : methods
         , params : params
-        , composes : resource.composes
+        , composes : resource.composes || []
+        , redirects : resource.redirects || {}
         }
       })
     }

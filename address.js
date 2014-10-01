@@ -41,7 +41,7 @@ define(
 
       function api() {
         var request = req()
-        web.req(request, handleResponse(request.uri))
+        web.req(request, handleResponse(request))
       }
 
       api.uri = function(u) {
@@ -228,13 +228,21 @@ define(
 
         var rootResource = web.find(rootUri)
           , resource = web.find(requestUri)
+          , composedParams = _.extend(rootResource.params, resource.params)
+          , redirect = rootResource.redirects[resource.path]
+          , composes = _.contains(rootResource.composes, resource.path)
+          , rewritePath = redirect || rootResource.path
+          , shouldRewrite = redirect || composes
 
-        if(_.contains(rootResource.composes, resource.path)) {
+        if(shouldRewrite) {
+
           api.header({ 
             'x-original-request-uri' : requestUri
           , 'x-original-request-params' : resource.params 
+          , 'x-composed-request-params' : composedParams
           })
-          return interpolate(rootResource.path, _.extend(rootResource.params, resource.params))
+
+          return interpolate(rewritePath, composedParams)
         }
 
         return requestUri
@@ -252,7 +260,7 @@ define(
       function handleResponse(req) {
         return function(err, res) {
 
-          if(isView(res)) handleView(res, req.rui)
+          if(isView(res)) handleView(res, req.uri)
 
           // deprecated
           callback && callback(err, res)
@@ -270,6 +278,7 @@ define(
         var view = res.body
 
         if(!type.isFunction(view)) return
+        if(res.statusCode != 200) return
           
         res.body = function(node) {
           if(isRoot(node) && resource(node) != requestUri) {
@@ -283,7 +292,6 @@ define(
       }
 
       function into(node, res) {
-        if(res.statusCode != 200) return
         node.dispatchEvent && node.dispatchEvent(new CustomEvent("update"))
         res.body(node)
       }
