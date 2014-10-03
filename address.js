@@ -5,8 +5,9 @@ define(
   , './web!'
   , 'type/type'
   , './http-status-code'
+  ,'./location'
   ]
-  , function(nap, d3, _, web, type, codes) {
+  , function(nap, d3, _, web, type, codes, location) {
 
     var root = d3.select('.shell-resource').on('click', handleClick).node()
       , viewTypes = {
@@ -147,7 +148,7 @@ define(
         t && api.target(t)
 
         if(!target) {
-          api.into().on('redirection', handleRedirect).get()
+          api.into().get()
           return
         }
         
@@ -275,23 +276,30 @@ define(
       }
 
       function handleView(res, requestUri) {
-        var view = res.body
 
-        if(!type.isFunction(view)) return
-        if(res.statusCode != 200) return
-          
-        res.body = function(node) {
-          if(isRoot(node) && resource(node) != requestUri) {
-            window.history.pushState({}, "", "#" + requestUri)
-          }
-          node.__resource__ = requestUri
-          view(node)
+        if(!node) {
+          log.debug('request has invalid view target node')
+          return
         }
-        
-        node && into(node, res)
-      }
 
-      function into(node, res) {
+        if(res.statusCode != 302) {
+          node.__resource__ = requestUri
+          if(isRoot(node)) {
+            console.log("load root resource ", requestUri)
+            location.pushState(requestUri)
+          }
+        }
+
+        if(!type.isFunction(res.body)) {
+          log.debug('view resource returned non-function object in response body')
+          return
+        }
+
+        if(res.statusCode != 200) {
+          log.debug('view function ignored due to non 200 status code')
+          return
+        }
+
         node.dispatchEvent && node.dispatchEvent(new CustomEvent("update"))
         res.body(node)
       }
@@ -324,22 +332,13 @@ define(
         , target = event.target
 
       if(!target.href) return
+      if(!~target.href.indexOf('#')) return
+
       event.preventDefault()
       event.stopPropagation()
-      var resource = target.href.split('#')[1]
+      var resource = target.href.split('#')[1] || ''
 
-      address(resource)
-        .into()
-        .on('redirection', handleRedirect)
-        .get()
-    }
-
-    function handleRedirect(res) {
-
-      address(res.headers.location)
-        .into()
-        .on('redirection', handleRedirect)
-        .get()
+      address(resource).into().get()
     }
   }
 )
