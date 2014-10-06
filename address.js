@@ -6,15 +6,13 @@ define(
   , 'type/type'
   , './http-status-code'
   ,'./location'
+  , './is-view'
   ]
-  , function(nap, d3, _, web, type, codes, location) {
+  , function(nap, d3, _, web, type, codes, location, isView) {
 
-    var root = d3.select('.shell-resource').on('click', handleClick).node()
-      , viewTypes = {
-        "application/x.nap.view" : true
-      , "application/x.am.app" : true
-      , "application/x.am.legacy-app" : true
-      }
+    var resource = _.property('__resource__')
+
+    location.root(d3.select('.shell-resource').node())
 
     function address(r) {
 
@@ -29,7 +27,6 @@ define(
         , callback
         , target
         , dispatcher = d3.dispatch.apply(null, codes.range().concat(['err', 'done']))
-        , resource = _.property('__resource__')
 
       if(r && type.isString(r)) {
         uri = r
@@ -42,7 +39,7 @@ define(
 
       function api() {
         var request = req()
-        web.req(request, handleResponse(request))
+        web.req(request, _.partial(handleResponse, request))
       }
 
       api.uri = function(u) {
@@ -119,21 +116,15 @@ define(
       }
 
       api.root = function(r) {
-        if(!arguments.length || root) return root
-        if(type.isString(r)) r = d3.select(r).node()
-
-        root && root.on('click', null)
-
-        root = r
-        d3.select(root).on("click", handleClick)
-
+        if(!arguments.length) return location.root()
+        location.root(r)
         return api
       }
 
       api.into = function(n) {
         if(type.isString(n)) n = d3.select(n).node()
 
-        node = !arguments.length ? root : n
+        node = !arguments.length ? location.root() : n
         return api
       }
 
@@ -236,7 +227,6 @@ define(
           , shouldRewrite = redirect || composes
 
         if(shouldRewrite) {
-
           api.header({ 
             'x-original-request-uri' : requestUri
           , 'x-original-request-params' : resource.params 
@@ -249,45 +239,25 @@ define(
         return requestUri
       }
 
-      function serialize(query) {
-        var params = Object.keys(query).reduce(function(a,k) {
-          a.push(k + '=' + query[k])
-          return a
-        },[])
-        return params.length ? '?' + params.join('&') : ''
+      function handleResponse(req, err, res) {
+
+        // deprecated //
+        callback && callback(err, res)
+
+        if(err) return dispatcher.err(err), null
+
+        if(isView(res) && req.context) invokeView(res, req.context)
+
+        codes(res.statusCode).concat(['done']).forEach(function(type) { 
+          dispatcher[type](res) 
+        })
       }
 
+      function invokeView(res, node) {
 
-      function handleResponse(req) {
-        return function(err, res) {
-
-          if(isView(res)) handleView(res, req.uri)
-
-          // deprecated
-          callback && callback(err, res)
-
-          if(err) return dispatcher.err(err), null
-
-          codes(res.statusCode).forEach(function(type) { 
-            dispatcher[type](res) 
-          })
-          dispatcher.done(res)
-        }
-      }
-
-      function handleView(res, requestUri) {
-
-        if(!node) {
-          log.debug('request has invalid view target node')
+        if(res.statusCode != 200) {
+          log.debug('view resource returned non-200 status code. view function not invoked')
           return
-        }
-
-        if(res.statusCode != 302) {
-          node.__resource__ = requestUri
-          if(isRoot(node)) {
-            console.log("load root resource ", requestUri)
-            location.pushState(requestUri)
-          }
         }
 
         if(!type.isFunction(res.body)) {
@@ -295,24 +265,11 @@ define(
           return
         }
 
-        if(res.statusCode != 200) {
-          log.debug('view function ignored due to non 200 status code')
-          return
-        }
-
-        node.dispatchEvent && node.dispatchEvent(new CustomEvent("update"))
         res.body(node)
       }
-
-      function isRoot(node) {
-        return node == root
-      }
     }
 
-    address.find = function(uri) {
-      return web.find(uri)
-    }
-
+    address.find = web.find
     address.interpolate = interpolate
 
     return address
@@ -322,23 +279,16 @@ define(
       return web.uri(uri, params)
     }
 
-    function isView(res) {
-      if(!res.headers.contentType) return
-      return !!viewTypes[res.headers.contentType]
+    function isRoot(node) {
+      return node == location.root()
     }
 
-    function handleClick() {
-      var event = d3.event
-        , target = event.target
-
-      if(!target.href) return
-      if(!~target.href.indexOf('#')) return
-
-      event.preventDefault()
-      event.stopPropagation()
-      var resource = target.href.split('#')[1] || ''
-
-      address(resource).into().get()
+    function serialize(query) {
+      var params = Object.keys(query).reduce(function(a,k) {
+        a.push(k + '=' + query[k])
+        return a
+      },[])
+      return params.length ? '?' + params.join('&') : ''
     }
   }
 )

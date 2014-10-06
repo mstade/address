@@ -1,12 +1,18 @@
 define(
   [ 'logger/log!platform/am-address'
   , 'd3'
+  , './location'
+  , 'type/type'
+  , './is-view'
   ]
-  , function(log, d3) {
+  , function(log, d3, location, type, isView) {
 
-    var root = d3.select('.shell-resource').node()
+    function isRoot(node) {
+      return node == location.root()
+    }
 
     return {
+
       requestTimeout : function(req, res, next) {
 
         var responded
@@ -32,6 +38,26 @@ define(
             data.body && (args = args.concat(data.body))
             log.debug.apply(log, args)
           }
+          res(err, data)
+        })
+      }
+
+    , view : function(req, res, next) {
+
+        next(req, function(err, data) {
+
+          if(!isView(data) || data.statusCode == 302) return res(err, data), null
+
+          if(type.isFunction(data.body)) {  
+            var view = data.body
+            data.body = function(node) {
+              if(isRoot(node)) location.pushState(data.headers.location || req.uri)
+              node.dispatchEvent && node.dispatchEvent(new CustomEvent("update", {detail : { from : node.__resource__, to : req.uri }}))
+              node.__resource__ = req.uri
+              view(node)
+            }
+          }
+
           res(err, data)
         })
       }
