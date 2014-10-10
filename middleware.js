@@ -4,12 +4,12 @@ define(
   , './location'
   , 'type/type'
   , './is-view'
+  , 'underscore'
   ]
-  , function(log, d3, location, type, isView) {
+  , function(log, d3, createLocation, type, isView, _) {
 
-    function isRoot(node) {
-      return node == location.root()
-    }
+    var location = createLocation()
+      , isRoot = _.partial(_.isEqual, location.root())
 
     return {
 

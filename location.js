@@ -1,34 +1,39 @@
 define(
   [ 'd3'
+  , 'underscore'
   , 'type/type'
+  , './compose'
   ]
-, function(d3, type) {
+, function(d3, _, type, compose) {
 
     var state = getHash(document.location.href) 
-      , ignoreFlag = false
+      , resource = _.property('__resource__')
       , dispatcher = d3.dispatch('statechange')
+      , ignoreFlag = false
       , root
+      , web
 
     d3.select(window).on('hashchange', handleHashChange)
+    d3.select(document).on('click', handleClick)
 
-    function location() {}
+    return function(r, w) {
 
-    location.getState = function() { return currentState() }
-    location.pushState = pushState
+      root = root || r 
+      web = web || w 
+    
+      function location() {}
 
-    location.root = function(value) {
-      if(!arguments.length || root) return root
-      if(type.isString(value)) value = d3.select(value).node()
+      location.getState = function() { return currentState() }
+      location.setState = setState
+      location.pushState = pushState
+      location.openNewWindow = openNewWindow
 
-      root && root.on('click.am.location', null)
+      location.root = function() {
+        return root
+      }
 
-      root = value
-      d3.select(root).on("click.am.location", handleClick)
-
-      return location
+      return d3.rebind(location, dispatcher, 'on')
     }
-
-    return d3.rebind(location, dispatcher, 'on')
 
     function handleHashChange() {
 
@@ -40,25 +45,17 @@ define(
       ignore(false)
     }
 
-    function handleClick() {
-      var event = d3.event
-        , target = event.target
-
-      if(!target.href) return
-      if(!~target.href.indexOf('#')) return
-
-      event.preventDefault()
-      event.stopPropagation()
-      var resource = target.href.split('#')[1] || ''
-      dispatcher.statechange(resource)
-    }
-
     function pushState(value) {
       if(isCurrentState(value)) return
       ignore(true)
       currentState(value)
       setHash(value)
       return true
+    }
+
+    function setState(value) {
+      clearRoot()
+      pushState(value) && dispatcher.statechange(value)
     }
 
     function currentState(value) {
@@ -75,16 +72,41 @@ define(
       return value == currentState()
     }
 
+    function clearRoot() {
+      root.__resource__ = null
+    }
+
+    function openNewWindow(path, target) {
+      var hash = "#" + path
+        , href = document.location.href
+        , url = /#/.test(href) ? href.replace(/#.*/, hash) : href + hash
+      window.open(url, target, '')
+    }
+
+    function handleClick() {
+      var event = d3.event
+        , target = event.target
+
+      if(!target.href) return
+      if(!~target.href.indexOf('#')) return
+
+      var path = target.href.split('#')[1] || ''
+
+      if(!path) return
+      if(!web.find(path)) return
+
+      event.preventDefault()
+      event.stopPropagation()
+
+      setState(compose(web, path, resource(root)))
+    }
+
     function getHash(value) {
       return (value.split('#')[1] || '')
     }
 
     function setHash(value) {
       document.location.hash = value
-    }
-
-    function clearRoot() {
-      root.__resource__ = null
     }
   }
 )

@@ -5,15 +5,19 @@ define(
   , './web!'
   , 'type/type'
   , './http-status-code'
-  ,'./location'
   , './is-view'
+  , './serialize'
+  , './interpolate'
+  , './compose'
+  , './location'
   ]
-  , function(nap, d3, _, web, type, codes, location, isView) {
+  , function(nap, d3, _, web, type, codes, isView, serialize, interpolate, compose, createLocation) {
 
     var resource = _.property('__resource__')
-
-    location.root(d3.select('.shell-resource').node())
-
+      , root = d3.select('.shell-resource').node()
+      , isRoot = _.partial(_.isEqual, root)
+      , location = createLocation(root, web)
+    
     function address(r) {
 
       var uri
@@ -115,16 +119,10 @@ define(
         return api
       }
 
-      api.root = function(r) {
-        if(!arguments.length) return location.root()
-        location.root(r)
-        return api
-      }
-
       api.into = function(n) {
         if(type.isString(n)) n = d3.select(n).node()
 
-        node = !arguments.length ? location.root() : n
+        node = !arguments.length ? root : n
         return api
       }
 
@@ -138,16 +136,9 @@ define(
 
         t && api.target(t)
 
-        if(!target) {
-          api.into().get()
-          return
-        }
-        
-        var hash = "#" + req().uri
-          , href = document.location.href
-
-        href = /#/.test(href) ? href.replace(/#.*/, hash) : href + hash
-        window.open(href, target, '')
+        var requestUri = getRequestUri(root)
+        if(!target)  return location.setState(requestUri), null
+        location.openNewWindow(requestUri, target)
       }
 
       api.view = function() {
@@ -201,12 +192,8 @@ define(
       return d3.rebind(api, dispatcher, 'on')
 
       function req() {
-
-        var requestUri = interpolate(uri, params) 
-        if(isRoot(node)) requestUri = compose(requestUri, resource(node))
-
         return {
-          uri : requestUri + serialize(query)
+          uri : getRequestUri(node) + serialize(query)
         , method : method
         , headers : headers
         , body : body
@@ -214,28 +201,9 @@ define(
         }
       }
 
-      function compose(requestUri, rootUri) {
-
-        if(!rootUri) return requestUri
-
-        var rootResource = web.find(rootUri)
-          , resource = web.find(requestUri)
-          , composedParams = _.extend(rootResource.params, resource.params)
-          , redirect = rootResource.redirects[resource.path]
-          , composes = _.contains(rootResource.composes, resource.path)
-          , rewritePath = redirect || rootResource.path
-          , shouldRewrite = redirect || composes
-
-        if(shouldRewrite) {
-          api.header({ 
-            'x-original-request-uri' : requestUri
-          , 'x-original-request-params' : resource.params 
-          , 'x-composed-request-params' : composedParams
-          })
-
-          return interpolate(rewritePath, composedParams)
-        }
-
+      function getRequestUri(node) {
+        var requestUri = interpolate(web, uri, params) 
+        if(isRoot(node)) requestUri = compose(web, requestUri, resource(node))
         return requestUri
       }
 
@@ -270,25 +238,9 @@ define(
     }
 
     address.find = web.find
-    address.interpolate = interpolate
+    address.interpolate = _.partial(interpolate, web)
+    address.location = location
 
     return address
-
-    function interpolate(uri, params) {
-      if(!Object.keys(params).length) return uri
-      return web.uri(uri, params)
-    }
-
-    function isRoot(node) {
-      return node == location.root()
-    }
-
-    function serialize(query) {
-      var params = Object.keys(query).reduce(function(a,k) {
-        a.push(k + '=' + query[k])
-        return a
-      },[])
-      return params.length ? '?' + params.join('&') : ''
-    }
   }
 )
