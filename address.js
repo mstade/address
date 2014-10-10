@@ -14,7 +14,8 @@ define(
   , function(nap, d3, _, web, type, codes, isView, serialize, interpolate, compose, createLocation) {
 
     var resource = _.property('__resource__')
-      , root = d3.select('.shell-resource').node()
+      , zapp = d3.select('.z-app')
+      , root = zapp.empty() ? d3.select('body').node() : zapp.node()
       , location = createLocation(root, web)
     
     function address(r) {
