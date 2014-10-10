@@ -32,6 +32,10 @@ define(
         return root
       }
 
+      location.isRoot = function(node) {
+        return node == root
+      }
+
       return d3.rebind(location, dispatcher, 'on')
     }
 
@@ -41,7 +45,7 @@ define(
 
       var value = getHash(d3.event.newURL)
       clearRoot()
-      pushState(value) && dispatcher.statechange(value)
+      setState(value)
       ignore(false)
     }
 
@@ -54,8 +58,7 @@ define(
     }
 
     function setState(value) {
-      clearRoot()
-      pushState(value) && dispatcher.statechange(value)
+      pushState(value) && clearRoot() && dispatcher.statechange(value)
     }
 
     function currentState(value) {
@@ -74,6 +77,7 @@ define(
 
     function clearRoot() {
       root.__resource__ = null
+      return true
     }
 
     function openNewWindow(path, target) {

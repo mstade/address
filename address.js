@@ -15,7 +15,6 @@ define(
 
     var resource = _.property('__resource__')
       , root = d3.select('.shell-resource').node()
-      , isRoot = _.partial(_.isEqual, root)
       , location = createLocation(root, web)
     
     function address(r) {
@@ -60,49 +59,19 @@ define(
 
       api.header = function(k, v) {
         if(!arguments.length) return headers
-        if(type.isString(k)) {
-          headers[k] = v
-          return api
-        }
-        if(type.isObject(k)) {
-          Object.keys(k).forEach(function(key) {
-            headers[key] = k[key]
-          })
-          return api
-        }
-
+        _.extend(headers, toObject(k, v))
         return api
       }
 
       api.param = function(k, v) {
         if(!arguments.length) return params
-        if(type.isString(k)) {
-          params[k] = v
-          return api
-        }
-        if(type.isObject(k)) {
-          Object.keys(k).forEach(function(key) {
-            params[key] = k[key]
-          })
-          return api
-        }
-
+        _.extend(params, toObject(k, v))
         return api
       }
 
       api.query = function(k, v) {
         if(!arguments.length) return query
-        if(type.isString(k)) {
-          query[k] = v
-          return api
-        }
-        if(type.isObject(k)) {
-          Object.keys(k).forEach(function(key) {
-            query[key] = k[key]
-          })
-          return api
-        }
-
+        _.extend(query, toObject(k, v))
         return api
       }
 
@@ -203,7 +172,7 @@ define(
 
       function getRequestUri(node) {
         var requestUri = interpolate(web, uri, params) 
-        if(isRoot(node)) requestUri = compose(web, requestUri, resource(node))
+        if(location.isRoot(node)) requestUri = compose(web, requestUri, resource(node))
         return requestUri
       }
 
@@ -242,5 +211,10 @@ define(
     address.location = location
 
     return address
+
+    function toObject(k, v) {
+      if(arguments.length == 1) return k
+      return obj = {}, obj[k] = v, obj
+    }
   }
 )

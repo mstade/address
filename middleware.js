@@ -9,7 +9,6 @@ define(
   , function(log, d3, createLocation, type, isView, _) {
 
     var location = createLocation()
-      , isRoot = _.partial(_.isEqual, location.root())
 
     return {
 
@@ -51,7 +50,7 @@ define(
           if(type.isFunction(data.body)) {  
             var view = data.body
             data.body = function(node) {
-              if(isRoot(node)) location.pushState(data.headers.location || req.uri)
+              if(location.isRoot(node)) location.pushState(data.headers.location || req.uri)
               node.dispatchEvent && node.dispatchEvent(new CustomEvent("update", {detail : { from : node.__resource__, to : req.uri }}))
               node.__resource__ = req.uri
               view(node)
