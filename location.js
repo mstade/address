@@ -6,7 +6,7 @@ define(
   ]
 , function(d3, _, type, compose) {
 
-    var state = getHash(document.location.href) 
+    var state = getHash() 
       , resource = _.property('__resource__')
       , dispatcher = d3.dispatch('statechange')
       , ignoreFlag = false
@@ -43,7 +43,8 @@ define(
 
       if(ignore()) return ignore(false)
 
-      var value = getHash(d3.event.newURL)
+      var value = getHash()
+    console.log("hashchange:", value)
       clearRoot()
       setState(value)
       ignore(false)
@@ -105,8 +106,8 @@ define(
       setState(compose(web, path, resource(root)))
     }
 
-    function getHash(value) {
-      return (value.split('#')[1] || '')
+    function getHash() {
+      return (document.location.href.split('#')[1] || '')
     }
 
     function setHash(value) {
