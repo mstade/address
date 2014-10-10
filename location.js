@@ -44,7 +44,6 @@ define(
       if(ignore()) return ignore(false)
 
       var value = getHash()
-    console.log("hashchange:", value)
       clearRoot()
       setState(value)
       ignore(false)
