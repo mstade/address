@@ -12,8 +12,9 @@ define(
   , './location'
   , './view-wrapper'
   , './view-invoker'
+  , './kv-to-object'
   ]
-  , function(nap, d3, _, web, type, codes, isView, serialize, interpolate, compose, createLocation, createViewWrapper, invokeView) {
+  , function(nap, d3, _, web, type, codes, isView, serialize, interpolate, compose, createLocation, createViewWrapper, invokeView, toObject) {
 
     var resource = _.property('__resource__')
       , zapp = d3.select('.z-app')
@@ -203,10 +204,5 @@ define(
     address.location = location
 
     return address
-
-    function toObject(k, v) {
-      if(type.isObject(k)) return k
-      return obj = {}, obj[k] = v, obj
-    }
   }
 )
