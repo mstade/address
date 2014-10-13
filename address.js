@@ -214,7 +214,7 @@ define(
     return address
 
     function toObject(k, v) {
-      if(arguments.length == 1) return k
+      if(type.isObject(k)) return k
       return obj = {}, obj[k] = v, obj
     }
   }
