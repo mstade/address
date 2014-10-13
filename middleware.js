@@ -1,14 +1,9 @@
 define(
   [ 'logger/log!platform/am-address'
   , 'd3'
-  , './location'
   , 'type/type'
-  , './is-view'
-  , 'underscore'
   ]
-  , function(log, d3, createLocation, type, isView, _) {
-
-    var location = createLocation()
+  , function(log, d3, type) {
 
     return {
 
@@ -37,26 +32,6 @@ define(
             data.body && (args = args.concat(data.body))
             log.debug.apply(log, args)
           }
-          res(err, data)
-        })
-      }
-
-    , view : function(req, res, next) {
-
-        next(req, function(err, data) {
-
-          if(!isView(data) || data.statusCode == 302) return res(err, data), null
-
-          if(type.isFunction(data.body)) {  
-            var view = data.body
-            data.body = function(node) {
-              if(location.isRoot(node)) location.pushState(data.headers.location || req.uri)
-              node.dispatchEvent && node.dispatchEvent(new CustomEvent("update", {detail : { from : node.__resource__, to : req.uri }}))
-              node.__resource__ = req.uri
-              view(node)
-            }
-          }
-
           res(err, data)
         })
       }

@@ -10,13 +10,16 @@ define(
   , './interpolate'
   , './compose'
   , './location'
+  , './view-wrapper'
+  , './view-invoker'
   ]
-  , function(nap, d3, _, web, type, codes, isView, serialize, interpolate, compose, createLocation) {
+  , function(nap, d3, _, web, type, codes, isView, serialize, interpolate, compose, createLocation, createViewWrapper, invokeView) {
 
     var resource = _.property('__resource__')
       , zapp = d3.select('.z-app')
       , root = zapp.empty() ? d3.select('body').node() : zapp.node()
       , location = createLocation(root, web)
+      , wrapView = createViewWrapper(location)
     
     function address(r) {
 
@@ -43,7 +46,7 @@ define(
 
       function api() {
         var request = req()
-        web.req(request, _.partial(handleResponse, request))
+        web.req(request, _.partial(handleResponse, request, callback))
       }
 
       api.uri = function(u) {
@@ -177,33 +180,21 @@ define(
         return requestUri
       }
 
-      function handleResponse(req, err, res) {
+      function handleResponse(req, callback, err, res) {
 
         // deprecated //
         callback && callback(err, res)
 
         if(err) return dispatcher.err(err), null
 
-        if(isView(res) && req.context) invokeView(res, req.context)
+        if(isView(res)) {
+          if(res.statusCode != 302) wrapView(req, res)
+          req.context && invokeView(res, req.context)
+        } 
 
         codes(res.statusCode).concat(['done']).forEach(function(type) { 
           dispatcher[type](res) 
         })
-      }
-
-      function invokeView(res, node) {
-
-        if(res.statusCode != 200) {
-          log.debug('view resource returned non-200 status code. view function not invoked')
-          return
-        }
-
-        if(!type.isFunction(res.body)) {
-          log.debug('view resource returned non-function object in response body')
-          return
-        }
-
-        res.body(node)
       }
     }
 

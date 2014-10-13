@@ -40,7 +40,6 @@ define(
         web = nap.web()
           .use(middleware.logger)
           .use(middleware.requestTimeout)
-          .use(middleware.view)
 
         d3.json("/api/apps/v1/resources", function(err, data) {
 

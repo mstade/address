@@ -10,17 +10,20 @@ define(
       , nap
       , type
       , reponse
+      , responseBody
 
     beforeEach(function(done) {
 
       var injector = new Squire();
+
+      responseBody = sinon.spy(function(node){console.log("view called")})
 
       response = { 
         statusCode : 200
       , headers: {
           contentType : "application/x.nap.view"
         }
-      , body : sinon.spy(function(node){console.log("view called")})
+      , body : responseBody
       }
 
       web = { 
@@ -274,8 +277,8 @@ define(
 
         web.req.should.have.been.calledOnce
         cb.should.have.been.calledOnce
-        response.body.should.have.been.calledOnce
-        response.body.should.have.been.calledWith(node)
+        responseBody.should.have.been.calledOnce
+        responseBody.should.have.been.calledWith(node)
       })
     })
   }
