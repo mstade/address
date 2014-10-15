@@ -92,6 +92,7 @@ define(
         , target = event.target
 
       if(!target.href) return
+      if(!!target.target) return
       if(!~target.href.indexOf('#')) return
 
       var path = target.href.split('#')[1] || ''
