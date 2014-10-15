@@ -41,7 +41,11 @@ define(
           .use(middleware.logger)
           .use(middleware.requestTimeout)
 
-        d3.json("/api/apps/v1/resources", function(err, data) {
+        if(window.z && window.z.resources) return createWeb(null, window.z)
+
+        d3.json("/api/apps/v1/resources", createWeb)
+
+        function createWeb(err, data) {
 
           if(err || !data.resources || !type.isArray(data.resources)) {
             //log.error("Failed to retrieve resources")
@@ -61,7 +65,7 @@ define(
           }
 
           onload(web)
-        })
+        }
 
       }
     }
