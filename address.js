@@ -110,7 +110,7 @@ define(
 
         t && api.target(t)
 
-        var requestUri = getRequestUri(root)
+        var requestUri = getRequestUri(root) + serialize(query)
         if(!target)  return location.setState(requestUri), null
         location.openNewWindow(requestUri, target)
       }
