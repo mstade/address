@@ -88,14 +88,18 @@ define(
     }
 
     function handleClick() {
-      var event = d3.event
+      var anchor
+        , event = d3.event
         , target = event.target
 
-      if(!target.href) return
-      if(!!target.target) return
-      if(!~target.href.indexOf('#')) return
+      if(event.ctrlKey) return
+      if(event.button == 1) return
+      anchor = findClosestAnchor(target)
+      if(!anchor) return
+      if(!!anchor.target) return
+      if(!~anchor.href.indexOf('#')) return
 
-      var path = target.href.split('#')[1] || ''
+      var path = anchor.href.split('#')[1] || ''
 
       if(!path) return
       if(!web.find(path)) return
@@ -104,6 +108,12 @@ define(
       event.stopPropagation()
 
       setState(compose(web, path, resource(root)))
+    }
+
+    function findClosestAnchor(node) {
+      if (!node) return null
+      if (node.nodeName == 'A' && node.href) return node
+      return findClosestAnchor(node.parentElement)
     }
 
     function getHash() {
