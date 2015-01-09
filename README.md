@@ -222,7 +222,7 @@ define(
         node.innerHTML(price)
       }
 
-      res( null, ok(view) )
+      res( ok(view) )
     }
     
   }
@@ -287,12 +287,12 @@ define(
       // resource logic goes here...
 
       if( // bad request ) {
-        res( null, error(400, 'something went wrong') )
+        res( error(400, 'something went wrong') )
         return
       }
 
       // all ok
-      res( null, ok("hello world!") )
+      res( ok("hello world!") )
     }
 
   }
