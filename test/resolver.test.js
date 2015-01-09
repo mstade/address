@@ -38,7 +38,7 @@ define(
         var resolve = resolver("require/module")
           , type = typeof resolve
           , req = {}
-          , res = {}
+          , res = sinon.spy()
 
         type.should.equal('function')
         resolve.length.should.equal(2)
@@ -49,7 +49,7 @@ define(
         requireStub.should.have.been.calledWith(["require/module"])
 
         cbSpy.should.have.been.calledOnce
-        cbSpy.should.have.been.calledWith(req, res)
+        cbSpy.should.have.been.calledWith(req)
       })
     })
   }

@@ -1,7 +1,8 @@
 define(
   [ 'logger/log!platform/am-address'
+  , 'underscore'
   ]
-  , function(log) {
+  , function(log, _) {
 
     function isFn(inst){
       return typeof inst === "function"
@@ -20,7 +21,10 @@ define(
             return
           }
 
-          fn.call(null, req, res)
+          fn.call(null, req, function() {
+            if(arguments.length == 1) return res.call(null, null, arguments[0])
+            res.apply(null, arguments)
+          })
         })
       }
 
