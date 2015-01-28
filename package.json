@@ -4,11 +4,13 @@
   "description": "API for nap resources",
   "devDependencies": {
     "grunt": "~0.4.1",
-    "grunt-karma": "~0.6.2",
+    "grunt-karma": "~0.10.1",
     "text": "~2.0.10",
     "zambezi-contrib-build": "~1.0.0",
-    "karma": "~0.10.10",
+    "karma": "~0.12.31",
     "karma-mocha": "~0.1.0",
+    "karma-requirejs": "~0.2.2",
+    "karma-chrome-launcher": "~0.1.7",
     "karma-sinon-chai": "~0.1.4",
     "karma-teamcity-reporter": "~0.1.1"
   },
