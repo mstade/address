@@ -43,7 +43,7 @@ define(
 
         if(window.z && window.z.resources) return createWeb(null, window.z)
 
-        d3.json("/api/apps/v1/resources", createWeb)
+        d3.json("/api/bootshell/v1/resources", createWeb)
 
         function createWeb(err, data) {
 
