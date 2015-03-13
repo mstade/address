@@ -1,11 +1,12 @@
 define(
   [
     'd3'
+  , 'd3-utils/events/dispatch'
   ]
-  , function (d3) {
+  , function (d3, dispatch) {
 
     return function createStream() {
-      var clientDispatcher = d3.dispatch('message', 'status', 'error')
+      var clientDispatcher = dispatch('message', 'status', 'error')
         , serviceDispatcher = d3.dispatch('last-subscriber-unsubscribed')
 
       function stream() {
