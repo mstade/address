@@ -6,8 +6,11 @@ define(
   , function (d3, dispatch) {
 
     return function createStream() {
-      var clientDispatcher = dispatch('message', 'status', 'error')/*.on('_last')*/
-        , serviceDispatcher = d3.dispatch('last')
+      var serviceDispatcher = d3.dispatch('_first', '_last')
+      var clientDispatcher = dispatch({
+          cliTypes: ['message', 'status', 'error']
+        , serviceDispatcher: serviceDispatcher
+        })
 
       function stream() {
         stream.message.apply(this, arguments)
