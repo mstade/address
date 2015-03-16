@@ -6,7 +6,7 @@ define(
   , function (d3, dispatch) {
 
     return function createStream() {
-      var serviceDispatcher = d3.dispatch('_first', '_last')
+      var serviceDispatcher = d3.dispatch('first', 'last')
       var clientDispatcher = dispatch('message', 'status', 'error', serviceDispatcher)
 
       function stream() {
