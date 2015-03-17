@@ -8,9 +8,8 @@ define(
 
     return function createStream() {
       var clientDispatcher = dispatch('message', 'status', 'error')
-
-      var serviceDispatcher = redispatch()
-        .from (clientDispatcher, 'first-subscribed', 'last-unsubscribed')()
+        , serviceDispatcher = redispatch()
+            .from (clientDispatcher, 'first-subscribed', 'last-unsubscribed')()
 
       function stream() {
         stream.message.apply(this, arguments)
