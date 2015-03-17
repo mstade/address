@@ -2,12 +2,15 @@ define(
   [
     'd3'
   , 'd3-utils/events/dispatch'
+  , 'd3-utils/events/redispatch'
   ]
-  , function (d3, dispatch) {
+  , function (d3, dispatch, redispatch) {
 
     return function createStream() {
-      var serviceDispatcher = d3.dispatch('first', 'last')
-      var clientDispatcher = dispatch('message', 'status', 'error', serviceDispatcher)
+      var clientDispatcher = dispatch('message', 'status', 'error')
+
+      var serviceDispatcher = redispatch()
+        .from (clientDispatcher, 'first-subscribed', 'last-unsubscribed')()
 
       function stream() {
         stream.message.apply(this, arguments)
