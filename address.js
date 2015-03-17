@@ -6,6 +6,7 @@ define(
   , 'type/type'
   , './http-status-code'
   , './is-view'
+  , './is-stream'
   , './serialize'
   , './interpolate'
   , './compose'
@@ -14,7 +15,7 @@ define(
   , './view-invoker'
   , './kv-to-object'
   ]
-  , function(nap, d3, _, web, type, codes, isView, serialize, interpolate, compose, createLocation, createViewWrapper, invokeView, toObject) {
+  , function(nap, d3, _, web, type, codes, isView, isStream, serialize, interpolate, compose, createLocation, createViewWrapper, invokeView, toObject) {
 
     var resource = _.property('__resource__')
       , zapp = d3.select('.z-app')
@@ -124,7 +125,7 @@ define(
       }
 
       api.stream = function() {
-        return api.header('accept','application/x.am.stream')
+        return api.header('accept','application/x.zap.stream')
       }
 
       api.json = function() {
@@ -191,7 +192,13 @@ define(
         if(isView(res)) {
           if(res.statusCode != 302) wrapView(req, res)
           req.context && invokeView(res, req.context)
-        } 
+        }
+
+        if (isStream(res)) {
+          if (res.body && res.body.dispatcher) {
+            res.body = res.body.dispatcher
+          }
+        }
 
         codes(res.statusCode).concat(['done']).forEach(function(type) { 
           dispatcher[type](res) 
