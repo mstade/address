@@ -23,6 +23,7 @@
   },
   "_zambezi": {
     "runtimeDependencies": [
+      "d3-utils",
       "text",
       "nap",
       "rhumb",
