@@ -10,7 +10,8 @@ module.exports = function (grunt) {
                          , "redirect"
                          , "created"
                          , "into"
-                         , "http-status-code" 
+                         , "http-status-code"
+                         , "stream"
                          ],
                 plugins: {
                   "text": '../node_modules/text/text'
