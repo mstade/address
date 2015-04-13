@@ -18,7 +18,7 @@ define(
 
       responseBody = sinon.spy(function(node){console.log("view called")})
 
-      response = { 
+      response = {
         statusCode : 200
       , headers: {
           contentType : "application/x.nap.view"
@@ -26,10 +26,10 @@ define(
       , body : responseBody
       }
 
-      web = { 
+      web = {
         req : sinon.spy(function(req, cb) {
           cb( null, response )
-        }) 
+        })
       , uri : function(uri, params) {
           var paramsString = ""
           Object.keys(params).forEach(function(key) {
@@ -39,13 +39,13 @@ define(
         }
       }
 
-      nap = { 
+      nap = {
         into : sinon.spy(function(node) {
           return function(err, res) {}
-        }) 
+        })
       }
 
-      type = { 
+      type = {
         isString : function(obj) { return typeof obj === "string" }
       , isObject : function(obj) { return typeof obj !== "string" }
       , isFunction : function(obj) { return true }
@@ -213,7 +213,7 @@ define(
           }
         , body : "hello"
         })
-        
+
         a.uri().should.equal("/wibble")
         a.method().should.equal("send")
         a.header().should.deep.equal({accept:"application/json"})
@@ -273,7 +273,7 @@ define(
 
         address("/wibble").into(node).then(cb)()
 
-        $("body").remove(".view")
+        $("body .view").remove()
 
         web.req.should.have.been.calledOnce
         cb.should.have.been.calledOnce
