@@ -296,6 +296,18 @@ define(
         cb.should.have.been.calledOnce
       })
 
+      xit('addressing a resource into a node for the first time should not dispattch a "resourceWillChange" event', function() {
+
+      })
+
+      xit('addressing the same resource into a node should not dispatcha "resourceWillChange" event', function() {
+
+      })
+
+      xit('addressing a different resource into a node should dispatch a "resourceWillChange" event', function () {
+
+      })
+
     })
   }
 )
