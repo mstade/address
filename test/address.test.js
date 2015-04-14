@@ -300,7 +300,7 @@ define(
 
       })
 
-      xit('addressing the same resource into a node should not dispatcha "resourceWillChange" event', function() {
+      xit('addressing the same resource into a node should not dispatch a "resourceWillChange" event', function() {
 
       })
 
