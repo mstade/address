@@ -280,6 +280,22 @@ define(
         responseBody.should.have.been.calledOnce
         responseBody.should.have.been.calledWith(node)
       })
+
+      it('addressing a resource into a node should always dispatch an "update" event', function() {
+        var cb = sinon.spy()
+          , node = $('<div class="view update"></div>')[0]
+
+        $('body').append(node)
+
+        node.addEventListener('update', cb)
+        address('/wibble').into(node).get()
+
+        node.removeEventListener('update', cb)
+        $('body .view.update').remove()
+
+        cb.should.have.been.calledOnce
+      })
+
     })
   }
 )
