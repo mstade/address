@@ -27,7 +27,7 @@ define(
         if(window.z && window.z.resources) return createWeb(window.z)
 
         d3.json("/api/bootshell/v1/resources", function resourcesLoadHandler(err, data) {
-          if(invalidResponse(err, data)) {
+          if(isInvalidResponse(err, data)) {
             //log.error("Failed to retrieve resources")
             return createWeb({ resources : [] })
           }
@@ -72,7 +72,7 @@ define(
       })
     }
 
-    function invalidResponse(err, data) {
+    function isInvalidResponse(err, data) {
       return err || !data.resources || !type.isArray(data.resources)
     }
 
