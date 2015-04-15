@@ -1,7 +1,7 @@
 define(
   [ 'nap'
   , 'rhumb'
-  , './parser' 
+  , './parser'
   , './middleware'
   , 'd3'
   , 'type/type'
@@ -11,23 +11,6 @@ define(
     var web
       , routes
 
-    function store(resource) {
-      routes = routes || rhumb.create()
-
-      routes.add(resource.path, function(params){
-
-        var methods = type.isObject(resource.methods) ? Object.keys(resource.methods) : null
-        
-        return {
-          name : resource.name
-        , path : resource.path
-        , methods : methods
-        , params : params
-        , composes : resource.composes || []
-        , redirects : resource.redirects || {}
-        }
-      })
-    }
 
     return {
       load: function (name, req, onload, config) {
@@ -41,16 +24,17 @@ define(
           .use(middleware.logger)
           .use(middleware.requestTimeout)
 
-        if(window.z && window.z.resources) return createWeb(null, window.z)
+        if(window.z && window.z.resources) return createWeb(window.z)
 
-        d3.json("/api/bootshell/v1/resources", createWeb)
-
-        function createWeb(err, data) {
-
-          if(err || !data.resources || !type.isArray(data.resources)) {
+        d3.json("/api/bootshell/v1/resources", function resourcesLoadHandler(err, data) {
+          if(invalidResponse(err, data)) {
             //log.error("Failed to retrieve resources")
-            data = { resources : [] }
+            return createWeb({ resources : [] })
           }
+          createWeb(data)
+        })
+
+        function createWeb(data) {
 
           var resources = parser.parseResources(data.resources)
 
@@ -69,6 +53,29 @@ define(
 
       }
     }
+
+    function store(resource) {
+      routes = routes || rhumb.create()
+
+      routes.add(resource.path, function(params){
+
+        var methods = type.isObject(resource.methods) ? Object.keys(resource.methods) : null
+
+        return {
+          name : resource.name
+        , path : resource.path
+        , methods : methods
+        , params : params
+        , composes : resource.composes || []
+        , redirects : resource.redirects || {}
+        }
+      })
+    }
+
+    function invalidResponse(err, data) {
+      return err || !data.resources || !type.isArray(data.resources)
+    }
+
   }
 )
-  
+
