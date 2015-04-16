@@ -5,8 +5,9 @@ define(
   , './middleware'
   , 'd3'
   , 'type/type'
+  , './load-resources'
   ]
-, function(nap, rhumb, parser, middleware, d3, type) {
+, function(nap, rhumb, parser, middleware, d3, type, loadResources) {
 
     var web
       , routes
@@ -24,21 +25,24 @@ define(
           .use(middleware.logger)
           .use(middleware.requestTimeout)
 
-        if(window.z && window.z.resources) return createWeb(window.z)
 
-        d3.json("/api/bootshell/v1/resources", function resourcesLoadHandler(err, data) {
-          if(isInvalidResponse(err, data)) {
-            //log.error("Failed to retrieve resources")
-            return createWeb({ resources : [] })
+        loadResources(
+            window.z
+          , '/api/bootshell/v1/resources'
+          , loadResourcesHandler
+          )
+
+        function loadResourcesHandler(err, resources) {
+          if (err) {
+            // log.error(err.message)
+            return createWeb([])
           }
-          createWeb(data)
-        })
+          createWeb(resources)
+        }
 
-        function createWeb(data) {
+        function createWeb(resources) {
 
-          var resources = parser.parseResources(data.resources)
-
-          resources.forEach(function(resource) {
+          parser.parseResources(resources).forEach(function(resource) {
             store(resource)
             var args = resource.name ? [resource.name] : []
             web.resource.apply(null, args.concat([resource.path, resource.fn]))
