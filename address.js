@@ -21,8 +21,8 @@ define(
       , zapp = d3.select('.z-app')
       , root = zapp.empty() ? d3.select('body').node() : zapp.node()
       , location = createLocation(root, web)
-      , wrapView = createViewWrapper(location)
-    
+      , wrapView = _.partial(createViewWrapper, location)
+
     function address(r) {
 
       var uri
@@ -146,7 +146,7 @@ define(
 
       api.post = function(body) {
         api.method('post').body(body)()
-      }      
+      }
 
       api.send = function(body) {
         api.method('send').body(body)()
@@ -177,7 +177,7 @@ define(
       }
 
       function getRequestUri(node) {
-        var requestUri = interpolate(web, uri, params) 
+        var requestUri = interpolate(web, uri, params)
         if(location.isRoot(node)) requestUri = compose(web, requestUri, resource(node))
         return requestUri
       }
@@ -200,8 +200,8 @@ define(
           }
         }
 
-        codes(res.statusCode).concat(['done']).forEach(function(type) { 
-          dispatcher[type](res) 
+        codes(res.statusCode).concat(['done']).forEach(function(type) {
+          dispatcher[type](res)
         })
       }
     }

@@ -88,19 +88,6 @@ define(
       )
     })
 
-    describe('Window', function () {
-
-      before(function() {
-        window.z = { resources: {}}
-      })
-
-      it('should have access to a window', function() {
-        expect(window).to.not.be.undefined
-        expect(window.z).to.not.be.undefined
-        expect(window.z.resources).to.not.be.undefined
-      })
-    })
-
     describe('Address', function() {
 
       it('should store the resource in the closure', function() {
@@ -278,9 +265,9 @@ define(
         web.req.args[0][0].should.deep.equal(req)
       })
 
-      it('should call the respnse body with the node', function() {
+      it('should call the response body with the node', function() {
         var cb = sinon.spy()
-          , node = $("<div class='view'></div>")["0"]
+          , node = $("<div class='view'></div>")[0]
 
         $("body").append(node)
 
@@ -293,75 +280,6 @@ define(
         responseBody.should.have.been.calledOnce
         responseBody.should.have.been.calledWith(node)
       })
-
-      xit('addressing a resource into a node should always dispatch an "update" event', function() {
-        var cb = sinon.spy()
-          , node = $('<div class="view update"></div>')[0]
-
-        $('body').append(node)
-
-        node.addEventListener('update', cb)
-        address('/wibble').into(node).get()
-
-        node.removeEventListener('update', cb)
-        $('body .view.update').remove()
-
-        cb.should.have.been.calledOnce
-      })
-
-      xit('addressing a resource into a node for the first time should dispatch a "resourceWillChange" event', function() {
-
-        var cb = sinon.spy()
-          , node = $('<div class="view resource-will-change"></div>')[0]
-
-        $('body').append(node)
-        node.addEventListener('resourceWillChange', cb)
-
-        address('/wibble').into(node).get()
-
-        node.removeEventListener('resourceWillChange', cb)
-        $('body .view').remove()
-
-        cb.should.have.been.calledOnce
-
-      })
-
-      xit('addressing a different resource into a node should dispatch a "resourceWillChange" event', function () {
-
-        var cb = sinon.spy()
-          , node = $('<div class="view resource-will-change></div>')[0]
-
-        $('body').append(node)
-        node.addEventListener('resourceWillChange', cb)
-
-        address('/wibble').into(node).get()
-        address('/wobble/one').into(node).get()
-        address('/wobble/two').into(node).get()
-
-        node.removeEventListener('resourceWillChange', cb)
-        $('body .view').remove()
-
-        cb.should.have.been.calledOnce
-      })
-
-
-      xit('addressing the same resource into a node should not dispatch a "resourceWillChange" event', function() {
-
-        var cb = sinon.spy()
-          , node = $('<div class="view resource-will-change"></div>')[0]
-
-        $('body').append(node)
-        node.addEventListener('resourceWillChange', cb)
-
-        address('/wibble').into(node).get()
-        address('/wibble').into(node).get()
-
-        node.removeEventListener('resourceWillChange', cb)
-        $('body .view').remove()
-
-        cb.should.have.not.been.called
-      })
-
     })
   }
 )

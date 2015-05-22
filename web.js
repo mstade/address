@@ -25,20 +25,17 @@ define(
           .use(middleware.logger)
           .use(middleware.requestTimeout)
 
-
         loadResources(
             window.z
           , '/api/bootshell/v1/resources'
-          , loadResourcesHandler
+          , function loadResourcesHandler(err, resources) {
+              if (err) {
+                // log.error(err.message)
+                return createWeb([])
+              }
+              createWeb(resources)
+            }
           )
-
-        function loadResourcesHandler(err, resources) {
-          if (err) {
-            // log.error(err.message)
-            return createWeb([])
-          }
-          createWeb(resources)
-        }
 
         function createWeb(resources) {
 

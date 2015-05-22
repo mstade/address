@@ -29,7 +29,7 @@ define(
     }
 
     function resolve(data) {
-      return data.resources || []
+      return data.resources
     }
 
     function loadError(fromService) {
