@@ -9,18 +9,33 @@ define(function(require) {
 
   describe('view-wrapper', function() {
 
+    var reqOne
+      , reqTwo
+      , res
+      , node
+      , callback
+
+    beforeEach(function() {
+      var web = createWeb()
+            .addResource('resource/one', 'resource/one')
+            .addResource('resource/two', 'resource/two')
+
+      reqOne = createRequest(web, 'resource/one')
+      reqTwo = createRequest(web, 'resource/two')
+      res = createResponse()
+      node = createNode()
+      callback = sinon.spy()
+    })
+
+    afterEach(function() {
+      // figure out what to cleanup
+    })
+
     it('should always dispatch an "update" event', function() {
-      var web = createWeb().addResource('foo/bar', 'foo/{bar}')
-        , req = (web, 'foo/bar')
-        , res = createResponse()
-        , node = createNode()
-        , spy = sinon.spy()
-
-      node.addEventListener('update', spy)
-      createViewWrapper(location, req, res)
+      node.addEventListener('update', callback)
+      createViewWrapper(location, reqOne, res)
       res.body(node)
-
-      spy.should.have.been.calledOnce
+      callback.should.have.been.calledOnce
     })
 
     xit('should dispatch a "resourceWillChange" event when using a DOMElement for the first time', function() {
