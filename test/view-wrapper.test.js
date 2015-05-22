@@ -38,15 +38,18 @@ define(function(require) {
       callback.should.have.been.calledOnce
     })
 
-    xit('should dispatch a "resourceWillChange" event when using a DOMElement for the first time', function() {
+    it('should dispatch a "resourcewillchange" event when using a DOMElement for the first time', function() {
+      node.addEventListener('resourcewillchange', callback)
+      createViewWrapper(location, reqOne, res)
+      res.body(node)
+      callback.should.have.been.calledOnce
+    })
+
+    xit('should dispatch a "resourcewillchange" event when addressing a different resource on the same DOMElement', function () {
       expect(false).to.be.ok
     })
 
-    xit('should dispatch a "resourceWillChange" event when addressing a different resource on the same DOMElement', function () {
-      expect(false).to.be.ok
-    })
-
-    xit('should not dispatch a "resourceWillChange" event when addressing the same resource on the same DOMElement', function() {
+    xit('should not dispatch a "resourcewillchange" event when addressing the same resource on the same DOMElement', function() {
       expect(false).to.be.ok
     })
   })
