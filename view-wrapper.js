@@ -1,15 +1,15 @@
 define(function(require) {
 
   var _ = require('underscore')
+    , d3 = require('d3')
 
   return function creatViewWrapper(location, req, res) {
-    if (_.isFunction(res.body)) wrapView(location, req, res)
-  }
+    var view
+    if (!_.isFunction(res.body)) return
 
-  function wrapView(location, req, res) {
-    var view = res.body
+    view = res.body
+
     res.body = function(node) {
-
       var uri = res.headers.location || req.uri
         , web = req.web
         , newPath = findPath(web, uri)
@@ -20,10 +20,6 @@ define(function(require) {
 
       if (newPath !== currentPath) clearNode(node)
 
-      // look up current and requested resource paths from concrete uri
-      // if is not the same resource
-      // dispatch resourceWillChange
-      // clear the node html
       node.__resource__ = uri
       view(node)
     }
@@ -36,6 +32,7 @@ define(function(require) {
 
   function clearNode(node) {
     dispatchEvent(node, 'resourcewillchange')
+    d3.select(node).html('')
   }
 
   function findPath(web, uri) {

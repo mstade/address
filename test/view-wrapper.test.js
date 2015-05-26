@@ -11,9 +11,11 @@ define(function(require) {
 
     var reqOne
       , reqTwo
-      , res
+      , res1
+      , res2
       , node
       , callback
+      , eventName
 
     beforeEach(function() {
       var web = createWeb()
@@ -22,35 +24,63 @@ define(function(require) {
 
       reqOne = createRequest(web, 'resource/one')
       reqTwo = createRequest(web, 'resource/two')
-      res = createResponse()
-      node = createNode()
+      res1 = createResponse()
+      res2 = createResponse()
+      node =  $('<div class="view view-wrapper"></div>')[0]
+      body.append(node)
       callback = sinon.spy()
     })
 
     afterEach(function() {
-      // figure out what to cleanup
+      node.removeEventListener(eventName, callback)
+      body.find('.view.view-wrapper').remove()
+      callback = null
     })
 
-    it('should always dispatch an "update" event', function() {
-      node.addEventListener('update', callback)
-      createViewWrapper(location, reqOne, res)
-      res.body(node)
+    xit('should always dispatch an "update" event', function() {
+      eventName = 'update'
+      node.addEventListener(eventName, callback)
+      createViewWrapper(location, reqOne, res1)
+      res1.body(node)
       callback.should.have.been.calledOnce
     })
 
-    it('should dispatch a "resourcewillchange" event when using a DOMElement for the first time', function() {
-      node.addEventListener('resourcewillchange', callback)
-      createViewWrapper(location, reqOne, res)
-      res.body(node)
+    xit('should dispatch a "resourcewillchange" event when using a DOMElement for the first time', function() {
+      eventName = 'resourcewillchange'
+      node.addEventListener(eventName, callback)
+      createViewWrapper(location, reqOne, res1)
+      res1.body(node)
       callback.should.have.been.calledOnce
     })
 
-    xit('should dispatch a "resourcewillchange" event when addressing a different resource on the same DOMElement', function () {
-      expect(false).to.be.ok
+    it('should dispatch a "resourcewillchange" event when addressing a different resource on the same DOMElement', function () {
+
+      eventName = 'resourcewillchange'
+      node.addEventListener(eventName, callback)
+
+      createViewWrapper(location, reqOne, res1)
+      res1.body(node)
+
+      createViewWrapper(location, reqTwo, res2)
+      res2.body(node)
+
+      callback.should.have.been.calledTwice
     })
 
-    xit('should not dispatch a "resourcewillchange" event when addressing the same resource on the same DOMElement', function() {
-      expect(false).to.be.ok
+    it('should not dispatch a "resourcewillchange" event when addressing the same resource on the same DOMElement', function() {
+      eventName = 'resourcewillchange'
+      node.addEventListener(eventName, callback)
+
+      eventName = 'resourcewillchange'
+      node.addEventListener(eventName, callback)
+
+      createViewWrapper(location, reqOne, res1)
+      res1.body(node)
+
+      createViewWrapper(location, reqOne, res2)
+      res2.body(node)
+
+      callback.should.have.been.calledOnce
     })
   })
 
@@ -80,12 +110,6 @@ define(function(require) {
 
   function createResponse() {
     return { body: function() {}, headers: {} }
-  }
-
-  function createNode() {
-    var node = $('<div class="view"></div>')[0]
-    body.append(node)
-    return node
   }
 
 })
