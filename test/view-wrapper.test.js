@@ -11,8 +11,8 @@ define(function(require) {
 
     var reqOne
       , reqTwo
-      , res1
-      , res2
+      , resOne
+      , resTwo
       , node
       , callback
       , eventName
@@ -24,10 +24,12 @@ define(function(require) {
 
       reqOne = createRequest(web, 'resource/one')
       reqTwo = createRequest(web, 'resource/two')
-      res1 = createResponse()
-      res2 = createResponse()
+      resOne = createResponse()
+      resTwo = createResponse()
+
       node =  $('<div class="view view-wrapper"></div>')[0]
       body.append(node)
+
       callback = sinon.spy()
     })
 
@@ -37,48 +39,44 @@ define(function(require) {
       callback = null
     })
 
-    xit('should always dispatch an "update" event', function() {
-      eventName = 'update'
-      node.addEventListener(eventName, callback)
-      createViewWrapper(location, reqOne, res1)
-      res1.body(node)
-      callback.should.have.been.calledOnce
-    })
-
-    xit('should dispatch a "resourcewillchange" event when using a DOMElement for the first time', function() {
-      eventName = 'resourcewillchange'
-      node.addEventListener(eventName, callback)
-      createViewWrapper(location, reqOne, res1)
-      res1.body(node)
-      callback.should.have.been.calledOnce
-    })
-
-    it('should dispatch a "resourcewillchange" event when addressing a different resource on the same DOMElement', function () {
+    it('should dispatch "resourcewillchange" when using a DOMElement for the first time', function() {
 
       eventName = 'resourcewillchange'
       node.addEventListener(eventName, callback)
 
-      createViewWrapper(location, reqOne, res1)
-      res1.body(node)
+      createViewWrapper(location, reqOne, resOne)
+      resOne.body(node)
 
-      createViewWrapper(location, reqTwo, res2)
-      res2.body(node)
+      callback.should.have.been.calledOnce
+    })
+
+    it('should dispatch "resourcewillchange" when addressing a different resource on the same DOMElement', function () {
+
+      eventName = 'resourcewillchange'
+      node.addEventListener(eventName, callback)
+
+      createViewWrapper(location, reqOne, resOne)
+      resOne.body(node)
+
+      createViewWrapper(location, reqTwo, resTwo)
+      resTwo.body(node)
 
       callback.should.have.been.calledTwice
     })
 
-    it('should not dispatch a "resourcewillchange" event when addressing the same resource on the same DOMElement', function() {
-      eventName = 'resourcewillchange'
-      node.addEventListener(eventName, callback)
+    it('should not dispatch "resourcewillchange" when addressing the same resource on the same DOMElement', function() {
 
       eventName = 'resourcewillchange'
       node.addEventListener(eventName, callback)
 
-      createViewWrapper(location, reqOne, res1)
-      res1.body(node)
+      eventName = 'resourcewillchange'
+      node.addEventListener(eventName, callback)
 
-      createViewWrapper(location, reqOne, res2)
-      res2.body(node)
+      createViewWrapper(location, reqOne, resOne)
+      resOne.body(node)
+
+      createViewWrapper(location, reqOne, resTwo)
+      resTwo.body(node)
 
       callback.should.have.been.calledOnce
     })
