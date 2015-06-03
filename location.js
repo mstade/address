@@ -3,7 +3,7 @@ define(function(require) {
     var d3 = require('d3')
       , compose = require('./compose')
       , web = require('./web!')
-      , zapp = require('./zapp')
+      , zapp = require('./z-app')
       , location = require('./location-hash')
 
       , state = location.state()
