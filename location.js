@@ -1,41 +1,31 @@
-define(
-  [ 'd3'
-  , 'underscore'
-  , 'type/type'
-  , './compose'
-  , './web!'
-  ]
-, function(
-    d3
-  , _
-  , type
-  , compose
-  , web
-  ) {
+define(function(require) {
 
-    var state = getHash()
-      , resource = _.property('__resource__')
+    var d3 = require('d3')
+      , compose = require('./compose')
+      , web = require('./web!')
+      , zapp = require('./zapp')
+      , location = require('./location-hash')
+
+      , state = location.state()
       , dispatcher = d3.dispatch('statechange')
       , ignoreFlag = false
-      , location = {}
+
+      , api = {}
 
     d3.select(window).on('hashchange', handleHashChange)
     d3.select(document).on('click', handleClick)
 
-    location.getState = function() { return currentState() }
-    location.setState = setState
-    location.pushState = pushState
-    location.openNewWindow = openNewWindow
+    api.getState = function() { return currentState() }
+    api.setState = setState
+    api.pushState = pushState
+    api.openNewWindow = openNewWindow
 
-    return d3.rebind(location, dispatcher, 'on')
+    return d3.rebind(api, dispatcher, 'on')
 
     function handleHashChange() {
-
       if(ignore()) return ignore(false)
-
-      var value = getHash()
-      clearRoot()
-      setState(value)
+      zapp.clearRoot()
+      setState(location.state())
       ignore(false)
     }
 
@@ -43,12 +33,16 @@ define(
       if(isCurrentState(value)) return
       ignore(true)
       currentState(value)
-      setHash(value)
+      location.state(value)
       return true
     }
 
     function setState(value) {
-      pushState(value) && clearRoot() && dispatcher.statechange(value)
+      pushState(value) &&
+      // Probably this is not needed anymore due to AMPLAT-911
+      // https://jira-2.dts.fm.rbsgrp.net/browse/AMPLAT-911
+      zapp.clearRoot() &&
+      dispatcher.statechange(value)
     }
 
     function currentState(value) {
@@ -63,11 +57,6 @@ define(
 
     function isCurrentState(value) {
       return value == currentState()
-    }
-
-    function clearRoot() {
-      root.__resource__ = null
-      return true
     }
 
     function openNewWindow(path, target) {
@@ -97,7 +86,7 @@ define(
       event.preventDefault()
       event.stopPropagation()
 
-      setState(compose(web, path, resource(root)))
+      setState(compose(web, path, zapp.rootResource()))
     }
 
     function findClosestAnchor(node) {
@@ -106,12 +95,5 @@ define(
       return findClosestAnchor(node.parentElement)
     }
 
-    function getHash() {
-      return (document.location.href.split('#')[1] || '')
-    }
-
-    function setHash(value) {
-      document.location.hash = value
-    }
   }
 )

@@ -125,7 +125,7 @@ define(
 
         t && api.target(t)
 
-        var requestUri = getRequestUri(root) + serialize(query)
+        var requestUri = getRequestUri(zapp.root()) + serialize(query)
         if(!target)  return location.setState(requestUri), null
         location.openNewWindow(requestUri, target)
       }
