@@ -60,10 +60,7 @@ define(function(require) {
     }
 
     function openNewWindow(path, target) {
-      var hash = "#" + path
-        , href = document.location.href
-        , url = /#/.test(href) ? href.replace(/#.*/, hash) : href + hash
-      window.open(url, target, '')
+      window.open(location.urlFromPath(path), target, '')
     }
 
     function handleClick() {
