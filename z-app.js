@@ -4,15 +4,15 @@ define(function(require) {
     , _ = require('underscore')
     , zapp = d3.select('.z-app')
     , root = zapp.empty() ? d3.select('body').node() : zapp.node()
-    , resource = _.property('__resource__')
+    , api = {}
 
-  return {
-      isRoot: isRoot
-    , root: function() { return root }
-    , clearRoot: clearRoot
-    , resource: resource
-    , rootResource: rootResource
-  }
+  api.isRoot = isRoot
+  api.root = function() { return root }
+  api.clearRootResource = clearRootResource
+  api.resource = resource
+  api.rootResource = rootResource
+
+  return api
 
   function isRoot(node) {
     return node == root
@@ -23,12 +23,17 @@ define(function(require) {
     return true
   }
 
-  function clearRoot() {
+  function clearRootResource() {
     return clearResource(root)
   }
 
   function rootResource() {
     return resource(root)
+  }
+
+  function resource(node, value) {
+    if (arguments.length != 2) return node.__resource__
+    node.__resource__ = value
   }
 
 })

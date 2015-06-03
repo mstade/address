@@ -24,9 +24,6 @@ define(function(require) {
             .mock('./location', function() {
               return { pushState: function() {}}
             })
-            .mock('./z-app', function() {
-              return { isRoot: function() { return false }}
-            })
         .require(['view-wrapper'], function(viewWrapper) {
           wrapView = viewWrapper
           done()

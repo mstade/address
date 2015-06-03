@@ -16,12 +16,9 @@ define(function(require) {
       var uri = getCurrentUri(req, res)
 
       if(zapp.isRoot(node)) location.pushState(uri)
-
       if(shouldClearNode(req, res, node)) clearNode(node)
-
-      dispatchEvent(node, 'update', {detail : { from : node.__resource__, to : uri }})
-
-      node.__resource__ = uri
+      dispatchEvent(node, 'update', {detail : { from : zapp.resource(node), to : uri }})
+      zapp.resource(node, uri)
       view(node)
     }
   }

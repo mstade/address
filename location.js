@@ -24,7 +24,7 @@ define(function(require) {
 
     function handleStateChange() {
       if(ignore()) return ignore(false)
-      zapp.clearRoot()
+      zapp.clearRootResource()
       setState(location.state())
       ignore(false)
     }
@@ -39,9 +39,8 @@ define(function(require) {
 
     function setState(value) {
       pushState(value) &&
-      // Probably this is not needed anymore due to AMPLAT-911
-      // https://jira-2.dts.fm.rbsgrp.net/browse/AMPLAT-911
-      zapp.clearRoot() &&
+      zapp.clearRootResource() && // Isn't this done by ./view-wrapper
+                                  // everytime anyway?
       dispatcher.statechange(value)
     }
 
