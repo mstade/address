@@ -2,31 +2,27 @@ define(function(require) {
 
   var d3 = require('d3')
     , dispatcher = d3.dispatch('statechange')
-    , hash = {}
+    , api = {}
 
   d3.select(window).on('hashchange', dispatcher.statechange)
 
-  hash.state = state
-  hash.urlFromPath = urlFromPath
+  api.state = state
+  api.urlFromPath = urlFromPath
 
-  return d3.rebind(hash, dispatcher, 'on')
+  return d3.rebind(api, dispatcher, 'on')
 
   function state(value) {
-    if (!arguments.length) return getHash()
+    if (!arguments.length) return pathFromHref(loc_href())
     document.location.hash = value
-    return hash
-  }
-
-  function getHash() {
-    return href().split('#')[1] || ''
+    return api
   }
 
   function urlFromPath(path) {
     var hash = '#' + path
-    return /#/.test(href()) ? href().replace(/#.*/, hash) : href() + hash
+    return /#/.test(loc_href()) ? loc_href().replace(/#.*/, hash) : loc_href() + hash
   }
 
-  function href() {
+  function loc_href() {
     return document.location.href
   }
 })
