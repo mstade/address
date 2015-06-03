@@ -30,13 +30,12 @@ define(
   , interpolate
   , compose
   , location
-  , createViewWrapper
+  , wrapView
   , invokeView
   , toObject
   ) {
 
     var resource = _.property('__resource__')
-      , wrapView = _.partial(createViewWrapper, location)
 
     function address(r) {
 
