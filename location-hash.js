@@ -8,6 +8,8 @@ define(function(require) {
 
   api.state = state
   api.urlFromPath = urlFromPath
+  api.pathFromHref = pathFromHref
+  api.ignoreHref = ignoreHref
 
   return d3.rebind(api, dispatcher, 'on')
 
@@ -24,5 +26,13 @@ define(function(require) {
 
   function loc_href() {
     return document.location.href
+  }
+
+  function pathFromHref(href) {
+    return href.split('#')[1] ||''
+  }
+
+  function ignoreHref(href) {
+    return !~href.indexOf('#')
   }
 })

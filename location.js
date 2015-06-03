@@ -67,15 +67,16 @@ define(function(require) {
       var anchor
         , event = d3.event
         , target = event.target
+        , path
 
       if(event.ctrlKey) return
       if(event.button == 1) return
       anchor = findClosestAnchor(target)
       if(!anchor) return
       if(!!anchor.target) return
-      if(!~anchor.href.indexOf('#')) return
+      if(location.ignoreHref(anchor.href)) return
 
-      var path = anchor.href.split('#')[1] || ''
+      path = location.pathFromHref(anchor.href)
 
       if(!path) return
       if(!web.find(path)) return
