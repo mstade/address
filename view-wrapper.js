@@ -36,7 +36,7 @@ define(function(require) {
 
   function shouldClearNode(req, res, node) {
     var newPath = findPath(req.web, getCurrentUri(req, res))
-      , currentPath = findPath(req.web, node.__resource__)
+      , currentPath = findPath(req.web, zapp.resource(node))
     return newPath !== currentPath
   }
 

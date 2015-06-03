@@ -35,8 +35,6 @@ define(
   , toObject
   ) {
 
-    var resource = _.property('__resource__')
-
     function address(r) {
 
       var uri
