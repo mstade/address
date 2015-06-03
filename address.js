@@ -3,6 +3,7 @@ define(
   , 'd3'
   , 'underscore'
   , './web!'
+  , './zapp'
   , 'type/type'
   , './http-status-code'
   , './is-view'
@@ -15,12 +16,26 @@ define(
   , './view-invoker'
   , './kv-to-object'
   ]
-  , function(nap, d3, _, web, type, codes, isView, isStream, serialize, interpolate, compose, createLocation, createViewWrapper, invokeView, toObject) {
+  , function(
+    nap
+  , d3
+  , _
+  , web
+  , zapp
+  , type
+  , codes
+  , isView
+  , isStream
+  , serialize
+  , interpolate
+  , compose
+  , location
+  , createViewWrapper
+  , invokeView
+  , toObject
+  ) {
 
     var resource = _.property('__resource__')
-      , zapp = d3.select('.z-app')
-      , root = zapp.empty() ? d3.select('body').node() : zapp.node()
-      , location = createLocation(root, web)
       , wrapView = _.partial(createViewWrapper, location)
 
     function address(r) {
@@ -97,7 +112,7 @@ define(
       api.into = function(n) {
         if(type.isString(n)) n = d3.select(n).node()
 
-        node = !arguments.length ? root : n
+        node = !arguments.length ? zapp.root() : n
         return api
       }
 
@@ -178,7 +193,7 @@ define(
 
       function getRequestUri(node) {
         var requestUri = interpolate(web, uri, params)
-        if(location.isRoot(node)) requestUri = compose(web, requestUri, resource(node))
+        if(zapp.isRoot(node)) requestUri = compose(web, requestUri, resource(node))
         return requestUri
       }
 

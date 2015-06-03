@@ -3,7 +3,7 @@ define(function(require) {
   var _ = require('underscore')
     , $ = require('jquery')
     , sinon = require('sinon')
-    , location = { headers: {}, isRoot: function() { return false } }
+    , location = { pushState: function() {}}
     , createViewWrapper = require('view-wrapper')
     , body = $('body')
 

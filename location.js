@@ -3,41 +3,31 @@ define(
   , 'underscore'
   , 'type/type'
   , './compose'
+  , './web!'
   ]
-, function(d3, _, type, compose) {
+, function(
+    d3
+  , _
+  , type
+  , compose
+  , web
+  ) {
 
-    var state = getHash() 
+    var state = getHash()
       , resource = _.property('__resource__')
       , dispatcher = d3.dispatch('statechange')
       , ignoreFlag = false
-      , root
-      , web
+      , location = {}
 
     d3.select(window).on('hashchange', handleHashChange)
     d3.select(document).on('click', handleClick)
 
-    return function(r, w) {
+    location.getState = function() { return currentState() }
+    location.setState = setState
+    location.pushState = pushState
+    location.openNewWindow = openNewWindow
 
-      root = root || r 
-      web = web || w 
-    
-      function location() {}
-
-      location.getState = function() { return currentState() }
-      location.setState = setState
-      location.pushState = pushState
-      location.openNewWindow = openNewWindow
-
-      location.root = function() {
-        return root
-      }
-
-      location.isRoot = function(node) {
-        return node == root
-      }
-
-      return d3.rebind(location, dispatcher, 'on')
-    }
+    return d3.rebind(location, dispatcher, 'on')
 
     function handleHashChange() {
 

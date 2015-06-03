@@ -2,8 +2,9 @@ define(function(require) {
 
   var _ = require('underscore')
     , d3 = require('d3')
+    , zapp = require('./zapp')
 
-  return function creatViewWrapper(location, req, res) {
+  return function wrapView(location, req, res) {
     var view
     if (!_.isFunction(res.body)) return
 
@@ -12,7 +13,7 @@ define(function(require) {
     res.body = function(node) {
       var uri = getCurrentUri(req, res)
 
-      if(location.isRoot(node)) location.pushState(uri)
+      if(zapp.isRoot(node)) location.pushState(uri)
 
       if(shouldClearNode(req, res, node)) clearNode(node)
 
