@@ -3,8 +3,8 @@ define(function(require) {
   var _ = require('underscore')
     , $ = require('jquery')
     , sinon = require('sinon')
+    , Squire = require('Squire')
     , location = { pushState: function() {}}
-    , createViewWrapper = require('view-wrapper')
     , body = $('body')
 
   describe('view-wrapper', function() {
@@ -16,6 +16,26 @@ define(function(require) {
       , node
       , callback
       , eventName
+      , wrapView
+      , injector = new Squire()
+
+    before(function(done) {
+      injector
+            .mock('./location', function() {
+              return { pushState: function() {}}
+            })
+            .mock('./zapp', function() {
+              return { isRoot: function() { return false }}
+            })
+        .require(['view-wrapper'], function(viewWrapper) {
+          wrapView = viewWrapper
+          done()
+        })
+    })
+
+    after(function() {
+      injector.clean(['./location', './zapp'])
+    })
 
     beforeEach(function() {
       var web = createWeb()
@@ -44,7 +64,7 @@ define(function(require) {
       eventName = 'resourcewillchange'
       node.addEventListener(eventName, callback)
 
-      createViewWrapper(location, reqOne, resOne)
+      wrapView(reqOne, resOne)
       resOne.body(node)
 
       callback.should.have.been.calledOnce
@@ -55,10 +75,10 @@ define(function(require) {
       eventName = 'resourcewillchange'
       node.addEventListener(eventName, callback)
 
-      createViewWrapper(location, reqOne, resOne)
+      wrapView(reqOne, resOne)
       resOne.body(node)
 
-      createViewWrapper(location, reqTwo, resTwo)
+      wrapView(reqTwo, resTwo)
       resTwo.body(node)
 
       callback.should.have.been.calledTwice
@@ -72,10 +92,10 @@ define(function(require) {
       eventName = 'resourcewillchange'
       node.addEventListener(eventName, callback)
 
-      createViewWrapper(location, reqOne, resOne)
+      wrapView(reqOne, resOne)
       resOne.body(node)
 
-      createViewWrapper(location, reqOne, resTwo)
+      wrapView(reqOne, resTwo)
       resTwo.body(node)
 
       callback.should.have.been.calledOnce
