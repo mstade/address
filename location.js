@@ -12,7 +12,7 @@ define(function(require) {
 
       , api = {}
 
-    d3.select(window).on('hashchange', handleHashChange)
+    location.on('statechange', handleStateChange)
     d3.select(document).on('click', handleClick)
 
     api.getState = function() { return currentState() }
@@ -22,7 +22,7 @@ define(function(require) {
 
     return d3.rebind(api, dispatcher, 'on')
 
-    function handleHashChange() {
+    function handleStateChange() {
       if(ignore()) return ignore(false)
       zapp.clearRoot()
       setState(location.state())
