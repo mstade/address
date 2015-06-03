@@ -24,7 +24,7 @@ define(function(require) {
             .mock('./location', function() {
               return { pushState: function() {}}
             })
-            .mock('./zapp', function() {
+            .mock('./z-app', function() {
               return { isRoot: function() { return false }}
             })
         .require(['view-wrapper'], function(viewWrapper) {
@@ -34,7 +34,7 @@ define(function(require) {
     })
 
     after(function() {
-      injector.clean(['./location', './zapp'])
+      injector.clean(['./location', './z-app'])
     })
 
     beforeEach(function() {

@@ -3,7 +3,7 @@ define(
   , 'd3'
   , 'underscore'
   , './web!'
-  , './zapp'
+  , './z-app'
   , 'type/type'
   , './http-status-code'
   , './is-view'
