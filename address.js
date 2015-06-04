@@ -1,39 +1,21 @@
-define(
-  [ 'nap'
-  , 'd3'
-  , 'underscore'
-  , './web!'
-  , './z-app'
-  , 'type/type'
-  , './http-status-code'
-  , './is-view'
-  , './is-stream'
-  , './serialize'
-  , './interpolate'
-  , './compose'
-  , './location'
-  , './view-wrapper'
-  , './view-invoker'
-  , './kv-to-object'
-  ]
-  , function(
-    nap
-  , d3
-  , _
-  , web
-  , zapp
-  , type
-  , codes
-  , isView
-  , isStream
-  , serialize
-  , interpolate
-  , compose
-  , location
-  , wrapView
-  , invokeView
-  , toObject
-  ) {
+define(function(require) {
+
+  var nap = require('nap')
+    , d3 = require('d3')
+    , _ = require('underscore')
+    , web = require('./web!')
+    , zapp = require('./z-app')
+    , type = require('type/type')
+    , codes = require('./http-status-code')
+    , isView = require('./is-view')
+    , isStream = require('./is-stream')
+    , serialize = require('./serialize')
+    , interpolate = require('./interpolate')
+    , compose = require('./compose')
+    , location = require('./location')
+    , wrapView = require('./view-wrapper')
+    , invokeView = require('./view-invoker')
+    , toObject = require('./kv-to-object')
 
     function address(r) {
 
