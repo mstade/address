@@ -1,33 +1,17 @@
 define(
   [ 'nap'
   , 'rhumb'
-  , './parser' 
+  , './parser'
   , './middleware'
   , 'd3'
   , 'type/type'
+  , './load-resources'
   ]
-, function(nap, rhumb, parser, middleware, d3, type) {
+, function(nap, rhumb, parser, middleware, d3, type, loadResources) {
 
     var web
       , routes
 
-    function store(resource) {
-      routes = routes || rhumb.create()
-
-      routes.add(resource.path, function(params){
-
-        var methods = type.isObject(resource.methods) ? Object.keys(resource.methods) : null
-        
-        return {
-          name : resource.name
-        , path : resource.path
-        , methods : methods
-        , params : params
-        , composes : resource.composes || []
-        , redirects : resource.redirects || {}
-        }
-      })
-    }
 
     return {
       load: function (name, req, onload, config) {
@@ -41,20 +25,21 @@ define(
           .use(middleware.logger)
           .use(middleware.requestTimeout)
 
-        if(window.z && window.z.resources) return createWeb(null, window.z)
+        loadResources(
+            window.z
+          , '/api/bootshell/v1/resources'
+          , function loadResourcesHandler(err, resources) {
+              if (err) {
+                // log.error(err.message)
+                return createWeb([])
+              }
+              createWeb(resources)
+            }
+          )
 
-        d3.json("/api/bootshell/v1/resources", createWeb)
+        function createWeb(resources) {
 
-        function createWeb(err, data) {
-
-          if(err || !data.resources || !type.isArray(data.resources)) {
-            //log.error("Failed to retrieve resources")
-            data = { resources : [] }
-          }
-
-          var resources = parser.parseResources(data.resources)
-
-          resources.forEach(function(resource) {
+          parser.parseResources(resources).forEach(function(resource) {
             store(resource)
             var args = resource.name ? [resource.name] : []
             web.resource.apply(null, args.concat([resource.path, resource.fn]))
@@ -69,6 +54,29 @@ define(
 
       }
     }
+
+    function store(resource) {
+      routes = routes || rhumb.create()
+
+      routes.add(resource.path, function(params){
+
+        var methods = type.isObject(resource.methods) ? Object.keys(resource.methods) : null
+
+        return {
+          name : resource.name
+        , path : resource.path
+        , methods : methods
+        , params : params
+        , composes : resource.composes || []
+        , redirects : resource.redirects || {}
+        }
+      })
+    }
+
+    function isInvalidResponse(err, data) {
+      return err || !data.resources || !type.isArray(data.resources)
+    }
+
   }
 )
-  
+
