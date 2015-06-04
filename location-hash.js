@@ -9,7 +9,7 @@ define(function(require) {
   api.state = state
   api.hrefFromPath = hrefFromPath
   api.pathFromHref = pathFromHref
-  api.ignoreHref = ignoreHref
+  api.shouldIgnoreHref = shouldIgnoreHref
 
   return d3.rebind(api, dispatcher, 'on')
 
@@ -32,7 +32,7 @@ define(function(require) {
     return href.split('#')[1] ||''
   }
 
-  function ignoreHref(href) {
+  function shouldIgnoreHref(href) {
     return !~href.indexOf('#')
   }
 })

@@ -73,7 +73,7 @@ define(function(require) {
       anchor = findClosestAnchor(target)
       if(!anchor) return
       if(!!anchor.target) return
-      if(location.ignoreHref(anchor.href)) return
+      if(location.shouldIgnoreHref(anchor.href)) return
 
       path = location.pathFromHref(anchor.href)
 
