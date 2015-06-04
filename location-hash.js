@@ -7,7 +7,7 @@ define(function(require) {
   d3.select(window).on('hashchange', dispatcher.statechange)
 
   api.state = state
-  api.urlFromPath = urlFromPath
+  api.hrefFromPath = hrefFromPath
   api.pathFromHref = pathFromHref
   api.ignoreHref = ignoreHref
 
@@ -19,7 +19,7 @@ define(function(require) {
     return api
   }
 
-  function urlFromPath(path) {
+  function hrefFromPath(path) {
     var hash = '#' + path
     return /#/.test(loc_href()) ? loc_href().replace(/#.*/, hash) : loc_href() + hash
   }

@@ -59,7 +59,7 @@ define(function(require) {
     }
 
     function openNewWindow(path, target) {
-      window.open(location.urlFromPath(path), target, '')
+      window.open(location.hrefFromPath(path), target, '')
     }
 
     function handleClick() {
