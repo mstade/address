@@ -39,8 +39,7 @@ define(function(require) {
 
     function setState(value) {
       pushState(value) &&
-      zapp.clearRootResource() && // Isn't this done by ./view-wrapper
-                                  // everytime anyway?
+      zapp.clearRootResource() &&
       dispatcher.statechange(value)
     }
 
