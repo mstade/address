@@ -190,7 +190,7 @@ define(
 
       function getRequestUri(node) {
         var requestUri = interpolate(web, uri, params)
-        if(zapp.isRoot(node)) requestUri = compose(web, requestUri, resource(node))
+        if(zapp.isRoot(node)) requestUri = compose(web, requestUri, zapp.resource(node))
         return requestUri
       }
 
