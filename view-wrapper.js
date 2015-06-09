@@ -2,8 +2,11 @@ define(function(require) {
 
   var _ = require('underscore')
     , d3 = require('d3')
+    , zapp = require('./z-app')
+    , location = require('./location')
 
-  return function creatViewWrapper(location, req, res) {
+  return function wrapView(req, res) {
+
     var view
     if (!_.isFunction(res.body)) return
 
@@ -12,13 +15,10 @@ define(function(require) {
     res.body = function(node) {
       var uri = getCurrentUri(req, res)
 
-      if(location.isRoot(node)) location.pushState(uri)
-
+      if(zapp.isRoot(node)) location.pushState(uri)
       if(shouldClearNode(req, res, node)) clearNode(node)
-
-      dispatchEvent(node, 'update', {detail : { from : node.__resource__, to : uri }})
-
-      node.__resource__ = uri
+      dispatchEvent(node, 'update', {detail : { from : zapp.resource(node), to : uri }})
+      zapp.resource(node, uri)
       view(node)
     }
   }
@@ -36,7 +36,7 @@ define(function(require) {
 
   function shouldClearNode(req, res, node) {
     var newPath = findPath(req.web, getCurrentUri(req, res))
-      , currentPath = findPath(req.web, node.__resource__)
+      , currentPath = findPath(req.web, zapp.resource(node))
     return newPath !== currentPath
   }
 

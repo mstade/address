@@ -1,51 +1,31 @@
-define(
-  [ 'd3'
-  , 'underscore'
-  , 'type/type'
-  , './compose'
-  ]
-, function(d3, _, type, compose) {
+define(function(require) {
 
-    var state = getHash() 
-      , resource = _.property('__resource__')
+    var d3 = require('d3')
+      , compose = require('./compose')
+      , web = require('./web!')
+      , zapp = require('./z-app')
+      , location = require('./location-hash')
+
+      , state = location.state()
       , dispatcher = d3.dispatch('statechange')
       , ignoreFlag = false
-      , root
-      , web
 
-    d3.select(window).on('hashchange', handleHashChange)
+      , api = {}
+
+    location.on('statechange', handleStateChange)
     d3.select(document).on('click', handleClick)
 
-    return function(r, w) {
+    api.getState = function() { return currentState() }
+    api.setState = setState
+    api.pushState = pushState
+    api.openNewWindow = openNewWindow
 
-      root = root || r 
-      web = web || w 
-    
-      function location() {}
+    return d3.rebind(api, dispatcher, 'on')
 
-      location.getState = function() { return currentState() }
-      location.setState = setState
-      location.pushState = pushState
-      location.openNewWindow = openNewWindow
-
-      location.root = function() {
-        return root
-      }
-
-      location.isRoot = function(node) {
-        return node == root
-      }
-
-      return d3.rebind(location, dispatcher, 'on')
-    }
-
-    function handleHashChange() {
-
+    function handleStateChange() {
       if(ignore()) return ignore(false)
-
-      var value = getHash()
-      clearRoot()
-      setState(value)
+      zapp.clearRootResource()
+      setState(location.state())
       ignore(false)
     }
 
@@ -53,12 +33,14 @@ define(
       if(isCurrentState(value)) return
       ignore(true)
       currentState(value)
-      setHash(value)
+      location.state(value)
       return true
     }
 
     function setState(value) {
-      pushState(value) && clearRoot() && dispatcher.statechange(value)
+      pushState(value) &&
+      zapp.clearRootResource() &&
+      dispatcher.statechange(value)
     }
 
     function currentState(value) {
@@ -75,31 +57,24 @@ define(
       return value == currentState()
     }
 
-    function clearRoot() {
-      root.__resource__ = null
-      return true
-    }
-
     function openNewWindow(path, target) {
-      var hash = "#" + path
-        , href = document.location.href
-        , url = /#/.test(href) ? href.replace(/#.*/, hash) : href + hash
-      window.open(url, target, '')
+      window.open(location.hrefFromPath(path), target, '')
     }
 
     function handleClick() {
       var anchor
         , event = d3.event
         , target = event.target
+        , path
 
       if(event.ctrlKey) return
       if(event.button == 1) return
       anchor = findClosestAnchor(target)
       if(!anchor) return
       if(!!anchor.target) return
-      if(!~anchor.href.indexOf('#')) return
+      if(location.shouldIgnoreHref(anchor.href)) return
 
-      var path = anchor.href.split('#')[1] || ''
+      path = location.pathFromHref(anchor.href)
 
       if(!path) return
       if(!web.find(path)) return
@@ -107,7 +82,7 @@ define(
       event.preventDefault()
       event.stopPropagation()
 
-      setState(compose(web, path, resource(root)))
+      setState(compose(web, path, zapp.rootResource()))
     }
 
     function findClosestAnchor(node) {
@@ -116,12 +91,5 @@ define(
       return findClosestAnchor(node.parentElement)
     }
 
-    function getHash() {
-      return (document.location.href.split('#')[1] || '')
-    }
-
-    function setHash(value) {
-      document.location.hash = value
-    }
   }
 )

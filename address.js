@@ -1,27 +1,21 @@
-define(
-  [ 'nap'
-  , 'd3'
-  , 'underscore'
-  , './web!'
-  , 'type/type'
-  , './http-status-code'
-  , './is-view'
-  , './is-stream'
-  , './serialize'
-  , './interpolate'
-  , './compose'
-  , './location'
-  , './view-wrapper'
-  , './view-invoker'
-  , './kv-to-object'
-  ]
-  , function(nap, d3, _, web, type, codes, isView, isStream, serialize, interpolate, compose, createLocation, createViewWrapper, invokeView, toObject) {
+define(function(require) {
 
-    var resource = _.property('__resource__')
-      , zapp = d3.select('.z-app')
-      , root = zapp.empty() ? d3.select('body').node() : zapp.node()
-      , location = createLocation(root, web)
-      , wrapView = _.partial(createViewWrapper, location)
+  var nap = require('nap')
+    , d3 = require('d3')
+    , _ = require('underscore')
+    , web = require('./web!')
+    , zapp = require('./z-app')
+    , type = require('type/type')
+    , codes = require('./http-status-code')
+    , isView = require('./is-view')
+    , isStream = require('./is-stream')
+    , serialize = require('./serialize')
+    , interpolate = require('./interpolate')
+    , compose = require('./compose')
+    , location = require('./location')
+    , wrapView = require('./view-wrapper')
+    , invokeView = require('./view-invoker')
+    , toObject = require('./kv-to-object')
 
     function address(r) {
 
@@ -97,7 +91,7 @@ define(
       api.into = function(n) {
         if(type.isString(n)) n = d3.select(n).node()
 
-        node = !arguments.length ? root : n
+        node = !arguments.length ? zapp.root() : n
         return api
       }
 
@@ -111,7 +105,7 @@ define(
 
         t && api.target(t)
 
-        var requestUri = getRequestUri(root) + serialize(query)
+        var requestUri = getRequestUri(zapp.root()) + serialize(query)
         if(!target)  return location.setState(requestUri), null
         location.openNewWindow(requestUri, target)
       }
@@ -178,7 +172,7 @@ define(
 
       function getRequestUri(node) {
         var requestUri = interpolate(web, uri, params)
-        if(location.isRoot(node)) requestUri = compose(web, requestUri, resource(node))
+        if(zapp.isRoot(node)) requestUri = compose(web, requestUri, zapp.resource(node))
         return requestUri
       }
 
