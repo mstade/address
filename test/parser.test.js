@@ -6,14 +6,13 @@ define(
   , function(Squire, sinon, $) {
 
     var parser
-      , nap
       , resolver
 
     beforeEach(function(done) {
 
       var injector = new Squire();
 
-      nap = { 
+      nap = {
         is : sinon.spy()
       , negotiate : {
           method : sinon.spy()

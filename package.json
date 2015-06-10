@@ -3,16 +3,23 @@
   "version": "1.0.13",
   "description": "API for nap resources",
   "devDependencies": {
+    "d3-pkg": "^3.5.5",
     "grunt": "~0.4.1",
     "grunt-karma": "~0.10.1",
-    "text": "~2.0.10",
-    "zambezi-contrib-build": "~1.0.0",
+    "jquery-pkg": "^1.8.2",
     "karma": "~0.12.31",
+    "karma-chrome-launcher": "~0.1.7",
     "karma-mocha": "~0.1.0",
     "karma-requirejs": "~0.2.2",
-    "karma-chrome-launcher": "~0.1.7",
     "karma-sinon-chai": "~0.1.4",
-    "karma-teamcity-reporter": "~0.1.1"
+    "karma-teamcity-reporter": "~0.1.1",
+    "nap-ext-pkg": "0.0.1-AM1",
+    "rhumb-pkg": "0.0.1-AM1",
+    "sinon": "^1.14.1",
+    "squirejs": "^0.2.0",
+    "text": "^2.0.10",
+    "underscore-pkg": "^1.8.3",
+    "zambezi-contrib-build": "~1.0.0"
   },
   "scripts": {
     "ci-test": "grunt karma:ci-test"
