@@ -46,7 +46,7 @@ module.exports = function(config) {
       , watched: false
     }
     , {
-        pattern: 'node_modules/rhumb-pkg/node_modules/rhumb/dist/rhumb'
+        pattern: 'node_modules/rhumb-pkg/node_modules/rhumb/dist/rhumb.js'
       , included: false
       , watched: false
     }
