@@ -42,6 +42,7 @@ define(function(require) {
 
   function clearNode(node) {
     dispatchEvent(node, 'resourcewillchange')
+    zapp.clearResource(node)
     d3.select(node).html('')
   }
 
