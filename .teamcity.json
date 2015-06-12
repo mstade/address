@@ -4,7 +4,7 @@
     {
       "build_name": "publish",
       "parameters": {
-        "npm_project_version": "minor"
+        "npm_project_version": "patch"
       }
     }
   ]
