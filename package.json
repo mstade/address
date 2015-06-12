@@ -1,6 +1,6 @@
 {
   "name": "am-address",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "API for nap resources",
   "devDependencies": {
     "grunt": "~0.4.1",
