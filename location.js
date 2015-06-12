@@ -24,7 +24,6 @@ define(function(require) {
 
     function handleStateChange() {
       if(ignore()) return ignore(false)
-      zapp.clearRootResource()
       setState(location.state())
       ignore(false)
     }
@@ -39,7 +38,6 @@ define(function(require) {
 
     function setState(value) {
       pushState(value) &&
-      zapp.clearRootResource() &&
       dispatcher.statechange(value)
     }
 
