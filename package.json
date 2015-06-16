@@ -16,7 +16,6 @@
     "nap-ext-pkg": "0.0.1-AM1",
     "rhumb-pkg": "0.0.1-AM1",
     "sinon": "^1.14.1",
-    "squirejs": "^0.2.0",
     "text": "^2.0.10",
     "underscore-pkg": "^1.8.3",
     "zambezi-contrib-build": "~1.0.0"
