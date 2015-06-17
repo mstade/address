@@ -5,7 +5,6 @@ define(function(require) {
     , _ = require('underscore')
     , web = require('./web!')
     , zapp = require('./z-app')
-    , type = require('type/type')
     , codes = require('./http-status-code')
     , isView = require('./is-view')
     , isStream = require('./is-stream')
@@ -31,9 +30,9 @@ define(function(require) {
         , target
         , dispatcher = d3.dispatch.apply(null, codes.range().concat(['err', 'done']))
 
-      if(r && type.isString(r)) {
+      if(r && _.isString(r)) {
         uri = r
-      } else if(r && type.isObject(r)) {
+      } else if(r && _.isObject(r)) {
         uri = r.uri || uri
         method = r.method || method
         headers = r.headers || headers
@@ -89,7 +88,7 @@ define(function(require) {
       }
 
       api.into = function(n) {
-        if(type.isString(n)) n = d3.select(n).node()
+        if(_.isString(n)) n = d3.select(n).node()
 
         node = !arguments.length ? zapp.root() : n
         return api

@@ -1,40 +1,36 @@
-define(
-  [
-    'd3'
-  , 'type/type'
-  ]
+define(function(require) {
 
-, function(d3, type) {
+  var d3 = require('d3')
+    , _ = require('underscore')
 
-    return loadResources
+  return loadResources
 
-    function loadResources(fromObject, fromService, callback) {
+  function loadResources(fromObject, fromService, callback) {
 
-      if (isResourceObject(fromObject)) return callback(null, resolve(fromObject))
+    if (isResourceObject(fromObject)) return callback(null, resolve(fromObject))
 
-      d3.json(fromService, function loadResourcesHandler(err, data) {
-        if (isInvalid(err, data)) {
-          return callback(loadError(fromService))
-        }
-        callback(null, resolve(data))
-      })
-    }
-
-    function isResourceObject(object) {
-      return !!object && type.isArray(object.resources)
-    }
-
-    function isInvalid(err, data) {
-      return err || !isResourceObject(data)
-    }
-
-    function resolve(data) {
-      return data.resources
-    }
-
-    function loadError(fromService) {
-      return new Error('Failed to retrieve resources from "' + fromService + '".')
-    }
-
+    d3.json(fromService, function loadResourcesHandler(err, data) {
+      if (isInvalid(err, data)) {
+        return callback(loadError(fromService))
+      }
+      callback(null, resolve(data))
+    })
   }
-)
+
+  function isResourceObject(object) {
+    return !!object && _.isArray(object.resources)
+  }
+
+  function isInvalid(err, data) {
+    return err || !isResourceObject(data)
+  }
+
+  function resolve(data) {
+    return data.resources
+  }
+
+  function loadError(fromService) {
+    return new Error('Failed to retrieve resources from "' + fromService + '".')
+  }
+
+})

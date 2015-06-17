@@ -39,43 +39,12 @@ define(
         }
       }
 
-      nap = {
-        into : sinon.spy(function(node) {
-          return function(err, res) {}
-        })
-      }
-
-      type = {
-        isString : function(obj) { return typeof obj === "string" }
-      , isObject : function(obj) { return typeof obj !== "string" }
-      , isFunction : function(obj) { return true }
-      }
-
       injector.mock(
         'web'
       , function() {
         return {
           load: function(name, req, onload, config) {
             onload(web)
-          }
-        }
-      })
-      .mock(
-        'nap'
-      , function() {
-        return nap
-      })
-      .mock(
-        'type/type'
-      , function() {
-        return type
-      })
-      .mock(
-        'logger/log!'
-      , function() {
-        return {
-          load: function(name, req, onload, config) {
-            onload(console)
           }
         }
       })
