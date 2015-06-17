@@ -31,11 +31,6 @@ module.exports = function(config) {
       , watched: false
     }
     , {
-        pattern: 'node_modules/squirejs/src/Squire.js'
-      , included: false
-      , watched: false
-    }
-    , {
         pattern: 'node_modules/underscore-pkg/node_modules/underscore/underscore.js'
       , included: false
       , watched: false
