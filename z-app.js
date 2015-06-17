@@ -8,7 +8,7 @@ define(function(require) {
 
   api.isRoot = isRoot
   api.root = function() { return root }
-  api.clearRootResource = clearRootResource
+  api.clearResource = clearResource
   api.resource = resource
   api.rootResource = rootResource
 
@@ -21,10 +21,6 @@ define(function(require) {
   function clearResource(node) {
     node.__resource__ = null
     return true
-  }
-
-  function clearRootResource() {
-    return clearResource(root)
   }
 
   function rootResource() {

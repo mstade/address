@@ -1,3 +1,11 @@
 {
-  "type": "html"
+  "type": "html",
+  "builds": [
+    {
+      "build_name": "publish",
+      "parameters": {
+        "npm_project_version": "patch"
+      }
+    }
+  ]
 }
