@@ -52,7 +52,7 @@ define(
         var view = defered.call(null, req.context)
 
         if(!view) {
-          res(null, error(404, 'no view found for selector'))
+          res(null, error(406, 'no view found for selector'))
           return
         }
         
