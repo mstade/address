@@ -25,6 +25,7 @@ define(function(require) {
         , params = {}
         , query = {}
         , body
+        , intoNode = zapp.root()
         , node
         , callback
         , target
@@ -88,9 +89,8 @@ define(function(require) {
       }
 
       api.into = function(n) {
-        if(_.isString(n)) n = d3.select(n).node()
-
-        node = !arguments.length ? zapp.root() : n
+        if(!arguments.length) return intoNode
+        intoNode = _.isString(n) ? d3.select(n).intoNode() : n
         return api
       }
 
@@ -100,12 +100,20 @@ define(function(require) {
         return api
       }
 
+      api.node = function(n) {
+        if(!arguments.length) return node
+        node = n
+        return api
+      }
+
       api.navigate = function(t) {
-
         t && api.target(t)
-
         var requestUri = getRequestUri(zapp.root()) + serialize(query)
-        if(!target)  return location.setState(requestUri), null
+        if(!target)  {
+          location.setState(requestUri)
+          api.into(zapp.root(node)).get()
+          return
+        }
         location.openNewWindow(requestUri, target)
       }
 
@@ -161,17 +169,17 @@ define(function(require) {
 
       function req() {
         return {
-          uri : getRequestUri(node) + serialize(query)
+          uri : getRequestUri(intoNode) + serialize(query)
         , method : method
         , headers : headers
         , body : body
-        , context : node
+        , context : intoNode
         }
       }
 
-      function getRequestUri(node) {
+      function getRequestUri(requestNode) {
         var requestUri = interpolate(web, uri, params)
-        if(zapp.isRoot(node)) requestUri = compose(web, requestUri, zapp.resource(node))
+        if(zapp.isRoot(requestNode)) requestUri = compose(web, requestUri, zapp.resource(requestNode))
         return requestUri
       }
 
@@ -202,7 +210,6 @@ define(function(require) {
     address.find = web.find
     address.interpolate = _.partial(interpolate, web)
     address.location = location
-
     return address
   }
 )
