@@ -169,19 +169,25 @@ define(function(require) {
 
       function req() {
         return {
-          uri : getRequestUri(intoNode) + serialize(query)
+          uri : getUri() + serialize(query)
         , method : method
         , headers : headers
         , body : body
         , context : intoNode
         , origin: fromNode
         }
+
+        function getUri() {
+          var u = interpolate(uri, params)
+          if (!zapp.isRoot(intoNode)) return u
+          return compose(u, zapp.resource(intoNode))
+        }
       }
 
       function getRequestUri(requestNode) {
-        var requestUri = interpolate(web, uri, params)
-        if(zapp.isRoot(requestNode)) requestUri = compose(web, requestUri, zapp.resource(requestNode))
-        return requestUri
+        var requestUri = interpolate(uri, params)
+        if(!zapp.isRoot(requestNode)) return requestUri
+        return compose(requestUri, zapp.resource(requestNode))
       }
 
       function handleResponse(req, callback, err, res) {
@@ -193,7 +199,7 @@ define(function(require) {
 
         if(isView(res)) {
           if(res.statusCode != 302) wrapView(req, res)
-          req.context && invokeView(res, req.context)
+          req.context && invokeView(req, res)
         }
 
         if (isStream(res)) {
@@ -209,7 +215,7 @@ define(function(require) {
     }
 
     address.find = web.find
-    address.interpolate = _.partial(interpolate, web)
+    address.interpolate = interpolate
     address.location = location
     return address
   }

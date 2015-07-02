@@ -225,7 +225,7 @@ define(
               accept : "application/x.nap.view"
             }
           , body : undefined
-          , context : undefined
+          , context: undefined
           , origin: undefined
           }
 

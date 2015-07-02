@@ -80,7 +80,7 @@ define(function(require) {
       event.preventDefault()
       event.stopPropagation()
 
-      setState(compose(web, path, zapp.rootResource()))
+      setState(compose(path, zapp.rootResource()))
     }
 
     function findClosestAnchor(node) {
