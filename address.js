@@ -25,8 +25,8 @@ define(function(require) {
         , params = {}
         , query = {}
         , body
-        , intoNode = zapp.root()
-        , node
+        , intoNode
+        , fromNode
         , callback
         , target
         , dispatcher = d3.dispatch.apply(null, codes.range().concat(['err', 'done']))
@@ -89,8 +89,8 @@ define(function(require) {
       }
 
       api.into = function(n) {
-        if(!arguments.length) return intoNode
-        intoNode = _.isString(n) ? d3.select(n).intoNode() : n
+        if(_.isString(n)) n = d3.select(n).node()
+        intoNode = !arguments.length ? zapp.root() : n
         return api
       }
 
@@ -100,9 +100,9 @@ define(function(require) {
         return api
       }
 
-      api.node = function(n) {
-        if(!arguments.length) return node
-        node = n
+      api.origin = function(n) {
+        if(!arguments.length) return fromNode
+        fromNode = n
         return api
       }
 
@@ -111,7 +111,7 @@ define(function(require) {
         var requestUri = getRequestUri(zapp.root()) + serialize(query)
         if(!target)  {
           location.setState(requestUri)
-          api.into(zapp.root(node)).get()
+          api.into(zapp.root(fromNode)).get()
           return
         }
         location.openNewWindow(requestUri, target)
@@ -174,6 +174,7 @@ define(function(require) {
         , headers : headers
         , body : body
         , context : intoNode
+        , origin: fromNode
         }
       }
 

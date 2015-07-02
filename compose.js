@@ -6,6 +6,8 @@ define(
 
     return function(web, requestedUri, currentUri) {
 
+      debugger
+
       if(!currentUri || requestedUri == currentUri) return requestedUri
 
       var currentResource = web.find(currentUri)
