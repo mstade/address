@@ -107,14 +107,9 @@ define(function(require) {
       }
 
       api.navigate = function(t) {
-        t && api.target(t)
-        var requestUri = getRequestUri(zapp.root()) + serialize(query)
-        if(!target)  {
-          location.setState(requestUri)
-          api.into(zapp.root(fromNode)).get()
-          return
-        }
-        location.openNewWindow(requestUri, target)
+        if (t) api.target(t)
+        if (target) return location.openNewWindow(req().uri, target)
+        api.into(zapp.root(fromNode)).get()
       }
 
       api.view = function() {

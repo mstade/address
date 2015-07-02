@@ -12,6 +12,11 @@ define(function(require) {
       return
     }
 
+    if (req.context === zapp.root()) {
+      log.debug('updating location to match resource uri')
+      location.setState(req.uri, true)
+    }
+
     if (!_.isFunction(res.body)) {
       log.debug('view resource returned non-function object in response body')
       return
@@ -19,5 +24,4 @@ define(function(require) {
 
     res.body(req.context)
   }
-
 })
