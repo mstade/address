@@ -1,10 +1,12 @@
 {
-  "type": "html",
-  "builds": [
+  "type": "html"
+, "builds": [
     {
       "build_name": "publish",
+      "build_id": "AgileMarkets_Platform_Html_AmAddress_Publish",
       "parameters": {
-        "npm_project_version": "patch"
+        "grunt_verbose": "true"
+      , "npm_project_version": "minor"
       }
     }
   ]
