@@ -80,7 +80,8 @@ define(function(require) {
       event.preventDefault()
       event.stopPropagation()
 
-      setState(compose(path, zapp.rootResource()))
+      // see http://requirejs.org/docs/api.html#circular
+      require('./address')(path).origin(target).navigate()
     }
 
     function findClosestAnchor(node) {
