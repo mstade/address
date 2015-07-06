@@ -1,8 +1,7 @@
 define(function(require) {
 
   var log = require('logger/log!platform/am-address')
-    , d3 = require('d3')
-    , _ = require('underscore')
+    , nap = require('nap')
 
   return {
 

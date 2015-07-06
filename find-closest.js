@@ -1,5 +1,7 @@
 define(function(require) {
 
+  var _ = require('underscore')
+
   findClosest.anchor = function(node, baseCase) {
     return findClosest(function(n) {
       return n.nodeName == 'A' && n.href

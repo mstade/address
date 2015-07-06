@@ -1,9 +1,7 @@
 define(function(require) {
 
     var d3 = require('d3')
-      , compose = require('./compose')
       , web = require('./web!')
-      , zapp = require('./z-app')
       , location = require('./location-hash')
       , findClosest = require('./find-closest')
 
@@ -83,10 +81,6 @@ define(function(require) {
 
       // see http://requirejs.org/docs/api.html#circular
       require('./address')(path).origin(target).navigate()
-    }
-
-    function isAnchor(node) {
-      return node.nodeName == 'A' && node.href
     }
   }
 )
