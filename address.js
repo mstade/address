@@ -25,8 +25,8 @@ define(function(require) {
         , params = {}
         , query = {}
         , body
-        , intoNode
-        , fromNode
+        , context
+        , origin
         , callback
         , target
         , dispatcher = d3.dispatch.apply(null, codes.range().concat(['err', 'done']))
@@ -90,7 +90,7 @@ define(function(require) {
 
       api.into = function(n) {
         if(_.isString(n)) n = d3.select(n).node()
-        intoNode = !arguments.length ? zapp.root() : n
+        context = !arguments.length ? zapp.root() : n
         return api
       }
 
@@ -101,15 +101,15 @@ define(function(require) {
       }
 
       api.origin = function(n) {
-        if(!arguments.length) return fromNode
-        fromNode = n
+        if(!arguments.length) return origin
+        origin = n
         return api
       }
 
       api.navigate = function(t) {
         if (t) api.target(t)
         if (target) return location.openNewWindow(req().uri, target)
-        api.into(zapp.root(fromNode))()
+        api.into(zapp.root(origin))()
       }
 
       api.view = function() {
@@ -168,14 +168,14 @@ define(function(require) {
         , method : method
         , headers : headers
         , body : body
-        , context : intoNode
-        , origin: fromNode
+        , context : context
+        , origin: origin
         }
 
         function getUri() {
           var u = interpolate(uri, params)
-          if (!zapp.isRoot(intoNode)) return u
-          return compose(u, zapp.resource(intoNode))
+          if (!zapp.isRoot(context)) return u
+          return compose(u, zapp.resource(context))
         }
       }
 
