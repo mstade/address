@@ -1,7 +1,6 @@
 define(function(require) {
 
   var d3 = require('d3')
-    , _ = require('underscore')
     , zapp = d3.select('.z-app')
     , root = zapp.empty() ? d3.select('body').node() : zapp.node()
     , findClosest = require('./find-closest')
@@ -39,7 +38,6 @@ define(function(require) {
   }
 
   function findLocalRoot(node) {
-    var zapps = document.querySelectorAll('.z-app')
     return findClosest.root(node, root)
   }
 })
