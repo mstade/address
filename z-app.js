@@ -15,7 +15,7 @@ define(function(require) {
   return api
 
   function isRoot(node) {
-    return node == root
+    return root == node
   }
 
   function clearResource(node) {

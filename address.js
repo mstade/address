@@ -109,7 +109,7 @@ define(function(require) {
       api.navigate = function(t) {
         if (t) api.target(t)
         if (target) return location.openNewWindow(req().uri, target)
-        api.into(zapp.root(fromNode)).get()
+        api.into(zapp.root(fromNode))()
       }
 
       api.view = function() {
