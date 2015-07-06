@@ -18,7 +18,6 @@ define(function(require) {
     function address(r) {
 
       var uri
-        , name
         , method = "get"
         , headers = { accept : "application/x.nap.view" }
         , params = {}
