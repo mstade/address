@@ -4,6 +4,7 @@ define(function(require) {
     , _ = require('underscore')
     , zapp = d3.select('.z-app')
     , root = zapp.empty() ? d3.select('body').node() : zapp.node()
+    , findClosest = require('./find-closest')
     , api = {}
 
   api.isRoot = isRoot
@@ -39,13 +40,6 @@ define(function(require) {
 
   function findLocalRoot(node) {
     var zapps = document.querySelectorAll('.z-app')
-
-    return findClosest(node)
-
-    function findClosest(n) {
-      if (!n.parentNode) return root
-      if (_.contains(zapps, n)) return n
-      return findClosest(n.parentNode)
-    }
+    return findClosest.root(node, root)
   }
 })
