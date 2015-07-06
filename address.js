@@ -1,7 +1,6 @@
 define(function(require) {
 
-  var nap = require('nap')
-    , d3 = require('d3')
+  var d3 = require('d3')
     , _ = require('underscore')
     , web = require('./web!')
     , zapp = require('./z-app')
