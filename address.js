@@ -179,12 +179,6 @@ define(function(require) {
         }
       }
 
-      function getRequestUri(requestNode) {
-        var requestUri = interpolate(uri, params)
-        if(!zapp.isRoot(requestNode)) return requestUri
-        return compose(requestUri, zapp.resource(requestNode))
-      }
-
       function handleResponse(req, callback, err, res) {
 
         // deprecated //
