@@ -30,6 +30,11 @@ define(function(require) {
       a.should.equal(document.body)
     })
 
+    it('undefined origin should resolve to default root', function() {
+      var nothing
+      zapp.root(nothing).should.equal(a)
+    })
+
     it('should find the appropriate root for each element', function() {
       zapp.root(a).should.equal(a)
       zapp.root(b).should.equal(a)
