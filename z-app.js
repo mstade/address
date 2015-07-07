@@ -32,12 +32,14 @@ define(function(require) {
     node.__resource__ = value
   }
 
-  function getRoot(node) {
-    if (!node) return root
-    return findLocalRoot(node)
+  function getRoot(origin) {
+    if (!origin) return root
+    return findLocalRoot(origin)
   }
 
-  function findLocalRoot(node) {
-    return findClosest.root(node, root)
+  function findLocalRoot(origin) {
+    return findClosest.root(origin, root)
   }
 })
+
+
