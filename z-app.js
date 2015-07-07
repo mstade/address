@@ -1,7 +1,9 @@
 define(function(require) {
 
   var d3 = require('d3')
-    , zapp = d3.select('.z-app')
+    , rootClassName = 'z-app'
+    , rootSelector = '.' + rootClassName
+    , zapp = d3.select(rootSelector)
     , root = zapp.empty() ? d3.select('body').node() : zapp.node()
     , findClosest = require('./find-closest')
     , api = {}
@@ -11,6 +13,7 @@ define(function(require) {
   api.clearResource = clearResource
   api.resource = resource
   api.rootResource = rootResource
+  api.rootClassName = function() { return rootClassName }
 
   return api
 
@@ -38,7 +41,7 @@ define(function(require) {
   }
 
   function findLocalRoot(origin) {
-    return findClosest.root(origin, root)
+    return findClosest.bySelector(rootSelector, origin, root)
   }
 })
 

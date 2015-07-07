@@ -14,10 +14,10 @@ define(function(require) {
     }, node, baseCase)
   }
 
-  findClosest.root = function(node, baseCase) {
-    var zapps = document.querySelectorAll('.z-app')
+  findClosest.bySelector = function(selector, node, baseCase) {
+    var selection = document.querySelectorAll(selector)
     return findClosest(function(n) {
-      return _.contains(zapps, n)
+      return _.contains(selection, n)
     }, node, baseCase)
   }
 

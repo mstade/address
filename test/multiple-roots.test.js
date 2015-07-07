@@ -44,7 +44,7 @@ define(function(require) {
 
   function createElement(parent, isRoot) {
     var el = document.createElement('div')
-    if (isRoot) el.className = 'z-app'
+    if (isRoot) el.className = zapp.rootClassName()
     parent.appendChild(el)
     return el
   }
