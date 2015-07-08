@@ -27,6 +27,7 @@ define(function(require) {
         , origin
         , callback
         , target
+        , into
         , dispatcher = d3.dispatch.apply(null, codes.range().concat(['err', 'done']))
 
       if(r && _.isString(r)) {
@@ -86,9 +87,9 @@ define(function(require) {
         return api
       }
 
-      api.into = function(n) {
-        if(_.isString(n)) n = d3.select(n).node()
-        context = !arguments.length ? zapp.root() : n
+      api.into = function(v) {
+        if (!arguments.length) return into
+        into = v
         return api
       }
 
@@ -161,19 +162,20 @@ define(function(require) {
       return d3.rebind(api, dispatcher, 'on')
 
       function req() {
+        var ctx = context()
         return {
           uri : getUri() + serialize(query)
         , method : method
         , headers : headers
         , body : body
-        , context : context
+        , context : ctx
         , origin: origin
         }
 
         function getUri() {
           var u = interpolate(uri, params)
-          if (!zapp.isRoot(context)) return u
-          return compose(u, zapp.resource(context))
+          if (!zapp.isRoot(ctx)) return u
+          return compose(u, zapp.resource(ctx))
         }
       }
 
@@ -198,6 +200,12 @@ define(function(require) {
         codes(res.statusCode).concat(['done']).forEach(function(type) {
           dispatcher[type](res)
         })
+      }
+
+      function context() {
+        if (_.isString(into) && origin) return d3.select(origin).select(into).node()
+        if (_.isString(into)) return d3.select(into).node()
+        return into
       }
     }
 
