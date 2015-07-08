@@ -88,7 +88,6 @@ define(function(require) {
       }
 
       api.into = function(v) {
-        if (!arguments.length) return into
         into = v
         return api
       }
@@ -203,8 +202,7 @@ define(function(require) {
       }
 
       function context() {
-        if (_.isString(into) && origin) return d3.select(origin).select(into).node()
-        if (_.isString(into)) return d3.select(into).node()
+        if (_.isString(into)) return d3.select(zapp.root(origin)).select(into).node()
         return into
       }
     }
