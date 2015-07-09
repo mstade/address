@@ -23,7 +23,6 @@ define(function(require) {
         , params = {}
         , query = {}
         , body
-        , context
         , origin
         , callback
         , target
@@ -161,21 +160,29 @@ define(function(require) {
       return d3.rebind(api, dispatcher, 'on')
 
       function req() {
-        var ctx = context()
+        var context = getContext()
+
         return {
           uri : getUri() + serialize(query)
         , method : method
         , headers : headers
         , body : body
-        , context : ctx
+        , context : context
         , origin: origin
         }
 
         function getUri() {
           var u = interpolate(uri, params)
-          if (!zapp.isRoot(ctx)) return u
-          return compose(u, zapp.resource(ctx))
+          if (!zapp.isRoot(context)) return u
+          return compose(u, zapp.resource(context))
         }
+
+        function getContext() {
+          if (_.isString(into)) return d3.select(zapp.root(origin)).select(into).node()
+          if (!into) return zapp.root(origin)
+          return into
+        }
+
       }
 
       function handleResponse(req, callback, err, res) {
@@ -199,11 +206,6 @@ define(function(require) {
         codes(res.statusCode).concat(['done']).forEach(function(type) {
           dispatcher[type](res)
         })
-      }
-
-      function context() {
-        if (_.isString(into)) return d3.select(zapp.root(origin)).select(into).node()
-        return into
       }
     }
 
