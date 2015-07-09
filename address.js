@@ -104,8 +104,11 @@ define(function(require) {
       }
 
       api.navigate = function(t) {
+        var request
         if (t) api.target(t)
-        if (target) return location.openNewWindow(req().uri, target)
+        request = req()
+        if (target) return location.openNewWindow(request.uri, target)
+        if (zapp.isRoot(request.context)) return location.setState(request.uri)
         api.into(zapp.root(origin))()
       }
 

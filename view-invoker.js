@@ -2,8 +2,6 @@ define(function(require) {
 
   var log = require('logger/log!platform/am-address')
     , _ = require('underscore')
-    , zapp = require('./z-app')
-    , location = require('./location')
 
   return function(req, res) {
 
@@ -15,11 +13,6 @@ define(function(require) {
     if (!_.isFunction(res.body)) {
       log.debug('view resource returned non-function object in response body')
       return
-    }
-
-    if (req.context === zapp.root()) {
-      log.debug('updating location to match resource uri')
-      location.setState(req.uri, true)
     }
 
     res.body(req.context)

@@ -35,9 +35,9 @@ define(function(require) {
       return true
     }
 
-    function setState(value, silent) {
+    function setState(value) {
       var pushed = pushState(value)
-      if (pushed && !silent) dispatcher.statechange(value)
+      if (pushed) dispatcher.statechange(value)
     }
 
     function currentState(value) {
