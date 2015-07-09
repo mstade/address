@@ -2,6 +2,7 @@ define(function(require) {
     var Squire = require('Squire')
       , sinon = require('sinon')
       , $ = require('jquery')
+      , zapp = require('z-app')
       , address
       , web
       , nap
@@ -196,7 +197,7 @@ define(function(require) {
               accept : "application/json"
             }
           , body : {hello:"world!"}
-          , context: document.body
+          , context: zapp.root()
           , origin: undefined
           }
 
@@ -223,7 +224,7 @@ define(function(require) {
               accept : "application/x.nap.view"
             }
           , body : undefined
-          , context: document.body
+          , context: zapp.root()
           , origin: undefined
           }
 
