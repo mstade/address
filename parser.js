@@ -1,26 +1,16 @@
-define(
-  [ 'nap'
-  , './resolver'
-  , './error'
-  , 'logger/log!platform/am-address'
-  ]
-  , function(nap, resolve, error, log) {
+define(function(require) {
 
-    function isFn(inst){
-      return typeof inst === "function"
-    }
-
-    function isStr(inst){
-      return typeof inst === "string"
-    }
-
+    var nap = require('nap')
+      , resolve = require('./resolver')
+      , error = require('./error')
+      , _ = require('underscore')
 
     function bySelectorDefered(options){
 
       options = options.map(function(item) {
-        return Object.keys(item).reduce(function(_, k) { 
-          return { selector: k, fn: resolve(item[k]) } 
-        }, {}) 
+        return Object.keys(item).reduce(function(_, k) {
+          return { selector: k, fn: resolve(item[k]) }
+        }, {})
       })
 
       return function(node){
@@ -55,17 +45,17 @@ define(
           res(null, error(406, 'no view found for selector'))
           return
         }
-        
+
         view(req, res)
       }
     }
 
     function parseLevel(level, levelParser) {
 
-      if(isStr(level)) return resolve(level)
+      if(_.isString(level)) return resolve(level)
 
       Object.keys(level).forEach(function(key) {
-        if(isStr(level[key])) {
+        if(_.isString(level[key])) {
           level[key] = resolve(level[key])
         } else {
           level[key] = levelParser(level[key])
@@ -87,7 +77,7 @@ define(
     }
 
     function parseSelectors(obj) {
-      if(isStr(obj)) return resolve(obj)
+      if(_.isString(obj)) return resolve(obj)
       return negotiateSelector(obj)
     }
 
@@ -106,12 +96,12 @@ define(
 
     function parseResources(config) {
 
-      var parsed = isStr(config) ? JSON.parse(config) : config
+      var parsed = _.isString(config) ? JSON.parse(config) : config
 
       parsed.forEach(function(resource) {
         resource.fn = parseLevel({fn: resource.methods}, parseMethods).fn
       })
-      
+
       return parsed
     }
 

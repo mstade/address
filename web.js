@@ -4,7 +4,6 @@ define(function(require) {
   , rhumb = require('rhumb')
   , parser = require('./parser')
   , middleware = require('./middleware')
-  , d3 = require('d3')
   , _ = require('underscore')
   , loadResources = require('./load-resources')
   , log = require('logger/log!platform/am-address')
@@ -69,10 +68,6 @@ define(function(require) {
       , redirects : resource.redirects || {}
       }
     })
-  }
-
-  function isInvalidResponse(err, data) {
-    return err || !data.resources || !_.isArray(data.resources)
   }
 
 })

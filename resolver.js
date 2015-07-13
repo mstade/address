@@ -4,10 +4,6 @@ define(
   ]
   , function(log, _) {
 
-    function isFn(inst){
-      return typeof inst === "function"
-    }
-
     return function (dep) {
 
       return function(req, res) {
@@ -16,7 +12,7 @@ define(
 
           fn = fn[req.method] || fn
 
-          if(!isFn(fn)) {
+          if(!_.isFunction(fn)) {
             log.debug("failed to resolve resource function from module", dep, req.method)
             return
           }
@@ -31,4 +27,4 @@ define(
     }
   }
 )
-  
+

@@ -1,10 +1,9 @@
 define(function(require) {
 
     var d3 = require('d3')
-      , compose = require('./compose')
       , web = require('./web!')
-      , zapp = require('./z-app')
       , location = require('./location-hash')
+      , findClosest = require('./find-closest')
 
       , state = location.state()
       , dispatcher = d3.dispatch('statechange')
@@ -37,8 +36,8 @@ define(function(require) {
     }
 
     function setState(value) {
-      pushState(value) &&
-      dispatcher.statechange(value)
+      var pushed = pushState(value)
+      if (pushed) dispatcher.statechange(value)
     }
 
     function currentState(value) {
@@ -65,29 +64,23 @@ define(function(require) {
         , target = event.target
         , path
 
-      if(event.ctrlKey) return
-      if(event.button == 1) return
-      anchor = findClosestAnchor(target)
-      if(!anchor) return
-      if(!!anchor.target) return
-      if(location.shouldIgnoreHref(anchor.href)) return
+      if (event.ctrlKey) return
+      if (event.button == 1) return
+      anchor = findClosest.anchor(target)
+      if (!anchor) return
+      if (!!anchor.target) return
+      if (location.shouldIgnoreHref(anchor.href)) return
 
       path = location.pathFromHref(anchor.href)
 
-      if(!path) return
-      if(!web.find(path)) return
+      if (!path) return
+      if (!web.find(path)) return
 
       event.preventDefault()
       event.stopPropagation()
 
-      setState(compose(web, path, zapp.rootResource()))
+      // see http://requirejs.org/docs/api.html#circular
+      require('./address')(path).origin(target).navigate()
     }
-
-    function findClosestAnchor(node) {
-      if (!node) return null
-      if (node.nodeName == 'A' && node.href) return node
-      return findClosestAnchor(node.parentElement)
-    }
-
   }
 )

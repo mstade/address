@@ -1,21 +1,24 @@
 define(function(require) {
 
   var d3 = require('d3')
-    , _ = require('underscore')
-    , zapp = d3.select('.z-app')
+    , rootClassName = 'z-app'
+    , rootSelector = '.' + rootClassName
+    , zapp = d3.select(rootSelector)
     , root = zapp.empty() ? d3.select('body').node() : zapp.node()
+    , findClosest = require('./find-closest')
     , api = {}
 
   api.isRoot = isRoot
-  api.root = function() { return root }
+  api.root = getRoot
   api.clearResource = clearResource
   api.resource = resource
   api.rootResource = rootResource
+  api.rootClassName = function() { return rootClassName }
 
   return api
 
   function isRoot(node) {
-    return node == root
+    return root == node
   }
 
   function clearResource(node) {
@@ -32,4 +35,14 @@ define(function(require) {
     node.__resource__ = value
   }
 
+  function getRoot(origin) {
+    if (!origin) return root
+    return findLocalRoot(origin)
+  }
+
+  function findLocalRoot(origin) {
+    return findClosest.bySelector(rootSelector, origin, root)
+  }
 })
+
+

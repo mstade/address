@@ -1,11 +1,9 @@
-define(
-  [ 'Squire'
-  , 'sinon'
-  , 'jquery'
-  ]
-  , function(Squire, sinon, $) {
-
-    var address
+define(function(require) {
+    var Squire = require('Squire')
+      , sinon = require('sinon')
+      , $ = require('jquery')
+      , zapp = require('z-app')
+      , address
       , web
       , nap
       , type
@@ -37,6 +35,7 @@ define(
           })
           return uri.split("/{")[0] + paramsString
         }
+      , find: function() {}
       }
 
       injector.mock(
@@ -198,7 +197,8 @@ define(
               accept : "application/json"
             }
           , body : {hello:"world!"}
-          , context : undefined
+          , context: zapp.root()
+          , origin: undefined
           }
 
         var update = address("/wibble/{id}")
@@ -224,7 +224,8 @@ define(
               accept : "application/x.nap.view"
             }
           , body : undefined
-          , context : undefined
+          , context: zapp.root()
+          , origin: undefined
           }
 
         address("/wibble").then(cb)()

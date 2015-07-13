@@ -1,7 +1,6 @@
 define(function(require) {
 
-  var nap = require('nap')
-    , d3 = require('d3')
+  var d3 = require('d3')
     , _ = require('underscore')
     , web = require('./web!')
     , zapp = require('./z-app')
@@ -19,15 +18,15 @@ define(function(require) {
     function address(r) {
 
       var uri
-        , name
         , method = "get"
         , headers = { accept : "application/x.nap.view" }
         , params = {}
         , query = {}
         , body
-        , node
+        , origin
         , callback
         , target
+        , into
         , dispatcher = d3.dispatch.apply(null, codes.range().concat(['err', 'done']))
 
       if(r && _.isString(r)) {
@@ -87,10 +86,8 @@ define(function(require) {
         return api
       }
 
-      api.into = function(n) {
-        if(_.isString(n)) n = d3.select(n).node()
-
-        node = !arguments.length ? zapp.root() : n
+      api.into = function(v) {
+        into = v
         return api
       }
 
@@ -100,13 +97,23 @@ define(function(require) {
         return api
       }
 
+      api.origin = function(n) {
+        if(!arguments.length) return origin
+        origin = n
+        return api
+      }
+
       api.navigate = function(t) {
+        if (t) api.target(t)
 
-        t && api.target(t)
+        var request = req()
+        if (target) return location.openNewWindow(request.uri, target)
+        if (shouldNavigate()) return location.setState(request.uri)
+        api.into(zapp.root(origin))()
 
-        var requestUri = getRequestUri(zapp.root()) + serialize(query)
-        if(!target)  return location.setState(requestUri), null
-        location.openNewWindow(requestUri, target)
+        function shouldNavigate() {
+          return method === 'get' && zapp.isRoot(request.context)
+        }
       }
 
       api.view = function() {
@@ -160,19 +167,29 @@ define(function(require) {
       return d3.rebind(api, dispatcher, 'on')
 
       function req() {
+        var context = getContext()
+
         return {
-          uri : getRequestUri(node) + serialize(query)
+          uri : getUri() + serialize(query)
         , method : method
         , headers : headers
         , body : body
-        , context : node
+        , context : context
+        , origin: origin
         }
-      }
 
-      function getRequestUri(node) {
-        var requestUri = interpolate(web, uri, params)
-        if(zapp.isRoot(node)) requestUri = compose(web, requestUri, zapp.resource(node))
-        return requestUri
+        function getUri() {
+          var u = interpolate(uri, params)
+          if (!zapp.isRoot(context)) return u
+          return compose(u, zapp.resource(context))
+        }
+
+        function getContext() {
+          if (_.isString(into)) return d3.select(zapp.root(origin)).select(into).node()
+          if (!into) return zapp.root(origin)
+          return into
+        }
+
       }
 
       function handleResponse(req, callback, err, res) {
@@ -184,7 +201,7 @@ define(function(require) {
 
         if(isView(res)) {
           if(res.statusCode != 302) wrapView(req, res)
-          req.context && invokeView(res, req.context)
+          req.context && invokeView(req, res)
         }
 
         if (isStream(res)) {
@@ -200,9 +217,8 @@ define(function(require) {
     }
 
     address.find = web.find
-    address.interpolate = _.partial(interpolate, web)
+    address.interpolate = interpolate
     address.location = location
-
     return address
   }
 )

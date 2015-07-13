@@ -1,6 +1,11 @@
 define(function(require) {
+  var _ = require('underscore')
   return function kvToObject(k, v) {
+    var obj
     if(_.isObject(k)) return k
-    return obj = {}, obj[k] = v, obj
-}
+    obj = {}
+    obj[k] = v
+    return obj
+  }
 })
+
