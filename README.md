@@ -2,7 +2,7 @@
 
 Address is the API library for the Agile Markets [Resource Oriented Architecture](http://en.wikipedia.org/wiki/Resource-oriented_architecture).
 
-It provides 
+It provides
 
 * an api for configuring and invoking requests for resources
 * utilities for creating appropriate responses from resources
@@ -30,11 +30,11 @@ define(
   , function(address) {
 
     ...
-    
+
   }
 )
 
-``` 
+```
 
 ### Requesting a resource
 
@@ -79,7 +79,7 @@ address()
 Listeners can be added for any response type as specified in the [HTTP/1.1 specification](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html).
 
 
-The event names correspond to the status code of the response as defined in the [specification](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) 
+The event names correspond to the status code of the response as defined in the [specification](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html)
 e.g. ```ok``` is a 200 status code, ```not-found``` is a 404 status code.
 
 
@@ -200,7 +200,7 @@ address("/price/usd/gbp")
 ## Adding a resource view to the DOM
 
 Often you will be requesting a view of a paticular resource which you want to display in the page.
-As mentioned, the default accept type of a request is "application/x.nap.view". 
+As mentioned, the default accept type of a request is "application/x.nap.view".
 The response to a request with this header will be a response object in which the ```.body``` property will contain a view function which can be invoked on a DOM node.
 
 As an example, our **price** resource may expose a view representation of the price defined by the path parameters. The resource function definition would then look as follows:
@@ -224,7 +224,7 @@ define(
 
       res( ok(view) )
     }
-    
+
   }
 )
 ```
@@ -261,6 +261,17 @@ address("/price/usd/gbp").into(".price").get()
 
 Note that in this case the selection will be performed in the context of the document.
 
+## DOM origin
+
+To disambiguate the DOM element used as the local root, it is possible to specify an origin node when building a request:
+
+```
+address('/price/usd/gbp').origin(node).navigate()
+
+address('/price/usd/gbp').origin(node).into().get()
+```
+
+The `origin` node provided should be a descendant of the root node in which the request should be resolved. In cases where the running application contains more than one possible root (for instance when running in browser workspaces), specifying an origin node allows address to navigate in the correct window.
 
 ## response utlities
 
@@ -321,4 +332,4 @@ address("/price/usd/gbp")
 
 
 
-  
+
