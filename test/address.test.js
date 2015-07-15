@@ -197,7 +197,7 @@ define(function(require) {
               accept : "application/json"
             }
           , body : {hello:"world!"}
-          , context: zapp.root()
+          , context: undefined
           , origin: undefined
           }
 
