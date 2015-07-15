@@ -261,18 +261,6 @@ address("/price/usd/gbp").into(".price").get()
 
 Note that in this case the selection will be performed in the context of the document.
 
-## DOM origin
-
-To disambiguate the DOM element used as the local root, it is possible to specify an origin node when building a request:
-
-```
-address('/price/usd/gbp').origin(node).navigate()
-
-address('/price/usd/gbp').origin(node).into().get()
-```
-
-The `origin` node provided should be a descendant of the root node in which the request should be resolved. In cases where the running application contains more than one possible root (for instance when running in browser workspaces), specifying an origin node allows address to navigate in the correct window.
-
 ## response utlities
 
 A resource function **must** call the response function with an appropriate response.
@@ -326,10 +314,45 @@ address("/price/usd/gbp")
   .navigate()
 ```
 
+### DOM origin
 
+To disambiguate the DOM element used as the local root when navigating, it is possible to specify an origin node when building a request:
 
+```
+address('/price/usd/gbp').origin(node).navigate()
 
+address('/price/usd/gbp').origin(node).into().get()
+```
 
+The `origin` node provided should be a descendant of the root node in which the request should be resolved. In cases where the running application contains more than one possible root (for instance when running in browser workspaces), specifying an origin node allows address to navigate in the correct window.
 
+## Custom events
 
+Two custom events are dispatched by DOM elements used to render view resources:
 
+### `update`
+
+Dispatched before invoking a view function, regardless of the resource addressed into the DOM element of the view.
+
+### `resourcewillchange`
+
+Dispatched before invoking a view function with a new resource. After this event is dispatched, the contents of the view's DOM element are discarded and replaced.
+
+###  Usage
+
+```
+function view(node) {
+
+  node.addEventListener('update', handleUpdate)
+  node.addEventListener('resourcewillchange', handleResourceWillChange)
+
+  function handleUpdate(detail) {
+    console.log('Updating resource from %s to $s.', deatail.from, detail.to)
+  }
+
+  function handleResourceWillChange() {
+    console.log('Resource will change: DOM will be cleared.')
+  }
+}
+
+```
