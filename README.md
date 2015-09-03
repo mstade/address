@@ -347,7 +347,7 @@ function view(node) {
   node.addEventListener('resourcewillchange', handleResourceWillChange)
 
   function handleUpdate(detail) {
-    console.log('Updating resource from %s to $s.', deatail.from, detail.to)
+    console.log('Updating resource from %s to %s.', deatail.from, detail.to)
   }
 
   function handleResourceWillChange() {
