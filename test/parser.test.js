@@ -7,46 +7,50 @@ define(
 
     var parser
       , resolver
+      , view
 
-    beforeEach(function(done) {
+    describe('Parser', function() {
+      beforeEach(function(done) {
 
-      var injector = new Squire();
+        var injector = new Squire();
 
-      nap = {
-        is : sinon.spy()
-      , negotiate : {
-          method : sinon.spy()
-        , accept : sinon.spy()
-        , selector : sinon.spy()
+        nap = {
+          is : sinon.spy()
+        , negotiate : {
+            method : sinon.spy()
+          , accept : sinon.spy()
+          , selector : sinon.spy()
+          }
+        , responses : {
+            ok : sinon.spy()
+          , error : sinon.spy()
+          }
         }
-      , responses : {
-          ok : sinon.spy()
-        , error : sinon.spy()
-        }
-      }
 
-      resolver = sinon.stub().returns(function(req, res){})
 
-      injector.mock(
-        'nap'
-      , function() {
-        return nap
-      })
-      .mock(
-        'resolver'
-      , function() {
-        return resolver
-      })
-      .require(
-        [ 'parser' ]
-      , function(p) {
+        view = sinon.spy(function resolverView(req, res){ return res })
+        resolver = sinon.spy(function () {
+          return view
+        })
+
+        injector.mock(
+          'nap'
+        , function() {
+          return nap
+        })
+        .mock(
+          'resolver'
+        , function() {
+          return resolver
+        })
+        .require(
+          [ 'parser' ]
+        , function(p) {
           parser = p
           done()
         }
-      )
-    })
-
-    describe('Parser', function() {
+        )
+      })
 
       it('should parse methods', function() {
         var config = {
@@ -60,6 +64,19 @@ define(
         nap.negotiate.selector.should.not.have.been.called
 
         resolver.should.have.been.calledTwice
+      })
+
+      it('should parse methods as list', function() {
+        var config = {
+              'get,send'  : "app-explorer/app-explorer"
+            }
+          , methods = parser.parseMethods(config)
+
+        nap.negotiate.method.should.have.been.calledOnce
+        nap.negotiate.accept.should.not.have.been.called
+        nap.negotiate.selector.should.not.have.been.called
+
+        resolver.should.have.been.calledOnce
       })
 
       it('should parse media types', function() {
@@ -94,7 +111,47 @@ define(
         resolver.should.have.been.calledTwice
       })
 
-        it('should parse a single resource with a simple function', function() {
+      it('should parse view selectors with context', function() {
+        var config = [
+            { ".big" : "shell-application/shell-application" }
+          , { ".small" : "shell-application/shell-application" }
+          ]
+        , negotiateSelector = parser.parseSelectors(config)
+        , type = typeof negotiateSelector
+        , cbSpy = sinon.spy()
+
+        type.should.equal('function')
+        negotiateSelector.length.should.equal(2)
+
+        negotiateSelector({context:true}, cbSpy)
+        cbSpy.should.have.been.calledOnce
+
+        resolver.should.have.been.calledTwice
+      })
+
+      it('should parse view selectors with context', function() {
+        var config = [
+            { "div" : "shell-application/context-application" }
+          ]
+        , negotiateSelector = parser.parseSelectors(config)
+        , type = typeof negotiateSelector
+        , cbSpy = sinon.spy(function () {
+          return console.log.bind(console, 'resolved')
+        })
+
+        nap.is = sinon.spy(function () {return true})
+
+        type.should.equal('function')
+        negotiateSelector.length.should.equal(2)
+        var context = document.createElement('div')
+        negotiateSelector({context: context}, cbSpy)
+
+        expect(cbSpy.called).to.be.false
+        resolver.should.have.been.calledOnce
+        view.should.have.been.calledOnce
+      })
+
+      it('should parse a single resource with a simple function', function() {
         var config = '[{ "name" : "shell", "path" : "/shell(/{publisher})(/{app})", "methods" : "shell-application/shell-application"}]'
           , resources = parser.parseResources(config)
 
