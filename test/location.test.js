@@ -160,41 +160,42 @@ define(function(require) {
         opened = true;
       }
 
+      expect(opened).to.be.false
       location.openNewWindow('a', '_blank')
       expect(opened).to.be.true
       window.open = open
     })
 
-    it('should dispatch the state change on set when value does change', function () {
+    it('should only navigate on click on links with hash and without target', function () {
       var hasNavigated = false
       var evt = document.createEvent("MouseEvents");
       evt.initEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
       address.on('navigate', function () {
         hasNavigated = true
-      });
+      })
 
-      document.dispatchEvent(evt);
+      document.dispatchEvent(evt)
       expect(hasNavigated).to.be.false
 
       anchor = document.createElement('a')
-      document.dispatchEvent(evt);
+      document.dispatchEvent(evt)
       expect(hasNavigated).to.be.false
 
       anchor.href = 'a'
-      document.dispatchEvent(evt);
+      document.dispatchEvent(evt)
       expect(hasNavigated).to.be.false
 
       anchor.href = '#a'
-      document.dispatchEvent(evt);
+      document.dispatchEvent(evt)
       expect(hasNavigated).to.be.false
 
       web.routes.a = {}
-      document.dispatchEvent(evt);
+      document.dispatchEvent(evt)
       expect(hasNavigated).to.be.true
 
       hasNavigated = false
       anchor.target = '_blank'
-      document.dispatchEvent(evt);
+      document.dispatchEvent(evt)
       expect(hasNavigated).to.be.false
     })
   })
