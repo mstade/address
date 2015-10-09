@@ -25,7 +25,10 @@ module.exports = function (grunt) {
                 configFile: "karma.conf.js",
                 colors: false,
                 singleRun: true,
-                reporters: "teamcity",
+                reporters: ["teamcity", "coverage"],
+                coverageReporter: {
+                  type: "teamcity"
+                },
                 browsers: ["Chrome"]
             }
         }
