@@ -3,11 +3,12 @@ define(function(require) {
   , compose
   , web
 
-  beforeEach(function(done) {
+  describe('Compose', function() {
+    beforeEach(function(done) {
 
-    var injector = new Squire();
+      var injector = new Squire();
 
-    web = {
+      web = {
         uri : function(uri, params) {
           var paramsString = ""
           Object.keys(params).forEach(function(key) {
@@ -15,29 +16,27 @@ define(function(require) {
           })
           return uri.split("/{")[0] + paramsString
         }
-      , find: function(v) { return web.routes[v] }
-      , routes: {}
-    }
-
-    injector.mock(
-    'web'
-    , function() {
-      return {
-        load: function(name, req, onload, config) {
-          onload(web)
-        }
+        , find: function(v) { return web.routes[v] }
+        , routes: {}
       }
-    })
-    .require(
-    [ 'compose' ]
-    , function(a) {
-      compose = a
-      done()
-    }
-    )
-  })
 
-  describe('Compose', function() {
+      injector.mock(
+      'web'
+      , function() {
+        return {
+          load: function(name, req, onload, config) {
+            onload(web)
+          }
+        }
+      })
+      .require(
+      [ 'compose' ]
+      , function(a) {
+        compose = a
+        done()
+      }
+      )
+    })
 
     it('should return the requested resource if no routes are defined', function () {
       compose('a', 'b').should.equal('a')

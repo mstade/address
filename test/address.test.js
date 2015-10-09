@@ -6,57 +6,54 @@ define(function(require) {
       , address
       , web
       , nap
-      , type
-      , reponse
       , responseBody
 
-    beforeEach(function(done) {
+    describe('Address', function() {
+      beforeEach(function(done) {
 
-      var injector = new Squire();
+        var injector = new Squire();
 
-      responseBody = sinon.spy(function(node){console.log("view called")})
+        responseBody = sinon.spy(function(node){console.log("view called")})
 
-      response = {
-        statusCode : 200
-      , headers: {
-          contentType : "application/x.nap.view"
-        }
-      , body : responseBody
-      }
-
-      web = {
-        req : sinon.spy(function(req, cb) {
-          cb( null, response )
-        })
-      , uri : function(uri, params) {
-          var paramsString = ""
-          Object.keys(params).forEach(function(key) {
-            paramsString += "/" + params[key]
-          })
-          return uri.split("/{")[0] + paramsString
-        }
-      , find: function() {}
-      }
-
-      injector.mock(
-        'web'
-      , function() {
-        return {
-          load: function(name, req, onload, config) {
-            onload(web)
+        response = {
+          statusCode : 200
+          , headers: {
+            contentType : "application/x.nap.view"
           }
+          , body : responseBody
         }
-      })
-      .require(
+
+        web = {
+          req : sinon.spy(function(req, cb) {
+            cb( null, response )
+          })
+          , uri : function(uri, params) {
+            var paramsString = ""
+            Object.keys(params).forEach(function(key) {
+              paramsString += "/" + params[key]
+            })
+            return uri.split("/{")[0] + paramsString
+          }
+          , find: function() {}
+        }
+
+        injector.mock(
+        'web'
+        , function() {
+          return {
+            load: function(name, req, onload, config) {
+              onload(web)
+            }
+          }
+        })
+        .require(
         [ 'address' ]
-      , function(a) {
+        , function(a) {
           address = a
           done()
         }
-      )
-    })
-
-    describe('Address', function() {
+        )
+      })
 
       it('should store the resource in the closure', function() {
         address("/wibble")
