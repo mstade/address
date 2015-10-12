@@ -248,6 +248,9 @@ define(function(require) {
           , origin: undefined
           }
 
+        expect(zapp.rootResource()).to.be.undefined
+        expect(zapp.resource(zapp.root())).to.be.equal(zapp.rootResource())
+
         address('/wibble').on('done', cb)()
 
         web.req.should.have.been.calledOnce
@@ -377,22 +380,28 @@ define(function(require) {
       it('should handle streams', function() {
         var cb = sinon.spy()
           , req = {
-              uri : "/wibble"
-              , method : "get"
+              uri : '/wibble'
+              , method : 'get'
               , headers : {
-                accept : "application/x.zap.stream"
+                accept : 'application/x.zap.stream'
               }
               , context: zapp.root()
             }
           , dispatcher = sinon.spy()
           , doneSpy = sinon.spy()
-        response.headers.contentType = "application/x.zap.stream"
+        response.headers.contentType = 'application/x.zap.stream'
         response.body.dispatcher = dispatcher
 
         address(req).on('done', doneSpy)()
         doneSpy.should.have.been.calledOnce
         doneSpy.should.have.been.calledWith(response)
         response.body.should.equal(dispatcher)
+
+        response.body = responseBody
+        response.headers.contentType = '';
+        response.statusCode = 600
+        address(req)()
+        response.body.should.equal(responseBody)
       })
 
     })
