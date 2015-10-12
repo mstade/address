@@ -1,10 +1,9 @@
 define(
   [ 'Squire'
   , 'sinon'
-  , 'jquery'
   ]
-  , function(Squire, sinon, $) {
-    describe('Resolver', function() {
+  , function(Squire, sinon) {
+    describe('View Invoker', function() {
 
       var viewInvoker
         , logSpy
