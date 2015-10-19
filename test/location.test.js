@@ -84,7 +84,7 @@ define(function(require) {
       .require(
         [ 'location' ]
       , function(a) {
-        location = a
+        location = a(web, address)
         done()
       }
       )

@@ -1,14 +1,12 @@
 define(function(require) {
+  var d3 = require('d3')
+    , location = require('./location-hash')
+    , findClosest = require('./find-closest')
 
-    var d3 = require('d3')
-      , web = require('./web!')
-      , location = require('./location-hash')
-      , findClosest = require('./find-closest')
-
-      , state = location.state()
+  return function createComponent(web, address) {
+    var state = location.state()
       , dispatcher = d3.dispatch('statechange')
       , ignoreFlag = false
-
       , api = {}
 
     location.on('statechange', handleStateChange)
@@ -79,8 +77,7 @@ define(function(require) {
       event.preventDefault()
       event.stopPropagation()
 
-      // see http://requirejs.org/docs/api.html#circular
-      require('./address')(path).origin(target).navigate()
+      address(path).origin(target).navigate()
     }
   }
-)
+})

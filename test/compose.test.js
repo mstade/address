@@ -30,9 +30,9 @@ define(function(require) {
         }
       })
       .require(
-      [ 'compose' ]
-      , function(a) {
-        compose = a
+      [ 'compose', 'interpolate' ]
+      , function(a, interpolate) {
+        compose = a(web, interpolate(web))
         done()
       }
       )

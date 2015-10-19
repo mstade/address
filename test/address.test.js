@@ -59,21 +59,17 @@ define(function(require) {
           .mock(
             'web'
           , function() {
-              return {
-                load: function(name, req, onload, config) {
-                  onload(web)
-                }
-              }
+              return web
             })
           .mock(
             'location'
           , function() {
-              return location
+              return function() { return location }
             })
           .require(
-            [ 'address' ]
-          , function(a) {
-              address = a
+            [ 'index', 'web' ]
+          , function(a, web) {
+              address = a({ web: web })
               done()
             })
       })

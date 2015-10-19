@@ -16,12 +16,12 @@ module.exports = function(config) {
   files: [
       'test/test-main.js'
     , {
-        pattern: 'node_modules/d3-pkg/d3.js'
+        pattern: 'node_modules/d3/d3.js'
       , included: false
       , watched: false
     }
     , {
-        pattern: 'node_modules/jquery-pkg/node_modules/jquery/dist/jquery.js'
+        pattern: 'node_modules/jquery/dist/jquery.js'
       , included: false
       , watched: false
     }
@@ -31,17 +31,17 @@ module.exports = function(config) {
       , watched: false
     }
     , {
-        pattern: 'node_modules/underscore-pkg/node_modules/underscore/underscore.js'
+        pattern: 'node_modules/underscore/underscore.js'
       , included: false
       , watched: false
     }
     , {
-        pattern: 'node_modules/nap-ext-pkg/node_modules/nap/nap.js'
+        pattern: 'node_modules/@websdk/nap/lib/nap.js'
       , included: false
       , watched: false
     }
     , {
-        pattern: 'node_modules/rhumb-pkg/node_modules/rhumb/dist/rhumb.js'
+        pattern: 'node_modules/@websdk/rhumb/lib/rhumb.js'
       , included: false
       , watched: false
     }

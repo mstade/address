@@ -24,8 +24,8 @@ define(function(require) {
             .mock('./location', function() {
               return { pushState: function() {}}
             })
-        .require(['view-wrapper'], function(viewWrapper) {
-          wrapView = viewWrapper
+        .require(['view-wrapper', 'location'], function(viewWrapper, location) {
+          wrapView = viewWrapper(location)
           done()
         })
     })
