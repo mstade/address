@@ -69,7 +69,9 @@ define(function(require) {
           .require(
             [ 'index', 'web' ]
           , function(a, web) {
-              address = a({ web: web })
+              address = function(r) { 
+                return a(r).web(web)
+              }
               done()
             })
       })
