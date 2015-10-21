@@ -2,6 +2,7 @@
   "name": "address",
   "version": "2.0.0",
   "description": "API for nap resources",
+  "main": "address.js",
   "devDependencies": {
     "d3": "^3.5.5",
     "grunt": "~0.4.1",
