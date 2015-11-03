@@ -21,7 +21,8 @@
     "underscore": "^1.8.3"
   },
   "scripts": {
-    "ci-test": "grunt karma:ci-test"
+    "ci-test": "grunt karma:ci-test",
+    "test": "karma start --single-run"
   },
   "repository": {
     "type": "git",
