@@ -8,5 +8,7 @@ define(function(require) {
   , into: require('./into')
   , httpStatusCode: require('./http-status-code')
   , stream: require('./stream')
+  , location: require('./location')
+  , interpolate: require('./interpolate')
   }
 })

@@ -12,8 +12,8 @@ requirejs.config({
   , paths: {
       'logger/log' : "test/log"
     , 'd3': 'node_modules/d3/d3'
-    , 'nap': 'node_modules/@websdk/nap/lib/nap'
-    , 'rhumb': 'node_modules/@websdk/rhumb/lib/rhumb'
+    , '@websdk/nap': 'node_modules/@websdk/nap/lib/nap'
+    , '@websdk/rhumb': 'node_modules/@websdk/rhumb/lib/rhumb'
     , 'Squire': 'test/Squire'
     , 'jquery': 'node_modules/jquery/dist/jquery'
     , 'sinon': 'node_modules/sinon/pkg/sinon'

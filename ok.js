@@ -1,8 +1,8 @@
 define(
-  [ 'nap'
+  [ '@websdk/nap'
   ]
   , function(nap) {
     return nap.responses.ok
   }
 )
-  
+
