@@ -2,7 +2,7 @@
   "name": "address",
   "version": "2.0.0",
   "description": "API for nap resources",
-  "main": "address.js",
+  "main": "lib/address.js",
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-karma": "~0.10.1",
@@ -21,7 +21,8 @@
   },
   "scripts": {
     "test": "karma start --single-run",
-    "build": "webpack"
+    "preversion": "npm run build",
+    "build": "rm -rf lib && webpack"
   },
   "repository": {
     "type": "git",
@@ -31,9 +32,5 @@
     "@websdk/nap": "0.9.8",
     "d3": "^3.5.5",
     "underscore": "^1.8.3"
-  },
-  "optionalDependencies": {
-    "d3-utils": "^2.11.2",
-    "text": "^2.0.10"
   }
 }
