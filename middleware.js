@@ -1,7 +1,6 @@
 define(function(require) {
 
-  var log = require('logger/log!platform/am-address')
-    , nap = require('nap')
+  var error = require('./error')
 
   return {
 
@@ -10,7 +9,7 @@ define(function(require) {
       var responded
         , timeout = setTimeout(function() {
             responded = true
-            res(null, nap.responses.error(408))
+            res(null, error(408))
           }, 30000)
 
       next(req, function(err, data) {
@@ -19,19 +18,18 @@ define(function(require) {
       })
     }
 
-  , logger : function(req, res, next) {
-
-      //if(!log.isDebug()) return next(req, res)
-
-      next(req, function(err, data) {
-        if(data.statusCode == 302) log.debug(data.statusCode, req.uri, data.headers.location)
-        if(data.statusCode >= 400) {
-          var args = [data.statusCode, req.uri, req.method]
-          data.body && (args = args.concat(data.body))
-          log.debug.apply(log, args)
-        }
-        res(err, data)
-      })
+  , logger : function(log) {
+      return function(req, res, next) {
+        next(req, function(err, data) {
+          if(data.statusCode == 302) log.debug(data.statusCode, req.uri, data.headers.location)
+          if(data.statusCode >= 400) {
+            var args = [data.statusCode, req.uri, req.method]
+            data.body && (args = args.concat(data.body))
+            log.debug.apply(log, args)
+          }
+          res(err, data)
+        })
+      }
     }
   }
 

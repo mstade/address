@@ -24,7 +24,7 @@ define(function(require) {
             .mock('./location', function() {
               return { pushState: function() {}}
             })
-        .require(['view-wrapper'], function(viewWrapper) {
+        .require(['view-wrapper', 'location'], function(viewWrapper, location) {
           wrapView = viewWrapper
           done()
         })
@@ -61,7 +61,7 @@ define(function(require) {
       eventName = 'resourcewillchange'
       node.addEventListener(eventName, callback)
 
-      wrapView(reqOne, resOne)
+      wrapView(location, reqOne, resOne)
       resOne.body(node)
 
       callback.should.have.been.calledOnce
@@ -72,10 +72,10 @@ define(function(require) {
       eventName = 'resourcewillchange'
       node.addEventListener(eventName, callback)
 
-      wrapView(reqOne, resOne)
+      wrapView(location, reqOne, resOne)
       resOne.body(node)
 
-      wrapView(reqTwo, resTwo)
+      wrapView(location, reqTwo, resTwo)
       resTwo.body(node)
 
       callback.should.have.been.calledTwice
@@ -89,10 +89,10 @@ define(function(require) {
       eventName = 'resourcewillchange'
       node.addEventListener(eventName, callback)
 
-      wrapView(reqOne, resOne)
+      wrapView(location, reqOne, resOne)
       resOne.body(node)
 
-      wrapView(reqOne, resTwo)
+      wrapView(location, reqOne, resTwo)
       resTwo.body(node)
 
       callback.should.have.been.calledOnce

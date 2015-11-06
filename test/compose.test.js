@@ -2,6 +2,7 @@ define(function(require) {
   var Squire = require('Squire')
   , compose
   , web
+  , interpolate
 
   describe('Compose', function() {
     beforeEach(function(done) {
@@ -30,8 +31,9 @@ define(function(require) {
         }
       })
       .require(
-      [ 'compose' ]
-      , function(a) {
+      [ 'compose', 'interpolate' ]
+      , function(a, i) {
+        interpolate = i
         compose = a
         done()
       }
@@ -39,7 +41,7 @@ define(function(require) {
     })
 
     it('should return the requested resource if no routes are defined', function () {
-      compose('a', 'b').should.equal('a')
+      compose(web, interpolate, 'a', 'b').should.equal('a')
     })
 
     it('should return the requested resource if route is defined', function () {
@@ -57,7 +59,7 @@ define(function(require) {
       , composes : []
       , redirects : {}
       }
-      compose('a', 'b').should.equal('a')
+      compose(web, interpolate, 'a', 'b').should.equal('a')
     })
     it('should return the composed resource if route is composable', function () {
       web.routes.a = {
@@ -75,7 +77,7 @@ define(function(require) {
       , params: ['{id}']
       , redirects : {}
       }
-      compose('a', 'b').should.equal('/b/{id}')
+      compose(web, interpolate, 'a', 'b').should.equal('/b/{id}')
     })
   })
   }

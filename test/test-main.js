@@ -11,13 +11,13 @@ requirejs.config({
 
   , paths: {
       'logger/log' : "test/log"
-    , 'd3': 'node_modules/d3-pkg/d3'
-    , 'nap': 'node_modules/nap-ext-pkg/node_modules/nap/nap'
-    , 'rhumb': 'node_modules/rhumb-pkg/node_modules/rhumb/dist/rhumb'
+    , 'd3': 'node_modules/d3/d3'
+    , 'nap': 'node_modules/@websdk/nap/lib/nap'
+    , 'rhumb': 'node_modules/@websdk/rhumb/lib/rhumb'
     , 'Squire': 'test/Squire'
-    , 'jquery': 'node_modules/jquery-pkg/node_modules/jquery/dist/jquery'
+    , 'jquery': 'node_modules/jquery/dist/jquery'
     , 'sinon': 'node_modules/sinon/pkg/sinon'
-    , 'underscore' : 'node_modules/underscore-pkg/node_modules/underscore/underscore'
+    , 'underscore' : 'node_modules/underscore/underscore'
   }
 
   , shim: {

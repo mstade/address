@@ -1,9 +1,7 @@
 define(function(require) {
     var _ = require('underscore')
-      , web = require('./web!')
-      , interpolate = require('./interpolate')
 
-    return function(requestedUri, currentUri) {
+    return function(web, interpolate, requestedUri, currentUri) {
 
       if(!currentUri || requestedUri == currentUri) return requestedUri
 
@@ -18,7 +16,7 @@ define(function(require) {
         , rewritePath = redirect || currentResource.path
         , shouldRewrite = redirect || composes
 
-      if(shouldRewrite) return interpolate(rewritePath, composedParams)
+      if(shouldRewrite) return interpolate(web, rewritePath, composedParams)
       return requestedUri // TODO query string handling?
     }
   }

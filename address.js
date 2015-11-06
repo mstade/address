@@ -2,7 +2,7 @@ define(function(require) {
 
   var d3 = require('d3')
     , _ = require('underscore')
-    , web = require('./web!')
+    , nap = require('nap')
     , zapp = require('./z-app')
     , codes = require('./http-status-code')
     , isView = require('./is-view')
@@ -10,7 +10,6 @@ define(function(require) {
     , serialize = require('./serialize')
     , interpolate = require('./interpolate')
     , compose = require('./compose')
-    , location = require('./location')
     , wrapView = require('./view-wrapper')
     , invokeView = require('./view-invoker')
     , toObject = require('./kv-to-object')
@@ -18,6 +17,8 @@ define(function(require) {
     function address(r) {
 
       var uri
+        , web
+        , location
         , method = "get"
         , headers = { accept : "application/x.nap.view" }
         , params = {}
@@ -42,6 +43,15 @@ define(function(require) {
         var request = req()
         web.req(request, _.partial(handleResponse, request, callback))
       }
+
+      api.web = function(w) {
+        if(!arguments.length) return web
+        web = w
+        location = require('./location')(web, address)
+        return api
+      }
+
+      api.web(nap.web())
 
       api.uri = function(u) {
         if(!arguments.length) return uri
@@ -179,9 +189,9 @@ define(function(require) {
         }
 
         function getUri() {
-          var u = interpolate(uri, params)
+          var u = interpolate(web, uri, params)
           if (!zapp.isRoot(context)) return u
-          return compose(u, zapp.resource(context))
+          return compose(web, interpolate, u, zapp.resource(context))
         }
 
         function getContext() {
@@ -201,7 +211,7 @@ define(function(require) {
         if(err) return dispatcher.err(err), null
 
         if(isView(res)) {
-          if(res.statusCode != 302) wrapView(req, res)
+          if(res.statusCode != 302) wrapView(location, req, res)
           req.context && invokeView(req, res)
         }
 
@@ -217,9 +227,6 @@ define(function(require) {
       }
     }
 
-    address.find = web.find
-    address.interpolate = interpolate
-    address.location = location
     return address
   }
 )

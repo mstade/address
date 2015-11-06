@@ -3,9 +3,8 @@ define(function(require) {
   var _ = require('underscore')
     , d3 = require('d3')
     , zapp = require('./z-app')
-    , location = require('./location')
 
-  return function wrapView(req, res) {
+  return function wrapView(location, req, res) {
 
     var view
     if (!_.isFunction(res.body)) return
