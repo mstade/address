@@ -2,12 +2,9 @@
   "name": "address",
   "version": "2.0.0",
   "description": "API for nap resources",
-  "main": "address.js",
+  "main": "lib/address.js",
   "devDependencies": {
-    "d3": "^3.5.5",
-    "grunt": "~0.4.1",
-    "grunt-karma": "~0.10.1",
-    "jquery": "^1.8.2",
+    "jquery": "^2.1.3",
     "karma": "~0.12.31",
     "karma-chrome-launcher": "~0.1.7",
     "karma-coverage": "^0.5.2",
@@ -15,29 +12,23 @@
     "karma-requirejs": "~0.2.2",
     "karma-sinon-chai": "~0.1.4",
     "karma-teamcity-reporter": "~0.1.1",
-    "@websdk/nap": "0.9.8",
+    "requirejs": "^2.1.19",
     "@websdk/rhumb": "0.3.4",
     "sinon": "^1.14.1",
-    "underscore": "^1.8.3"
+    "webpack": "^1.12.2"
   },
   "scripts": {
-    "ci-test": "grunt karma:ci-test"
+    "test": "karma start --single-run",
+    "prepublish": "npm run build",
+    "build": "rm -rf lib && webpack"
   },
   "repository": {
     "type": "git",
-    "url": "https://stash.dts.fm.rbsgrp.net/scm/zap/am-address.git"
+    "url": "git@github.com:zambezi-websdk/address.git"
   },
-  "_zambezi": {
-    "runtimeDependencies": [
-      "d3-utils",
-      "text",
-      "nap",
-      "rhumb",
-      "d3",
-      "type",
-      "logger",
-      "underscore"
-    ],
-    "type": "library"
+  "dependencies": {
+    "@websdk/nap": "0.9.8",
+    "d3": "^3.5.5",
+    "underscore": "^1.8.3"
   }
 }

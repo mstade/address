@@ -2,7 +2,7 @@ define(function(require) {
 
   var d3 = require('d3')
     , _ = require('underscore')
-    , nap = require('nap')
+    , nap = require('@websdk/nap')
     , zapp = require('./z-app')
     , codes = require('./http-status-code')
     , isView = require('./is-view')

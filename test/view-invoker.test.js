@@ -3,7 +3,7 @@ define(
   , 'sinon'
   ]
   , function(Squire, sinon) {
-    describe('View Invoker', function() {
+    xdescribe('View Invoker', function() {
 
       var viewInvoker
         , logSpy
