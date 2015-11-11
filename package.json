@@ -30,5 +30,6 @@
     "@websdk/nap": "0.9.8",
     "d3": "^3.5.5",
     "underscore": "^1.8.3"
-  }
+  },
+  "license": "MIT"
 }
