@@ -6,7 +6,7 @@ As an example, our `price` resource may expose a view representation of the pric
 
 ```javascript
 define(
-  [ 'am-address/ok'
+  [ 'address/ok'
   ]
   , function(ok) {
 

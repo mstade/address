@@ -17,7 +17,7 @@ Here's a summary on how to use a stream resource:
 - `my-stream-resource.js`:
 
 ```
-var createStream = require('am-address/stream')
+var createStream = require('address/stream')
 
 //...
 

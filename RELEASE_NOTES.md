@@ -12,4 +12,4 @@
 
 ## New features
 
-* A new `CustomEvent “resourcewillchange”` is now dispatched by the DOM node before it is cleared by am-address.
+* A new `CustomEvent “resourcewillchange”` is now dispatched by the DOM node before it is cleared by address.

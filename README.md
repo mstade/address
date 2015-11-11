@@ -1,4 +1,4 @@
-# am-address
+# Address
 
 Address is an API interfacing with [nap][1], to help implement applications following a [Resource Oriented Architecture][2].
 
@@ -17,7 +17,7 @@ Include the address library as a dependency to your AMD module using the module 
 
 ```javascript
 define(
-  [ 'am-address/address'
+  [ 'address'
   ]
   , function(address) {
 
