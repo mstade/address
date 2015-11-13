@@ -1,9 +1,10 @@
 {
   "name": "@zambezi/address",
-  "version": "2.0.0",
+  "version": "2.0.0-omo",
   "description": "API for nap resources",
   "main": "lib/address.js",
   "devDependencies": {
+    "@websdk/rhumb": "^0.3.5",
     "jquery": "^2.1.3",
     "karma": "^0.13.21",
     "karma-chrome-launcher": "~0.1.7",
