@@ -87,7 +87,7 @@ define(function(require) {
       }
 
       api.into = function(v) {
-        into = v
+        into = v || null
         return api
       }
 
@@ -187,7 +187,7 @@ define(function(require) {
         function getContext() {
           if (!isView({headers: headers})) return undefined
           if (_.isString(into)) return d3.select(zapp.root(origin)).select(into).node()
-          if (!into) return zapp.root(origin)
+          if (_.isNull(into)) return zapp.root(origin)
           return into
         }
 
