@@ -107,13 +107,12 @@ define(function(require) {
         if (t) api.target(t)
 
         var request = req()
-        if (target) return location.openNewWindow(request.uri, target)
-        if (shouldNavigate()) return location.setState(request.uri)
-        api.into(zapp.root(origin))()
+          , root =  zapp.root(origin)
+          , isLocalRoot = root !== zapp.root()
 
-        function shouldNavigate() {
-          return method === 'get' && zapp.isRoot(request.context)
-        }
+        if (target) return location.openNewWindow(request.uri, target)
+        if (isLocalRoot) return api.into(root)()
+        return location.setState(request.uri)
       }
 
       api.view = function() {
