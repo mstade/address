@@ -87,7 +87,7 @@ define(function(require) {
       }
 
       api.into = function(v) {
-        into = v
+        into = v || null
         return api
       }
 
@@ -107,13 +107,12 @@ define(function(require) {
         if (t) api.target(t)
 
         var request = req()
-        if (target) return location.openNewWindow(request.uri, target)
-        if (shouldNavigate()) return location.setState(request.uri)
-        api.into(zapp.root(origin))()
+          , root =  zapp.root(origin)
+          , isLocalRoot = root !== zapp.root()
 
-        function shouldNavigate() {
-          return method === 'get' && zapp.isRoot(request.context)
-        }
+        if (target) return location.openNewWindow(request.uri, target)
+        if (isLocalRoot) return api.into(root)()
+        return location.setState(request.uri)
       }
 
       api.view = function() {
@@ -187,7 +186,7 @@ define(function(require) {
         function getContext() {
           if (!isView({headers: headers})) return undefined
           if (_.isString(into)) return d3.select(zapp.root(origin)).select(into).node()
-          if (!into) return zapp.root(origin)
+          if (_.isNull(into)) return zapp.root(origin)
           return into
         }
 

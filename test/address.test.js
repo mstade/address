@@ -244,7 +244,7 @@ define(function(require) {
               accept : 'application/x.nap.view'
             }
           , body : undefined
-          , context: zapp.root()
+          , context: undefined
           , origin: undefined
           }
 
@@ -255,6 +255,7 @@ define(function(require) {
 
         web.req.should.have.been.calledOnce
         cb.should.have.been.calledOnce
+
         web.req.args[0][0].should.deep.equal(req)
       })
 
