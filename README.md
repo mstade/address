@@ -413,7 +413,7 @@ Dispatched before invoking a view function, regardless of the resource addressed
 
 ### `resourcewillchange`
 
-Dispatched before invoking a view function with a new resource. After this event is dispatched, the contents of the view's DOM element are discarded and replaced.
+Dispatched before invoking a view function with a new resource.
 
 ###  Usage
 
@@ -428,7 +428,7 @@ function view(node) {
   }
 
   function handleResourceWillChange() {
-    console.log('Resource will change: DOM will be cleared.')
+    console.log('Resource will change: do you want to clear the DOM?.')
   }
 }
 
