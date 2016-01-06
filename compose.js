@@ -27,9 +27,9 @@ define(function(require) {
 
     function rewrite(path, params) {
       var alreadyInterpolated = _.chain(rhumb._parse(path))
-                                      .filter(byInterpolated)
-                                      .pluck('input')
-                                  .value()
+              .filter(byInterpolated)
+              .pluck('input')
+          .value()
         , query = _.reduce(params, buildQuery, {})
         , rewritten = interpolate(path, params)
         , url = uri(rewritten)
