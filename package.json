@@ -37,7 +37,8 @@
       "d3",
       "type",
       "logger",
-      "underscore"
+      "underscore",
+      "lil-uri"
     ],
     "type": "library"
   }
