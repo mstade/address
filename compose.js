@@ -20,7 +20,7 @@ define(function(require) {
         , rewritePath = redirect || currentResource.path
         , shouldRewrite = redirect || composes
 
-      if(shouldRewrite) rewrite(rewritePath, composedParams)
+      if(shouldRewrite) return rewrite(rewritePath, composedParams)
 
       return requestedUri
     }
