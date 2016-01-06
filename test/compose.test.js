@@ -72,10 +72,10 @@ define(function(require) {
       , path : '/b/{id}'
       , methods : {}
       , composes : ['/a/{id}']
-      , params: ['{id}']
+      , params: { id: 'foo' }
       , redirects : {}
       }
-      compose('a', 'b').should.equal('/b/{id}')
+      compose('a', 'b').should.equal('/b/foo')
     })
   })
   }
