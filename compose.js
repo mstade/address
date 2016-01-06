@@ -34,7 +34,7 @@ define(function(require) {
         , rewritten = interpolate(path, params)
         , url = uri(rewritten)
 
-      url.query(_.extend({}, url.query(), query))
+      if (!_.isEmpty(query)) url.query(_.extend({}, url.query(), query))
 
       return url.build()
 
@@ -47,6 +47,7 @@ define(function(require) {
         q[k] = v
         return q
       }
+
     }
   }
 )
