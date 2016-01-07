@@ -14,10 +14,12 @@ define(function(require) {
     , wrapView = require('./view-wrapper')
     , invokeView = require('./view-invoker')
     , toObject = require('./kv-to-object')
+    , parseUri = require('lil-uri')
 
     function address(r) {
 
-      var uri
+      var parsedUri
+        , uri
         , method = "get"
         , headers = { accept : "application/x.nap.view" }
         , params = {}
@@ -30,9 +32,13 @@ define(function(require) {
         , dispatcher = d3.dispatch.apply(null, codes.range().concat(['err', 'done']))
 
       if(r && _.isString(r)) {
-        uri = r
+        parsedUri = parseUri(r)
+        uri = parsedUri.path() || uri
+        query = parsedUri.query() || query
+
       } else if(r && _.isObject(r)) {
         uri = r.uri || uri
+        query = r.query || query
         method = r.method || method
         headers = r.headers || headers
         body = r.body || body
