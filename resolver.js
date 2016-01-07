@@ -11,8 +11,8 @@ define(
         if (require.defined(dep)) callHandler(require(dep))
         else require([dep], callHandler)
 
-        function callHandler (fn) {
-          fn = fn[req.method] || fn
+        function callHandler (module) {
+          var fn = module[req.method] || _.isFunction(module)? module : module.default
 
           if(!_.isFunction(fn)) {
             log.debug("failed to resolve resource function from module", dep, req.method)
