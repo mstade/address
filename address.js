@@ -18,8 +18,7 @@ define(function(require) {
 
     function address(r) {
 
-      var parsedUri
-        , uri
+      var uri
         , method = "get"
         , headers = { accept : "application/x.nap.view" }
         , params = {}
@@ -32,10 +31,8 @@ define(function(require) {
         , dispatcher = d3.dispatch.apply(null, codes.range().concat(['err', 'done']))
 
       if(r && _.isString(r)) {
-        parsedUri = parseUri(r)
-        uri = parsedUri.path() || uri
-        query = parsedUri.query() || query
-
+        uri = r
+        query = parseUri(uri).query() || query
       } else if(r && _.isObject(r)) {
         uri = r.uri || uri
         query = r.query || query
