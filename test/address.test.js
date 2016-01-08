@@ -396,12 +396,13 @@ define(function(require) {
         api.query().should.deep.equal(query)
       })
 
-      it('should overwrite queries', function() {
+      it('should overwrite queries in the resulting URI', function() {
         var uri = '/foo?x=x'
           , api = address(uri).query({x: '2'})
           , query = { x: '2' }
 
         api.query().should.deep.equal(query)
+        api.navigate().state.should.equal('/foo?x=2')
       })
 
       it('should handle streams', function() {
