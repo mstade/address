@@ -2,6 +2,8 @@ define(function(require) {
     var _ = require('underscore')
       , web = require('./web!')
       , interpolate = require('./interpolate')
+      , rhumb = require('rhumb')
+      , uri = require('lil-uri')
 
     return function(requestedUri, currentUri) {
 
@@ -18,8 +20,34 @@ define(function(require) {
         , rewritePath = redirect || currentResource.path
         , shouldRewrite = redirect || composes
 
-      if(shouldRewrite) return interpolate(rewritePath, composedParams)
-      return requestedUri // TODO query string handling?
+      if(shouldRewrite) return rewrite(rewritePath, composedParams)
+
+      return requestedUri
+    }
+
+    function rewrite(path, params) {
+      var alreadyInterpolated = _.chain(rhumb._parse(path))
+              .filter(byInterpolated)
+              .pluck('input')
+          .value()
+        , query = _.reduce(params, buildQuery, {})
+        , rewritten = interpolate(path, params)
+        , url = uri(rewritten)
+
+      if (!_.isEmpty(query)) url.query(_.extend({}, url.query(), query))
+
+      return url.build()
+
+      function byInterpolated(part) {
+        return part.type == 'var'
+      }
+
+      function buildQuery(q, v, k) {
+        if (_.contains(alreadyInterpolated, k)) return q
+        q[k] = v
+        return q
+      }
+
     }
   }
 )

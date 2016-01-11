@@ -46,6 +46,11 @@ module.exports = function(config) {
       , watched: false
     }
     , {
+        pattern: 'node_modules/lil-uri-pkg/node_modules/lil-uri/uri.js'
+      , included: false
+      , watched: false
+    }
+    , {
         pattern: 'test/**/*.js'
       , included: false
     }

@@ -196,6 +196,7 @@ define(function(require) {
         var a = address({
           uri : '/wibble'
         , method : 'send'
+        , query: { x: 'x'}
         , headers : {
             accept : 'application/json'
           }
@@ -206,6 +207,7 @@ define(function(require) {
         a.method().should.equal('send')
         a.header().should.deep.equal({accept:'application/json'})
         a.body().should.equal('hello')
+        a.query().should.deep.equal({x: 'x'})
       })
 
       it('should call web.req with the configured request and callback', function() {
@@ -376,6 +378,31 @@ define(function(require) {
         api.query().should.deep.equal(query2)
         api.query(query3).should.equal(api)
         api.query().should.deep.equal({a: 'a', b: 'b', c: 'c', d: 'd'})
+      })
+
+      it('should build query from uri', function() {
+        var uri = '/foo?x=x'
+          , api = address(uri)
+          , query = { x: 'x' }
+
+        api.query().should.deep.equal(query)
+      })
+
+      it('should merge queries', function() {
+        var uri = '/foo?x=x'
+          , api = address(uri).query({y: 'y'})
+          , query = { x: 'x', y: 'y' }
+
+        api.query().should.deep.equal(query)
+      })
+
+      it('should overwrite queries in the resulting URI', function() {
+        var uri = '/foo?x=x'
+          , api = address(uri).query({x: '2'})
+          , query = { x: '2' }
+
+        api.query().should.deep.equal(query)
+        api.navigate().state.should.equal('/foo?x=2')
       })
 
       it('should handle streams', function() {

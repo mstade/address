@@ -18,6 +18,7 @@ requirejs.config({
     , 'jquery': 'node_modules/jquery-pkg/node_modules/jquery/dist/jquery'
     , 'sinon': 'node_modules/sinon/pkg/sinon'
     , 'underscore' : 'node_modules/underscore-pkg/node_modules/underscore/underscore'
+    , 'lil-uri' : 'node_modules/lil-uri-pkg/node_modules/lil-uri/uri'
   }
 
   , shim: {

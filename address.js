@@ -7,13 +7,13 @@ define(function(require) {
     , codes = require('./http-status-code')
     , isView = require('./is-view')
     , isStream = require('./is-stream')
-    , serialize = require('./serialize')
     , interpolate = require('./interpolate')
     , compose = require('./compose')
     , location = require('./location')
     , wrapView = require('./view-wrapper')
     , invokeView = require('./view-invoker')
     , toObject = require('./kv-to-object')
+    , parseUri = require('lil-uri')
 
     function address(r) {
 
@@ -31,8 +31,10 @@ define(function(require) {
 
       if(r && _.isString(r)) {
         uri = r
+        query = parseUri(uri).query() || query
       } else if(r && _.isObject(r)) {
         uri = r.uri || uri
+        query = r.query || query
         method = r.method || method
         headers = r.headers || headers
         body = r.body || body
@@ -169,7 +171,7 @@ define(function(require) {
         var context = getContext()
 
         return {
-          uri : getUri() + serialize(query)
+          uri : getUri()
         , method : method
         , headers : headers
         , body : body
@@ -178,9 +180,12 @@ define(function(require) {
         }
 
         function getUri() {
-          var u = interpolate(uri, params)
-          if (!zapp.isRoot(context)) return u
-          return compose(u, zapp.resource(context))
+          var parsedUri = parseUri(interpolate(uri, params))
+            , q = _.extend({}, parsedUri.query(), query)
+            , mergedUri = (_.isEmpty(q) ? parsedUri : parsedUri.query(q)).build()
+
+          if (!zapp.isRoot(context)) return mergedUri
+          return compose(mergedUri, zapp.resource(context))
         }
 
         function getContext() {
