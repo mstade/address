@@ -12,7 +12,7 @@ define(
         else require([dep], callHandler)
 
         function callHandler (module) {
-          var fn = module[req.method] || _.isFunction(module)? module : module.default
+          var fn = module[req.method] || (_.isFunction(module) ? module : module.default)
 
           if(!_.isFunction(fn)) {
             log.debug("failed to resolve resource function from module", dep, req.method)
