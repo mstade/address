@@ -1,0 +1,8 @@
+{
+  "plugins" : [ "zambezi-docs" ],
+  "pluginsConfig": {
+    "zambezi-docs": {
+      "color" : "#1A4A67"
+    }
+  } 
+}
