@@ -405,6 +405,13 @@ define(function(require) {
         api.navigate().state.should.equal('/foo?x=2')
       })
 
+      it('should keep encoded path components', function() {
+        var uri = '/foo/bar%2Fbaz'
+          , api = address(uri)
+
+        api.navigate().state.should.equal(uri)
+      })
+
       it('should handle streams', function() {
         var cb = sinon.spy()
           , req = {

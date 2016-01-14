@@ -180,7 +180,9 @@ define(function(require) {
         }
 
         function getUri() {
-          var parsedUri = parseUri(interpolate(uri, params))
+          var interpolatedUri = interpolate(uri, params)
+              // As lil-uri always decodes the URI, encode it.
+            , parsedUri = parseUri(encodeURIComponent(interpolatedUri))
             , q = _.extend({}, parsedUri.query(), query)
             , mergedUri = (_.isEmpty(q) ? parsedUri : parsedUri.query(q)).build()
 
