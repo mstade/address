@@ -50,9 +50,11 @@ define(function(require) {
         web.req(request, _.partial(handleResponse, request, callback))
 
         function bail() {
-          var err = error(400)
+          var err = error(400, {
+            message: 'request is missing URI'
+          })
           codes(err.statusCode).forEach(function(type) {
-            log.debug(err.statusCode, type, request.uri, request.method)
+            log.debug(err.statusCode, type, err.body.message, request.method)
             dispatcher[type](err)
           })
         }
