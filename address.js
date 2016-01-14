@@ -14,6 +14,8 @@ define(function(require) {
     , invokeView = require('./view-invoker')
     , toObject = require('./kv-to-object')
     , parseUri = require('lil-uri')
+    , log = require('logger/log!platform/am-address')
+    , error = require('./error')
 
     function address(r) {
 
@@ -42,7 +44,18 @@ define(function(require) {
 
       function api() {
         var request = req()
+
+        if (!request.uri) return bail()
+
         web.req(request, _.partial(handleResponse, request, callback))
+
+        function bail() {
+          var err = error(400)
+          codes(err.statusCode).forEach(function(type) {
+            log.debug(err.statusCode, type, request.uri, request.method)
+            dispatcher[type](err)
+          })
+        }
       }
 
       api.uri = function(u) {
