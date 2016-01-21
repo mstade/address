@@ -15,7 +15,7 @@ requirejs.config({
     , 'nap': 'node_modules/nap-ext-pkg/node_modules/nap/nap'
     , 'rhumb': 'node_modules/rhumb-pkg/node_modules/rhumb/dist/rhumb'
     , 'Squire': 'test/Squire'
-    , 'jquery': 'node_modules/jquery-pkg/node_modules/jquery/dist/jquery'
+    , 'jquery': 'node_modules/jquery-pkg/jquery/dist/jquery'
     , 'sinon': 'node_modules/sinon/pkg/sinon'
     , 'underscore' : 'node_modules/underscore-pkg/node_modules/underscore/underscore'
     , 'lil-uri' : 'node_modules/lil-uri-pkg/node_modules/lil-uri/uri'
