@@ -45,10 +45,10 @@ define(function(require) {
       function api() {
         var request = req()
 
+        // this should be removed once this issues are fixed
+        // https://github.com/websdk/nap/issues/34
+        // https://github.com/websdk/nap/issues/34
         if (!request.uri) return bail()
-
-        web.req(request, _.partial(handleResponse, request, callback))
-
         function bail() {
           var err = error(400, {
             message: 'request is missing URI'
@@ -58,6 +58,8 @@ define(function(require) {
             dispatcher[type](err)
           })
         }
+
+        web.req(request, _.partial(handleResponse, request, callback))
       }
 
       api.uri = function(u) {
