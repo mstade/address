@@ -24,7 +24,7 @@ define(function(require) {
 
       loadResources(
           window.z
-        , '/api/bootshell/v1/resources'
+        , '/api/apps/v1/resources'
         , function loadResourcesHandler(err, resources) {
             if (err) {
               log.error(err.message)
