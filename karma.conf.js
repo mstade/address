@@ -21,7 +21,7 @@ module.exports = function(config) {
       , watched: false
     }
     , {
-        pattern: 'node_modules/jquery-pkg/node_modules/jquery/dist/jquery.js'
+        pattern: 'node_modules/jquery-pkg/jquery/dist/jquery.js'
       , included: false
       , watched: false
     }
@@ -68,7 +68,7 @@ module.exports = function(config) {
 
   // test results reporter to use
   // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-  reporters: ['progress', 'coverage'],
+  reporters: ['progress'],// 'coverage'],
   preprocessors: {
     '*.js': ['coverage']
   },

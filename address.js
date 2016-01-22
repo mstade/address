@@ -48,7 +48,7 @@ define(function(require) {
         // this should be removed once this issues are fixed
         // https://github.com/websdk/nap/issues/34
         // https://github.com/websdk/nap/issues/34
-        if (!request.uri) return bail()
+        if (!request.uri || request.uri === 'undefined') return bail()
         function bail() {
           var err = error(400, {
             message: 'request is missing URI'
