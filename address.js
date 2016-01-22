@@ -14,6 +14,8 @@ define(function(require) {
     , invokeView = require('./view-invoker')
     , toObject = require('./kv-to-object')
     , parseUri = require('lil-uri')
+    , log = require('logger/log!platform/am-address')
+    , error = require('./error')
 
     function address(r) {
 
@@ -42,6 +44,21 @@ define(function(require) {
 
       function api() {
         var request = req()
+
+        // this should be removed once this issues are fixed
+        // https://github.com/websdk/nap/issues/34
+        // https://github.com/websdk/nap/issues/34
+        if (!request.uri) return bail()
+        function bail() {
+          var err = error(400, {
+            message: 'request is missing URI'
+          })
+          codes(err.statusCode).forEach(function(type) {
+            log.debug(err.statusCode, type, err.body.message, request.method)
+            dispatcher[type](err)
+          })
+        }
+
         web.req(request, _.partial(handleResponse, request, callback))
       }
 

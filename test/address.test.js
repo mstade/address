@@ -439,6 +439,18 @@ define(function(require) {
         response.body.should.equal(responseBody)
       })
 
+      it('should err when missing URI', function() {
+        var onBadRequest = sinon.spy()
+          , onClientError = sinon.spy()
+
+        address()
+          .on('bad-request', onBadRequest)
+          .on('client-error', onClientError)
+          .get()
+
+        onBadRequest.should.have.been.calledOnce
+        onClientError.should.have.been.calledOnce
+      })
     })
   }
 )
