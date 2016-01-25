@@ -29,7 +29,11 @@ define(function(require) {
     }
 
     function matches(elm, selector) {
-      if (elm.matches) return elm.matches(selector)
+      if (elm.matches) {
+        return elm.matches(selector)
+      } else if (elm.msMatchesSelector) {
+        return elm.msMatchesSelector(selector)
+      }
 
       var document = elm.document || elm.ownerDocument
 
