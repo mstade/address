@@ -239,16 +239,16 @@ define(function(require) {
 
       it('should use defaults', function() {
         var cb = sinon.spy()
-          , req = {
-            uri : '/wibble'
-          , method : 'get'
-          , headers : {
-              accept : 'application/x.nap.view'
+          , defaulReq = {
+              uri : '/wibble'
+            , method : 'get'
+            , headers : {
+                accept : 'application/x.nap.view'
+              }
+            , body : undefined
+            , context: document.body
+            , origin: undefined
             }
-          , body : undefined
-          , context: undefined
-          , origin: undefined
-          }
 
         expect(zapp.rootResource()).to.be.undefined
         expect(zapp.resource(zapp.root())).to.be.equal(zapp.rootResource())
@@ -258,7 +258,7 @@ define(function(require) {
         web.req.should.have.been.calledOnce
         cb.should.have.been.calledOnce
 
-        web.req.args[0][0].should.deep.equal(req)
+        web.req.args[0][0].should.deep.equal(defaulReq)
       })
 
       it('should call the response body with the node', function() {
