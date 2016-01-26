@@ -433,7 +433,7 @@ function view(node) {
 
 ## Resource composition
 
-You can `compose` multiple resources into one. When you have a top level resource that composes other resources, you  can mark that adding the list of `composes` path to this top level resource. Whenever a request is targeted to a node whose current resource is composed of the requested one, the "composition" will be requested instead.
+You can compose multiple resources into one. When you have a top level resource that composes other resources, you  can mark that adding the composed paths to the `composes` list to this top level resource. Whenever a request is targeted to a node whose current resource is composed of the requested one, the "composition" will be requested instead.
 
 For example:
 
