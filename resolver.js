@@ -8,8 +8,7 @@ define(
 
       return function(req, res) {
 
-        if (require.defined(dep)) callHandler(require(dep))
-        else require([dep], callHandler)
+        require([dep], callHandler)
 
         function callHandler (module) {
           var fn = module[req.method] || (_.isFunction(module) ? module : module.default)
