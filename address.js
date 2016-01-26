@@ -210,7 +210,7 @@ define(function(require) {
         function getContext() {
           if (!isView({headers: headers})) return undefined
           if (_.isString(into)) return d3.select(zapp.root(origin)).select(into).node()
-          if (_.isNull(into)) return zapp.root(origin)
+          if (_.isNull(into) || _.isUndefined(into)) return zapp.root(origin)
           return into
         }
 
