@@ -437,19 +437,30 @@ You can compose multiple resources into one. When you have a top level resource 
 
 For example:
 
-The node contains the `/overview/{id}` resource, and `composes` resources `/article/{id}` and `/authors-for/{id}`. If there is a request `/authors/1` or `/authors-for/1` for the node, it will load `/overview/1` into the node instead.
+The node contains the `/overview/{id}` resource, and `composes` resources `/article/{id}` and `/authors-for/{id}`. If there is a request `/authors/1` or `/authors-for/1` for the node, it will load `/overview/1` into the node instead. The responsibility for loading the composed resources is up to the composer.
 
 ```javascript
-// Load the overview into the <main> element
-address('/overview/123')
-  .into('main')
-  .get()
+// Load the overview into the root element
+address('/overview/{id}')
+  .param('id', 123)
+  .navigate()
 
 // ... later ...
 
-address('/authors/1')
-  .into('main')
-  .get()
-// "/overview/1" will be loaded into <main>, as it `composes` "/authors/{id}" and "/overview/{id}" is loaded there currently.
+address('/article/{id}')
+  .param('id', 1)
+  .query('order', 'asc')
+  .navigate()
 
+```
+
+`/overview/1?order=asc` will be loaded, as `/overview/{id}` *composes* `/article/{id}` and `/overview/{id}` and it is currently loaded into the root.
+
+To pass on the query string to the composed resource in the `/overview/{id}` resource you could use something like:
+
+```javascript
+address(req.uri)
+  .uri('/article/{id}')
+  .param('id', req.params.id)
+  .into(node)
 ```
