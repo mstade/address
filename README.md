@@ -484,7 +484,7 @@ The responsibility for loading the composed resources is up to the composer.
 To pass on the query string to the composed resource in the `/overview/{id}` resource you could use something like:
 
 ```javascript
-address(encodeURIComponent(req.uri))
+address(req.uri)
   .uri('/article/{id}')
   .param('id', req.params.id)
   .into(node)
