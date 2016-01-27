@@ -433,34 +433,60 @@ function view(node) {
 
 ## Resource composition
 
-You can compose multiple resources into one. When you have a top level resource that composes other resources, you  can mark that adding the composed paths to the `composes` list to this top level resource. Whenever a request is targeted to a node whose current resource is composed of the requested one, the "composition" will be requested instead.
+You can compose multiple resources into one. When you have a higher level resource that composes other resources, you can mark that adding the composed paths to the `composes` list to this higher level resource.
+Whenever a request is targeted to a *node* whose current resource is composed of the requested one, the **composition** will be requested instead.
 
 For example:
 
-The node contains the `/overview/{id}` resource, and `composes` resources `/article/{id}` and `/authors-for/{id}`. If there is a request `/authors/1` or `/authors-for/1` for the node, it will load `/overview/1` into the node instead. The responsibility for loading the composed resources is up to the composer.
+```javascript
+[
+  {
+    "name": "Overview"
+  , "path": "/overview/{id}"
+  , "composes": [
+      "/article/{id}"
+    , "/authors-for/{id}"
+    ]
+  , "methods":
+    {
+      "get": {
+        "application/x.nap.view": [
+          { "*": "example/overview" }
+        ]
+      }
+    }
+  }
+]
+```
+
+Let's load the overview page into the *root* by
 
 ```javascript
-// Load the overview into the root element
 address('/overview/{id}')
   .param('id', 123)
   .navigate()
 
-// ... later ...
+```
 
+Later if we navigate to an article with
+
+```
 address('/article/{id}')
   .param('id', 1)
   .query('order', 'asc')
   .navigate()
-
 ```
 
-`/overview/1?order=asc` will be loaded, as `/overview/{id}` *composes* `/article/{id}` and `/overview/{id}` and it is currently loaded into the root.
+`/overview/1?order=asc` will be loaded, as `/overview/{id}` **composes** `/article/{id}` and `/authors-for/{id}` **and** it is currently loaded into the *root*.
+
+The responsibility for loading the composed resources is up to the composer.
 
 To pass on the query string to the composed resource in the `/overview/{id}` resource you could use something like:
 
 ```javascript
-address(req.uri)
+address(encodeURIComponent(req.uri))
   .uri('/article/{id}')
   .param('id', req.params.id)
   .into(node)
+  .get()
 ```
