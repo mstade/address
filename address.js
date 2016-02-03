@@ -33,7 +33,7 @@ define(function(require) {
 
       if(r && _.isString(r)) {
         uri = r
-        query = parseUri(uri).query() || query
+        query = parseUri(encodeURIComponent(uri)).query() || query
       } else if(r && _.isObject(r)) {
         uri = r.uri || uri
         query = r.query || query
