@@ -1,6 +1,6 @@
 {
   "name": "am-address",
-  "version": "1.9.5",
+  "version": "1.9.6",
   "description": "API for nap resources",
   "devDependencies": {
     "d3-pkg": "^3.5.5",
