@@ -412,6 +412,15 @@ define(function(require) {
         api.navigate().state.should.equal(uri)
       })
 
+      it('should process encoded queries components', function() {
+        var uri = '/fo?x=x&y=y%3Dy'
+          , api = address(uri)
+          , query = { x: 'x', y: 'y%3Dy' }
+
+        api.query().should.deep.equal(query)
+        api.navigate().state.should.equal(uri)
+      })
+
       it('should handle streams', function() {
         var cb = sinon.spy()
           , req = {
