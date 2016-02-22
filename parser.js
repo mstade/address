@@ -18,7 +18,7 @@ define(function(require) {
         var fn
 
         options.some(function(option){
-          if(nap.is(node, option.selector)) {
+          if(matches(node, option.selector)) {
             fn = option.fn
             return true
           }
@@ -26,6 +26,28 @@ define(function(require) {
 
         return fn
       }
+    }
+
+    function matches(elm, selector) {
+      if (elm.matches) {
+        return elm.matches(selector)
+      } else if (elm.msMatchesSelector) {
+        return elm.msMatchesSelector(selector)
+      }
+
+      var document = elm.document || elm.ownerDocument
+
+      if (!document) return false
+
+      var matches = document.querySelectorAll(selector)
+
+      for (var i = 0; i < matches.length; i++) {
+        if (matches.item(i) === elm) {
+          return true
+        }
+      }
+
+      return false
     }
 
     function negotiateSelector(args) {

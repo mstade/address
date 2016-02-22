@@ -139,16 +139,16 @@ define(
           return console.log.bind(console, 'resolved')
         })
 
-        nap.is = sinon.spy(function () {return true})
-
         type.should.equal('function')
         negotiateSelector.length.should.equal(2)
         var context = document.createElement('div')
+        document.body.appendChild(context)
         negotiateSelector({context: context}, cbSpy)
 
         expect(cbSpy.called).to.be.false
         resolver.should.have.been.calledOnce
         view.should.have.been.calledOnce
+        document.body.removeChild(context)
       })
 
       it('should parse a single resource with a simple function', function() {
