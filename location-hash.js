@@ -5,6 +5,7 @@ define(function(require) {
     , dispatch = require('d3-dispatch').dispatch
     , dispatcher = dispatch('statechange')
     , api = {}
+    , parseUri = require('lil-uri')
 
   on.call(window, 'hashchange.location-hash', dispatcher.statechange)
 
@@ -17,7 +18,8 @@ define(function(require) {
 
   function state(value) {
     if (!arguments.length) return pathFromHref(loc_href())
-    document.location.hash = value
+    // document.location.hash = value
+    history.pushState(null, null, value)
     return api
   }
 
@@ -31,7 +33,10 @@ define(function(require) {
   }
 
   function pathFromHref(href) {
-    return href.split('#')[1] ||''
+    var uri = parseUri(href)
+    return uri.path().split('/app')[1]
+
+    return href.split('#')[0] ||''
   }
 
   function shouldIgnoreHref(href) {
