@@ -21,12 +21,10 @@ define(function(require) {
 
   , logger : function(req, res, next) {
 
-      //if(!log.isDebug()) return next(req, res)
-
       next(req, function(err, data) {
         if(data.statusCode == 302) log.debug(data.statusCode, req.uri, data.headers.location)
         if(data.statusCode >= 400) {
-          log.debug(data.statusCode, req.uri, req.method, data.body || '')
+          log.debug(data.statusCode, 'am-address failed to load resource:', req.uri, req.method, data.body || '')
         }
         res(err, data)
       })
@@ -34,5 +32,3 @@ define(function(require) {
   }
 
 })
-
-

@@ -21,7 +21,7 @@ For v0.x documentation please see [here](v0/README.md)
 ## Usage
 
 Include the address library as a dependency to your AMD module using the namespaced module name 'am-address/address'.
-Optionally include the 'ok' and 'error' utilites
+Optionally include the 'ok' and 'error' utilities
 
 ```javascript
 define(function(require) {
@@ -282,7 +282,7 @@ As an example, our **price** resource may expose a view representation of the pr
 ```javascript
 define(function(require) {
     var ok = require('am-address/ok')
-    
+
     return function(req, res) {
 
       var ccy1 = req.params.ccy1
