@@ -11,9 +11,8 @@ define(function(require) {
   location.on('statechange.location', handleStateChange)
 
   function handleStateChange() {
-    if(ignore()) return ignore(false)
+    console.debug('handle state change', location.state())
     setState(location.state())
-    ignore(false)
   }
 
   function ignore(value) {
@@ -23,7 +22,6 @@ define(function(require) {
 
   function pushState(value) {
     if(isCurrentState(value)) return
-    ignore(true)
     currentState(value)
     location.state(value)
     return true
@@ -43,9 +41,38 @@ define(function(require) {
     return value == currentState()
   }
 
+  function openNewWindow(path, target) {
+    window.open(location.hrefFromPath(path), target, '')
+  }
+
+  function handleClick(event) {
+    var anchor
+      , target = event.target
+      , path
+
+    if (event.ctrlKey) return
+    if (event.button == 1) return
+    anchor = findClosest.anchor(target)
+    if (!anchor) return
+    if (!!anchor.target) return
+    if (location.shouldIgnoreHref(anchor.href)) return
+
+    path = location.pathFromHref(anchor.href)
+
+    if (!path) return
+    if (!web.find(path)) return
+
+    event.preventDefault()
+    event.stopPropagation()
+
+    address(path).origin(target).navigate()
+  }
+
   return function createComponent(web, address) {
     var api = {}
 
+    on.call(window, 'popstate.location-debug', console.debug.bind(console, 'popstate'))
+    on.call(window, 'popstate.location', handleStateChange)
     on.call(document, 'click.location', handleClick)
 
     api.getState = function() { return currentState() }
@@ -54,32 +81,5 @@ define(function(require) {
     api.openNewWindow = openNewWindow
 
     return rebind(api, dispatcher, 'on')
-
-    function openNewWindow(path, target) {
-      window.open(location.hrefFromPath(path), target, '')
-    }
-
-    function handleClick(event) {
-      var anchor
-        , target = event.target
-        , path
-
-      if (event.ctrlKey) return
-      if (event.button == 1) return
-      anchor = findClosest.anchor(target)
-      if (!anchor) return
-      if (!!anchor.target) return
-      if (location.shouldIgnoreHref(anchor.href)) return
-
-      path = location.pathFromHref(anchor.href)
-
-      if (!path) return
-      if (!web.find(path)) return
-
-      event.preventDefault()
-      event.stopPropagation()
-
-      address(path).origin(target).navigate()
-    }
   }
 })

@@ -19,7 +19,8 @@ define(function(require) {
   function state(value) {
     if (!arguments.length) return pathFromHref(loc_href())
     // document.location.hash = value
-    history.pushState(null, null, value)
+    console.debug('set state (in address)', value)
+    history.pushState(null, null, '/app' + value)
     return api
   }
 
