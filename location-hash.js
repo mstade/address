@@ -18,11 +18,9 @@ define(function(require) {
   return rebind(api, dispatcher, 'on')
 
   function state(value) {
-    var isSame = (window.location.pathname + window.location.search + window.location.hash).split('/app')[1] === value
-
+    var isSame = splitAddress(loc_href()) === value
     if (!arguments.length) return pathFromHref(loc_href())
     if (!isSame) history.pushState(null, null, '/app' + value)
-
     return api
   }
 
