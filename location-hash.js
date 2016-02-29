@@ -20,7 +20,10 @@ define(function(require) {
     if (!arguments.length) return pathFromHref(loc_href())
     // document.location.hash = value
     console.debug('set state (in address)', value)
-    history.pushState(null, null, '/app' + value)
+
+    var same = (window.location.pathname + window.location.search + window.location.hash).split('/app')[1] === value
+
+    if (!same) history.pushState(null, null, '/app' + value)
     return api
   }
 

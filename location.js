@@ -11,8 +11,9 @@ define(function(require) {
   location.on('statechange.location', handleStateChange)
 
   function handleStateChange() {
+    var where = (window.location.pathname + window.location.search + window.location.hash).split('/app')[1]
     console.debug('handle state change', location.state())
-    setState(location.state())
+    dispatcher.statechange(where)
   }
 
   function ignore(value) {
@@ -45,8 +46,9 @@ define(function(require) {
     window.open(location.hrefFromPath(path), target, '')
   }
 
-  function handleClick(event) {
+  function handleClick() {
     var anchor
+      , event = d3.event
       , target = event.target
       , path
 
@@ -65,7 +67,8 @@ define(function(require) {
     event.preventDefault()
     event.stopPropagation()
 
-    address(path).origin(target).navigate()
+    // see http://requirejs.org/docs/api.html#circular
+    require('./address')(path).origin(target).navigate()
   }
 
   return function createComponent(web, address) {
