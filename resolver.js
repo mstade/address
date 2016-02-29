@@ -1,8 +1,9 @@
 define(
-  [ 'logger/log!platform/am-address'
+  [ 'require'
+  , 'logger/log!platform/am-address'
   , 'underscore'
   ]
-  , function(log, _) {
+  , function(require, log, _) {
 
     return function (dep) {
 
