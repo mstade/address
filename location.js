@@ -11,8 +11,7 @@ define(function(require) {
   location.on('statechange.location', handleStateChange)
 
   function handleStateChange() {
-    var where = (window.location.pathname + window.location.search + window.location.hash).split('/app')[1]
-    console.debug('handle state change', location.state())
+    var where = location.splitAddress(window.location.pathname + window.location.search + window.location.hash)
     dispatcher.statechange(where)
   }
 

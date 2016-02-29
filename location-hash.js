@@ -13,17 +13,16 @@ define(function(require) {
   api.hrefFromPath = hrefFromPath
   api.pathFromHref = pathFromHref
   api.shouldIgnoreHref = shouldIgnoreHref
+  api.splitAddress = splitAddress
 
   return rebind(api, dispatcher, 'on')
 
   function state(value) {
+    var isSame = (window.location.pathname + window.location.search + window.location.hash).split('/app')[1] === value
+
     if (!arguments.length) return pathFromHref(loc_href())
-    // document.location.hash = value
-    console.debug('set state (in address)', value)
+    if (!isSame) history.pushState(null, null, '/app' + value)
 
-    var same = (window.location.pathname + window.location.search + window.location.hash).split('/app')[1] === value
-
-    if (!same) history.pushState(null, null, '/app' + value)
     return api
   }
 
@@ -38,9 +37,11 @@ define(function(require) {
 
   function pathFromHref(href) {
     var uri = parseUri(href)
-    return uri.path().split('/app')[1]
+    return splitAddress(uri.path())
+  }
 
-    return href.split('#')[0] ||''
+  function splitAddress(uri) {
+    return uri.split('/app')[1]
   }
 
   function shouldIgnoreHref(href) {
