@@ -18,9 +18,22 @@ define(function(require) {
   return rebind(api, dispatcher, 'on')
 
   function state(value) {
-    var isSame = splitAddress(loc_href()) === value
-    if (!arguments.length) return pathFromHref(loc_href())
-    if (!isSame) history.pushState(null, null, '/app' + value)
+    var realUrlAddress = value || splitAddress(loc_href())
+      , hashAddress = location.hash.toString().slice(1)
+      , resultAddress
+      , isSame
+
+    if (hashAddress.indexOf('/') !== 0) hashAddress = null
+
+    resultAddress = hashAddress || realUrlAddress
+
+    isSame = hashAddress ? hashAddress === value : splitAddress(loc_href()) === value
+
+    if (hashAddress) history.replaceState(null, null, '/app' + resultAddress)
+
+    if (!arguments.length) return pathFromHref('/app' + resultAddress)
+    if (!isSame) history.pushState(null, null, '/app' + resultAddress)
+
     return api
   }
 
