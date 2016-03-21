@@ -1,8 +1,8 @@
 define(
   [
     'd3'
-  , 'd3-utils/events/dispatch'
-  , 'd3-utils/events/redispatch'
+  , '@zambezi/d3-utils/events/dispatch'
+  , '@zambezi/d3-utils/events/redispatch'
   ]
   , function (d3, dispatch, redispatch) {
 
