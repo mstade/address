@@ -5,7 +5,7 @@
   "main": "lib/address.js",
   "devDependencies": {
     "jquery": "^2.1.3",
-    "karma": "~0.12.31",
+    "karma": "^0.13.21",
     "karma-chrome-launcher": "~0.1.7",
     "karma-coverage": "^0.5.2",
     "karma-mocha": "~0.1.0",
@@ -30,8 +30,8 @@
     "@websdk/rhumb": "^0.3.8",
     "d3": "^3.5.5",
     "d3-utils": "^2.13.0",
-    "underscore": "^1.8.3",
-    "lil-uri": "^0.2.0"
+    "lil-uri": "^0.2.0",
+    "underscore": "^1.8.3"
   },
   "license": "MIT"
 }
