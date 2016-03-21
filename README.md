@@ -1,4 +1,4 @@
-# am-address
+# Address
 
 Address is the API library for [Resource Oriented Architecture](http://en.wikipedia.org/wiki/Resource-oriented_architecture).
 
@@ -10,12 +10,12 @@ It provides
 
 ## Usage
 
-Include the address library as a dependency to your AMD module using the namespaced module name 'am-address/address'.
+Include the address library as a dependency to your AMD module using the namespaced module name 'address/lib/address'.
 Optionally include the 'ok' and 'error' utilities
 
 ```javascript
 define(function(require) {
-    var address = require('am-address/address')
+    var address = require('address/lib/address')
     ...
   }
 )
@@ -184,7 +184,7 @@ Here's a summary on how to use a stream resource:
 - `my-stream-resource.js`:
 
 ```javascript
-var createStream = require('am-address/stream')
+var createStream = require('address/lib/stream')
 
 //...
 
@@ -266,7 +266,7 @@ As an example, our **price** resource may expose a view representation of the pr
 
 ```javascript
 define(function(require) {
-    var ok = require('am-address/ok')
+    var ok = require('address/lib/ok')
 
     return function(req, res) {
 
@@ -335,8 +335,8 @@ response(CODE, BODY, HEADERS)
 
 ```javascript
 define(
-  [ 'am-address/ok'
-  , 'am-address/error'
+  [ 'address/lib/ok'
+  , 'address/lib/error'
   ]
   , function(ok, error) {
 
