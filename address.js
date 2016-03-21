@@ -13,7 +13,6 @@ define(function(require) {
     , invokeView = require('./view-invoker')
     , toObject = require('./kv-to-object')
     , parseUri = require('lil-uri')
-    , log = require('logger/log!platform/am-address')
     , error = require('./error')
 
     function address(r) {
