@@ -54,7 +54,7 @@ define(function(require) {
             message: 'request is missing URI'
           })
           codes(err.statusCode).forEach(function(type) {
-            log.debug(err.statusCode, type, err.body.message, request.method)
+            console.debug(err.statusCode, type, err.body.message, request.method)
             dispatcher[type](err)
           })
         }
