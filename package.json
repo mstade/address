@@ -13,13 +13,14 @@
     "karma-sinon-chai": "~0.1.4",
     "karma-teamcity-reporter": "~0.1.1",
     "requirejs": "^2.1.19",
+    "rimraf": "^2.5.2",
     "sinon": "^1.14.1",
     "webpack": "^1.12.2"
   },
   "scripts": {
     "test": "karma start --single-run",
     "prepublish": "npm run build",
-    "build": "rm -rf lib && webpack"
+    "build": "rimraf lib && webpack"
   },
   "repository": {
     "type": "git",
