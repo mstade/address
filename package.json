@@ -1,5 +1,5 @@
 {
-  "name": "address",
+  "name": "@zambezi/address",
   "version": "2.0.0",
   "description": "API for nap resources",
   "main": "lib/address.js",
