@@ -1,22 +1,12 @@
 # am-address
 
-Address is the API library for the Agile Markets [Resource Oriented Architecture](http://en.wikipedia.org/wiki/Resource-oriented_architecture).
+Address is the API library for [Resource Oriented Architecture](http://en.wikipedia.org/wiki/Resource-oriented_architecture).
 
 It provides
 
-* an api for configuring and invoking requests for resources
-* utilities for creating appropriate responses from resources
-* utilities for displaying resources in the DOM
-
-For more information and tutorials about how to define and expose resources in the Agile Markets platform please see the [Hello World tutorial](https://stash.dts.fm.rbsgrp.net/projects/ZAP/repos/hello-world-new/browse).
-
-## API versions
-
-This document is for v1.x of the api which is currently only in the dev environment.
-
-
-v1.x is fully backwards compatible with v0.x
-For v0.x documentation please see [here](v0/README.md)
+* an api for configuring and invoking requests for resources,
+* utilities for creating appropriate responses from resources,
+* utilities for displaying resources in the DOM.
 
 ## Usage
 
@@ -27,7 +17,6 @@ Optionally include the 'ok' and 'error' utilities
 define(function(require) {
     var address = require('am-address/address')
     ...
-
   }
 )
 
@@ -56,7 +45,6 @@ address("/price/usd/gbp")
     // use data from response
   })
   .get()
-
 ```
 
 Alternatively we could set the path using the `.uri()` method
@@ -68,17 +56,14 @@ address()
     // use data from response
   })
   .get()
-
 ```
 
 ### Handling the response
 
 Listeners can be added for any response type as specified in the [HTTP/1.1 specification](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html).
 
-
 The event names correspond to the status code of the response as defined in the [specification](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html)
 e.g. `ok` is a 200 status code, `not-found` is a 404 status code.
-
 
 Listeners can also be added for categories of response, e.g. `successful` is triggered for any response in the 200 range,  `client-error` is triggered for any response in the 400 range, etc.
 
@@ -136,7 +121,7 @@ Supported methods are
 * PUT
 * REMOVE
 
-The semantics of these methods should be equivalent to the standard [HTTP verbs](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html)
+The semantics of these methods should be equivalent to the standard [HTTP verbs](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html).
 
 If the requested resource does not support the specified method a [405](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) error response will be returned.
 
