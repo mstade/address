@@ -13,7 +13,6 @@
     "karma-sinon-chai": "~0.1.4",
     "karma-teamcity-reporter": "~0.1.1",
     "requirejs": "^2.1.19",
-    "@websdk/rhumb": "0.3.4",
     "sinon": "^1.14.1",
     "webpack": "^1.12.2"
   },
@@ -24,12 +23,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:zambezi-websdk/address.git"
+    "url": "git@github.com:zambezi/address.git"
   },
   "dependencies": {
-    "@websdk/nap": "0.9.8",
+    "@websdk/nap": "^0.9.8",
+    "@websdk/rhumb": "^0.3.4",
     "d3": "^3.5.5",
-    "underscore": "^1.8.3"
+    "d3-utils": "^2.13.0",
+    "underscore": "^1.8.3",
+    "lil-uri": "^0.2.0"
   },
   "license": "MIT"
 }
