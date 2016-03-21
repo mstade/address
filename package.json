@@ -26,8 +26,8 @@
     "url": "git@github.com:zambezi/address.git"
   },
   "dependencies": {
-    "@websdk/nap": "^0.9.8",
-    "@websdk/rhumb": "^0.3.4",
+    "@websdk/nap": "^0.10.7",
+    "@websdk/rhumb": "^0.3.8",
     "d3": "^3.5.5",
     "d3-utils": "^2.13.0",
     "underscore": "^1.8.3",
