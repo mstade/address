@@ -15,7 +15,6 @@ requirejs.config({
     , '@websdk/nap': 'node_modules/@websdk/nap/lib/nap'
     , '@websdk/rhumb': 'node_modules/@websdk/rhumb/lib/rhumb'
     , 'Squire': 'test/Squire'
-    , 'jquery': 'node_modules/jquery/dist/jquery'
     , 'sinon': 'node_modules/sinon/pkg/sinon'
     , 'underscore' : 'node_modules/underscore/underscore'
     , 'lil-uri' : 'node_modules/lil-uri/uri'
