@@ -16,11 +16,6 @@ module.exports = function(config) {
   files: [
       'test/test-main.js'
     , {
-        pattern: 'node_modules/d3/d3.js'
-      , included: false
-      , watched: false
-    }
-    , {
         pattern: 'node_modules/sinon/pkg/sinon.js'
       , included: false
       , watched: false
@@ -31,7 +26,7 @@ module.exports = function(config) {
       , watched: false
     }
     , {
-        pattern: 'node_modules/@websdk/nap/lib/nap.js'
+        pattern: 'node_modules/@websdk/nap/lib/*'
       , included: false
       , watched: false
     }
@@ -42,6 +37,11 @@ module.exports = function(config) {
     }
     , {
         pattern: 'node_modules/lil-uri/uri.js'
+      , included: false
+      , watched: false
+    }
+    , {
+        pattern: 'node_modules/d3-dispatch/build/d3-dispatch.js'
       , included: false
       , watched: false
     }

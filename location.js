@@ -1,23 +1,25 @@
 define(function(require) {
-  var d3 = require('d3')
-    , location = require('./location-hash')
+  var location = require('./location-hash')
     , findClosest = require('./find-closest')
+    , rebind = require('./rebind')
+    , dispatch = require('d3-dispatch').dispatch
+    , on = require('./on')
 
   return function createComponent(web, address) {
     var state = location.state()
-      , dispatcher = d3.dispatch('statechange')
+      , dispatcher = dispatch('statechange')
       , ignoreFlag = false
       , api = {}
 
     location.on('statechange', handleStateChange)
-    d3.select(document).on('click', handleClick)
+    on.call(document, 'click', handleClick, false)
 
     api.getState = function() { return currentState() }
     api.setState = setState
     api.pushState = pushState
     api.openNewWindow = openNewWindow
 
-    return d3.rebind(api, dispatcher, 'on')
+    return rebind(api, dispatcher, 'on')
 
     function handleStateChange() {
       if(ignore()) return ignore(false)
@@ -56,9 +58,8 @@ define(function(require) {
       window.open(location.hrefFromPath(path), target, '')
     }
 
-    function handleClick() {
+    function handleClick(event) {
       var anchor
-        , event = d3.event
         , target = event.target
         , path
 

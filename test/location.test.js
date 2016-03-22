@@ -1,17 +1,18 @@
 define(function(require) {
   var Squire = require('Squire')
-  , d3 = require('d3')
-  , findClosest
-  , location
-  , web
-  , locationHash
-  , address
-  , anchor
+    , dispatch = require('d3-dispatch').dispatch
+    , rebind = require('rebind')
+    , findClosest
+    , location
+    , web
+    , locationHash
+    , address
+    , anchor
 
   describe('Location', function() {
     beforeEach(function(done) {
-      var locationHashDispatcher = d3.dispatch('statechange')
-      var navigateDispatcher = d3.dispatch('navigate')
+      var locationHashDispatcher = dispatch('statechange')
+      var navigateDispatcher = dispatch('navigate')
 
       var injector = new Squire();
       var locationHashApi = {
@@ -48,7 +49,7 @@ define(function(require) {
         return anchor
       }
 
-      locationHash = d3.rebind(locationHashApi, locationHashDispatcher, 'on')
+      locationHash = rebind(locationHashApi, locationHashDispatcher, 'on')
 
       var addressApi = function address(path) {
         return {
@@ -58,7 +59,7 @@ define(function(require) {
         }
       }
 
-      address = d3.rebind(addressApi, navigateDispatcher, 'on')
+      address = rebind(addressApi, navigateDispatcher, 'on')
 
       injector.mock(
         'web'

@@ -1,17 +1,19 @@
 define(function(require) {
 
-  var d3 = require('d3')
-    , dispatcher = d3.dispatch('statechange')
+  var on = require('./on')
+    , rebind = require('./rebind')
+    , dispatch = require('d3-dispatch').dispatch
+    , dispatcher = dispatch('statechange')
     , api = {}
 
-  d3.select(window).on('hashchange', dispatcher.statechange)
+  on.call(window, 'hashchange', dispatcher.statechange)
 
   api.state = state
   api.hrefFromPath = hrefFromPath
   api.pathFromHref = pathFromHref
   api.shouldIgnoreHref = shouldIgnoreHref
 
-  return d3.rebind(api, dispatcher, 'on')
+  return rebind(api, dispatcher, 'on')
 
   function state(value) {
     if (!arguments.length) return pathFromHref(loc_href())
