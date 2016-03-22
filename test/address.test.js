@@ -1,7 +1,6 @@
 define(function(require) {
     var Squire = require('Squire')
       , sinon = require('sinon')
-      , $ = require('jquery')
       , zapp = require('z-app')
       , address
       , web
@@ -261,13 +260,14 @@ define(function(require) {
 
       it('should call the response body with the node', function() {
         var cb = sinon.spy()
-          , node = $('<div class="view"></div>')[0]
+          , node = document.createElement('div')
 
-        $('body').append(node)
+        node.className = 'view'
+        document.body.appendChild(node)
         // keep the deprecated syntax here for code coverage
         address('/wibble').into(node).then(cb)()
 
-        $('body .view').remove()
+        document.body.removeChild(node)
 
         web.req.should.have.been.calledOnce
         cb.should.have.been.calledOnce

@@ -21,11 +21,6 @@ module.exports = function(config) {
       , watched: false
     }
     , {
-        pattern: 'node_modules/jquery/dist/jquery.js'
-      , included: false
-      , watched: false
-    }
-    , {
         pattern: 'node_modules/sinon/pkg/sinon.js'
       , included: false
       , watched: false
