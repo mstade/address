@@ -1,7 +1,6 @@
 define(function(require) {
 
   var _ = require('underscore')
-    , d3 = require('d3')
     , zapp = require('./z-app')
 
   return function wrapView(location, req, res) {

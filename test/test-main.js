@@ -11,18 +11,17 @@ requirejs.config({
 
   , paths: {
       'logger/log' : "test/log"
-    , 'd3': 'node_modules/d3/d3'
     , '@websdk/nap': 'node_modules/@websdk/nap/lib/nap'
     , '@websdk/rhumb': 'node_modules/@websdk/rhumb/lib/rhumb'
     , 'Squire': 'test/Squire'
     , 'sinon': 'node_modules/sinon/pkg/sinon'
+    , 'd3-dispatch': 'node_modules/d3-dispatch/build/d3-dispatch'
     , 'underscore' : 'node_modules/underscore/underscore'
     , 'lil-uri' : 'node_modules/lil-uri/uri'
   }
 
   , shim: {
       sinon: { exports: 'sinon' }
-    , d3: { exports: 'd3' }
     , underscore: { exports: 'underscore'  }
     , nap: { deps: ['rhumb'], exports: 'nap' }
     , rhumb: { exports: 'rhumb' }

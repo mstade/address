@@ -1,7 +1,6 @@
 define(function(require) {
 
-  var d3 = require('d3')
-    , _ = require('underscore')
+  var _ = require('underscore')
     , nap = require('@websdk/nap')
     , zapp = require('./z-app')
     , codes = require('./http-status-code')
@@ -14,6 +13,8 @@ define(function(require) {
     , toObject = require('./kv-to-object')
     , parseUri = require('lil-uri')
     , error = require('./error')
+    , dispatch = require('d3-dispatch').dispatch
+    , rebind = require('./rebind')
 
     function address(r) {
 
@@ -29,7 +30,7 @@ define(function(require) {
         , callback
         , target
         , into
-        , dispatcher = d3.dispatch.apply(null, codes.range().concat(['err', 'done']))
+        , dispatcher = dispatch.apply(null, codes.range().concat(['err', 'done']))
 
       if(r && _.isString(r)) {
         uri = r
@@ -190,7 +191,7 @@ define(function(require) {
         api.method('remove').body(body)()
       }
 
-      return d3.rebind(api, dispatcher, 'on')
+      return rebind(api, dispatcher, 'on')
 
       function req() {
         var context = getContext()
@@ -217,7 +218,7 @@ define(function(require) {
 
         function getContext() {
           if (!isView({headers: headers})) return undefined
-          if (_.isString(into)) return d3.select(zapp.root(origin)).select(into).node()
+          if (_.isString(into)) return zapp.root(origin).querySelector(into)
           if (_.isNull(into) || _.isUndefined(into)) return zapp.root(origin)
           return into
         }
