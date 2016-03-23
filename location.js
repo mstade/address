@@ -12,7 +12,7 @@ define(function(require) {
       , api = {}
 
     location.on('statechange', handleStateChange)
-    on.call(document, 'click', handleClick, false)
+    on.call(document, 'click.location', handleClick)
 
     api.getState = function() { return currentState() }
     api.setState = setState

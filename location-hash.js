@@ -6,7 +6,7 @@ define(function(require) {
     , dispatcher = dispatch('statechange')
     , api = {}
 
-  on.call(window, 'hashchange', dispatcher.statechange)
+  on.call(window, 'hashchange.location-hash', dispatcher.statechange)
 
   api.state = state
   api.hrefFromPath = hrefFromPath
