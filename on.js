@@ -16,7 +16,7 @@ define(function() {
     function onAdd() {
       var l = onListener(listener)
       onRemove.call(this)
-      this.addEventListener(type, this[name] = l, l.$ = capture)
+      this.addEventListener(type, this[name] = l, l.$ = !!capture)
       l._ = listener
     }
 
