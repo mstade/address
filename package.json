@@ -29,8 +29,7 @@
   "dependencies": {
     "@websdk/nap": "^0.10.7",
     "@websdk/rhumb": "^0.3.8",
-    "@zambezi/d3-utils": "^2.9.1",
-    "d3": "^3.5.5",
+    "d3-dispatch": "^0.2.6",
     "lil-uri": "^0.2.0",
     "underscore": "^1.8.3"
   },

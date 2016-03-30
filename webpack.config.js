@@ -8,8 +8,7 @@ module.exports = {
   , filename: 'address.js'
   }
 , externals: {
-    'd3': 'd3'
-  , 'underscore': {
+    'underscore': {
       root: '_'
     , commonjs2: 'underscore'
     , commonjs: 'underscore'
@@ -20,6 +19,24 @@ module.exports = {
     , commonjs2: '@websdk/nap'
     , commonjs: '@websdk/nap'
     , amd: '@websdk/nap'
+    }
+  , '@websdk/rhumb': {
+      root: 'rhumb'
+    , commonjs2: '@websdk/rhumb'
+    , commonjs: '@websdk/rhumb'
+    , amd: '@websdk/rhumb'
+    }
+  , 'd3-dispatch': {
+      root: 'd3-dispatch'
+    , commonjs2: 'd3-dispatch'
+    , commonjs: 'd3-dispatch'
+    , amd: 'd3-dispatch'
+    }
+  , 'lil-uri': {
+      root: 'lil-uri'
+    , commonjs2: 'lil-uri'
+    , commonjs: 'lil-uri'
+    , amd: 'lil-uri'
     }
   }
 , devtool: '#source-map'
