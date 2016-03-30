@@ -1,6 +1,6 @@
 {
   "name": "@zambezi/address",
-  "version": "2.0.0-omo.1",
+  "version": "2.0.0-omo.2",
   "description": "API for nap resources",
   "main": "lib/address.js",
   "devDependencies": {
