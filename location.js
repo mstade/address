@@ -1,17 +1,51 @@
 define(function(require) {
   var location = require('./location-hash')
+    , state = location.state()
     , findClosest = require('./find-closest')
     , rebind = require('./rebind')
     , dispatch = require('d3-dispatch').dispatch
+    , dispatcher = dispatch('statechange')
     , on = require('./on')
+    , ignoreFlag = false
+
+  location.on('statechange.location', handleStateChange)
+
+  function handleStateChange() {
+    if(ignore()) return ignore(false)
+    setState(location.state())
+    ignore(false)
+  }
+
+  function ignore(value) {
+    if(!arguments.length) return ignoreFlag
+    ignoreFlag = value
+  }
+
+  function pushState(value) {
+    if(isCurrentState(value)) return
+    ignore(true)
+    currentState(value)
+    location.state(value)
+    return true
+  }
+
+  function setState(value) {
+    var pushed = pushState(value)
+    if (pushed) dispatcher.statechange(value)
+  }
+
+  function currentState(value) {
+    if(!arguments.length) return state
+    state = value
+  }
+
+  function isCurrentState(value) {
+    return value == currentState()
+  }
 
   return function createComponent(web, address) {
-    var state = location.state()
-      , dispatcher = dispatch('statechange')
-      , ignoreFlag = false
-      , api = {}
+    var api = {}
 
-    location.on('statechange', handleStateChange)
     on.call(document, 'click.location', handleClick)
 
     api.getState = function() { return currentState() }
@@ -20,39 +54,6 @@ define(function(require) {
     api.openNewWindow = openNewWindow
 
     return rebind(api, dispatcher, 'on')
-
-    function handleStateChange() {
-      if(ignore()) return ignore(false)
-      setState(location.state())
-      ignore(false)
-    }
-
-    function pushState(value) {
-      if(isCurrentState(value)) return
-      ignore(true)
-      currentState(value)
-      location.state(value)
-      return true
-    }
-
-    function setState(value) {
-      var pushed = pushState(value)
-      if (pushed) dispatcher.statechange(value)
-    }
-
-    function currentState(value) {
-      if(!arguments.length) return state
-      state = value
-    }
-
-    function ignore(value) {
-      if(!arguments.length) return ignoreFlag
-      ignoreFlag = value
-    }
-
-    function isCurrentState(value) {
-      return value == currentState()
-    }
 
     function openNewWindow(path, target) {
       window.open(location.hrefFromPath(path), target, '')
