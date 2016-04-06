@@ -10,14 +10,14 @@ define(function(require) {
 
   location.on('statechange.location', handleStateChange)
 
-  function ignore(value) {
-    if(!arguments.length) return ignoreFlag
-    ignoreFlag = value
-  }
-
   function handleStateChange() {
     var where = location.splitAddress(window.location.href)
     dispatcher.statechange(where)
+  }
+
+  function ignore(value) {
+    if(!arguments.length) return ignoreFlag
+    ignoreFlag = value
   }
 
   function pushState(value) {
@@ -41,34 +41,6 @@ define(function(require) {
     return value == currentState()
   }
 
-  function openNewWindow(path, target) {
-    window.open(location.hrefFromPath(path), target, '')
-  }
-
-  function handleClick(event) {
-    var anchor
-      , target = event.target
-      , path
-
-    if (event.ctrlKey) return
-    if (event.button == 1) return
-    anchor = findClosest.anchor(target)
-    if (!anchor) return
-    if (!!anchor.target) return
-    if (location.shouldIgnoreHref(anchor.href)) return
-
-    path = location.pathFromHref(anchor.href)
-
-    if (!path) return
-    if (!web.find(path)) return
-
-    event.preventDefault()
-    event.stopPropagation()
-
-    // see http://requirejs.org/docs/api.html#circular
-    require('./address')(path).origin(target).navigate()
-  }
-
   return function createComponent(web, address) {
     var api = {}
 
@@ -82,5 +54,33 @@ define(function(require) {
     api.openNewWindow = openNewWindow
 
     return rebind(api, dispatcher, 'on')
+
+    function openNewWindow(path, target) {
+      window.open(location.hrefFromPath(path), target, '')
+    }
+
+    function handleClick(event) {
+      var anchor
+        , target = event.target
+        , path
+
+      if (event.ctrlKey) return
+      if (event.button == 1) return
+      anchor = findClosest.anchor(target)
+      if (!anchor) return
+      if (!!anchor.target) return
+      if (location.shouldIgnoreHref(anchor.href)) return
+
+      path = location.pathFromHref(anchor.href)
+
+      if (!path) return
+      if (!web.find(path)) return
+
+      event.preventDefault()
+      event.stopPropagation()
+
+      // see http://requirejs.org/docs/api.html#circular
+      require('./address')(path).origin(target).navigate()
+    }
   }
 })
