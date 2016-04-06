@@ -45,9 +45,8 @@ define(function(require) {
     window.open(location.hrefFromPath(path), target, '')
   }
 
-  function handleClick() {
+  function handleClick(event) {
     var anchor
-      , event = d3.event
       , target = event.target
       , path
 
