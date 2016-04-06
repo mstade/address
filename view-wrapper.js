@@ -1,7 +1,6 @@
 define(function(require) {
 
   var _ = require('underscore')
-    , d3 = require('d3')
     , zapp = require('./z-app')
 
   return function wrapView(location, req, res) {
@@ -15,7 +14,7 @@ define(function(require) {
       var uri = getCurrentUri(req, res)
 
       if(zapp.isRoot(node)) location.pushState(uri)
-      if(shouldClearNode(req, res, node)) clearNode(node)
+      if(resourceWillChange(req, res, node)) dispatchEvent(node, 'resourcewillchange')
       dispatchEvent(node, 'update', {detail : { from : zapp.resource(node), to : uri }})
       zapp.resource(node, uri)
       view(node)
@@ -33,16 +32,10 @@ define(function(require) {
     return resource ?  resource.path : undefined
   }
 
-  function shouldClearNode(req, res, node) {
+  function resourceWillChange(req, res, node) {
     var newPath = findPath(req.web, getCurrentUri(req, res))
       , currentPath = findPath(req.web, zapp.resource(node))
     return newPath !== currentPath
-  }
-
-  function clearNode(node) {
-    dispatchEvent(node, 'resourcewillchange')
-    zapp.clearResource(node)
-    d3.select(node).html('')
   }
 
   function dispatchEvent(node, eventName, eventDetail) {

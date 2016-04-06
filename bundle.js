@@ -1,14 +1,17 @@
 define(function(require) {
   return {
     address: require('./address')
-  , response: require('./response')
-  , ok: require('./ok')
+  , created: require('./created')
   , error: require('./error')
-  , redirect: require('./redirect')
-  , into: require('./into')
   , httpStatusCode: require('./http-status-code')
-  , stream: require('./stream')
-  , location: require('./location')
   , interpolate: require('./interpolate')
+  , into: require('./into')
+  , location: require('./location')
+  , middleware: require('./middleware')
+  , ok: require('./ok')
+  , redirect: require('./redirect')
+  , response: require('./response')
+  , serialize: require('./serialize')
+  , stream: require('./stream')
   }
 })

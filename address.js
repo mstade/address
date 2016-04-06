@@ -1,18 +1,20 @@
 define(function(require) {
 
-  var d3 = require('d3')
-    , _ = require('underscore')
+  var _ = require('underscore')
     , nap = require('@websdk/nap')
     , zapp = require('./z-app')
     , codes = require('./http-status-code')
     , isView = require('./is-view')
     , isStream = require('./is-stream')
-    , serialize = require('./serialize')
     , interpolate = require('./interpolate')
     , compose = require('./compose')
     , wrapView = require('./view-wrapper')
     , invokeView = require('./view-invoker')
     , toObject = require('./kv-to-object')
+    , parseUri = require('lil-uri')
+    , error = require('./error')
+    , dispatch = require('d3-dispatch').dispatch
+    , rebind = require('./rebind')
 
     function address(r) {
 
@@ -28,12 +30,14 @@ define(function(require) {
         , callback
         , target
         , into
-        , dispatcher = d3.dispatch.apply(null, codes.range().concat(['err', 'done']))
+        , dispatcher = dispatch.apply(null, codes.range().concat(['err', 'done']))
 
       if(r && _.isString(r)) {
         uri = r
+        query = parseUri(encodeURIComponent(uri)).query() || query
       } else if(r && _.isObject(r)) {
         uri = r.uri || uri
+        query = r.query || query
         method = r.method || method
         headers = r.headers || headers
         body = r.body || body
@@ -41,6 +45,20 @@ define(function(require) {
 
       function api() {
         var request = req()
+
+        // this should be removed once this issues are fixed
+        // https://github.com/websdk/nap/issues/34
+        if (!request.uri || request.uri === 'undefined') return bail()
+        function bail() {
+          var err = error(400, {
+            message: 'request is missing URI'
+          })
+          codes(err.statusCode).forEach(function(type) {
+            console.debug(err.statusCode, type, err.body.message, request.method)
+            dispatcher[type](err)
+          })
+        }
+
         web.req(request, _.partial(handleResponse, request, callback))
       }
 
@@ -97,7 +115,7 @@ define(function(require) {
       }
 
       api.into = function(v) {
-        into = v
+        into = v || null
         return api
       }
 
@@ -117,13 +135,12 @@ define(function(require) {
         if (t) api.target(t)
 
         var request = req()
-        if (target) return location.openNewWindow(request.uri, target)
-        if (shouldNavigate()) return location.setState(request.uri)
-        api.into(zapp.root(origin))()
+          , root =  zapp.root(origin)
+          , isLocalRoot = root !== zapp.root()
 
-        function shouldNavigate() {
-          return method === 'get' && zapp.isRoot(request.context)
-        }
+        if (target) return location.openNewWindow(request.uri, target)
+        if (isLocalRoot) return api.into(root)()
+        return location.setState(request.uri)
       }
 
       api.view = function() {
@@ -174,13 +191,13 @@ define(function(require) {
         api.method('remove').body(body)()
       }
 
-      return d3.rebind(api, dispatcher, 'on')
+      return rebind(api, dispatcher, 'on')
 
       function req() {
         var context = getContext()
 
         return {
-          uri : getUri() + serialize(query)
+          uri : getUri()
         , method : method
         , headers : headers
         , body : body
@@ -189,15 +206,20 @@ define(function(require) {
         }
 
         function getUri() {
-          var u = interpolate(web, uri, params)
-          if (!zapp.isRoot(context)) return u
-          return compose(web, interpolate, u, zapp.resource(context))
+          var interpolatedUri = interpolate(web, uri, params)
+              // As lil-uri always decodes the URI, encode it.
+            , parsedUri = parseUri(encodeURIComponent(interpolatedUri))
+            , q = _.extend({}, parsedUri.query(), query)
+            , mergedUri = (_.isEmpty(q) ? parsedUri : parsedUri.query(q)).build()
+
+          if (!zapp.isRoot(context)) return mergedUri
+          return compose(web, mergedUri, zapp.resource(context))
         }
 
         function getContext() {
           if (!isView({headers: headers})) return undefined
-          if (_.isString(into)) return d3.select(zapp.root(origin)).select(into).node()
-          if (!into) return zapp.root(origin)
+          if (_.isString(into)) return zapp.root(origin).querySelector(into)
+          if (_.isNull(into) || _.isUndefined(into)) return zapp.root(origin)
           return into
         }
 

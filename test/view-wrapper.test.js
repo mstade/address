@@ -1,11 +1,10 @@
 define(function(require) {
 
   var _ = require('underscore')
-    , $ = require('jquery')
     , sinon = require('sinon')
     , Squire = require('Squire')
     , location = { pushState: function() {}}
-    , body = $('body')
+    , body = document.body
 
   describe('view-wrapper', function() {
 
@@ -44,15 +43,16 @@ define(function(require) {
       resOne = createResponse()
       resTwo = createResponse()
 
-      node =  $('<div class="view view-wrapper"></div>')[0]
-      body.append(node)
+      node =  document.createElement('div')
+      node.className = 'view view-wrapper'
+      body.appendChild(node)
 
       callback = sinon.spy()
     })
 
     afterEach(function() {
       node.removeEventListener(eventName, callback)
-      body.find('.view.view-wrapper').remove()
+      body.removeChild(node)
       callback = null
     })
 

@@ -16,16 +16,6 @@ module.exports = function(config) {
   files: [
       'test/test-main.js'
     , {
-        pattern: 'node_modules/d3/d3.js'
-      , included: false
-      , watched: false
-    }
-    , {
-        pattern: 'node_modules/jquery/dist/jquery.js'
-      , included: false
-      , watched: false
-    }
-    , {
         pattern: 'node_modules/sinon/pkg/sinon.js'
       , included: false
       , watched: false
@@ -36,12 +26,22 @@ module.exports = function(config) {
       , watched: false
     }
     , {
-        pattern: 'node_modules/@websdk/nap/lib/nap.js'
+        pattern: 'node_modules/@websdk/nap/lib/*'
       , included: false
       , watched: false
     }
     , {
         pattern: 'node_modules/@websdk/rhumb/lib/rhumb.js'
+      , included: false
+      , watched: false
+    }
+    , {
+        pattern: 'node_modules/lil-uri/uri.js'
+      , included: false
+      , watched: false
+    }
+    , {
+        pattern: 'node_modules/d3-dispatch/build/d3-dispatch.js'
       , included: false
       , watched: false
     }
@@ -63,7 +63,7 @@ module.exports = function(config) {
 
   // test results reporter to use
   // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-  reporters: ['progress', 'coverage'],
+  reporters: ['progress'],// 'coverage'],
   preprocessors: {
     '*.js': ['coverage']
   },

@@ -1,10 +1,7 @@
 define(function(require) {
-
-  var d3 = require('d3')
-    , rootClassName = 'z-app'
+  var rootClassName = 'z-app'
     , rootSelector = '.' + rootClassName
-    , zapp = d3.select(rootSelector)
-    , root = zapp.empty() ? d3.select('body').node() : zapp.node()
+    , root = document.querySelector(rootSelector) || document.body
     , findClosest = require('./find-closest')
     , api = {}
 
@@ -44,5 +41,3 @@ define(function(require) {
     return findClosest.bySelector(rootSelector, origin, root)
   }
 })
-
-

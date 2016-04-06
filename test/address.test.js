@@ -1,7 +1,6 @@
 define(function(require) {
     var Squire = require('Squire')
       , sinon = require('sinon')
-      , $ = require('jquery')
       , zapp = require('z-app')
       , address
       , web
@@ -194,6 +193,7 @@ define(function(require) {
         var a = address({
           uri : '/wibble'
         , method : 'send'
+        , query: { x: 'x'}
         , headers : {
             accept : 'application/json'
           }
@@ -204,6 +204,7 @@ define(function(require) {
         a.method().should.equal('send')
         a.header().should.deep.equal({accept:'application/json'})
         a.body().should.equal('hello')
+        a.query().should.deep.equal({x: 'x'})
       })
 
       it('should call web.req with the configured request and callback', function() {
@@ -235,16 +236,16 @@ define(function(require) {
 
       it('should use defaults', function() {
         var cb = sinon.spy()
-          , req = {
-            uri : '/wibble'
-          , method : 'get'
-          , headers : {
-              accept : 'application/x.nap.view'
+          , defaulReq = {
+              uri : '/wibble'
+            , method : 'get'
+            , headers : {
+                accept : 'application/x.nap.view'
+              }
+            , body : undefined
+            , context: document.body
+            , origin: undefined
             }
-          , body : undefined
-          , context: zapp.root()
-          , origin: undefined
-          }
 
         expect(zapp.rootResource()).to.be.undefined
         expect(zapp.resource(zapp.root())).to.be.equal(zapp.rootResource())
@@ -253,18 +254,20 @@ define(function(require) {
 
         web.req.should.have.been.calledOnce
         cb.should.have.been.calledOnce
-        web.req.args[0][0].should.deep.equal(req)
+
+        web.req.args[0][0].should.deep.equal(defaulReq)
       })
 
       it('should call the response body with the node', function() {
         var cb = sinon.spy()
-          , node = $('<div class="view"></div>')[0]
+          , node = document.createElement('div')
 
-        $('body').append(node)
+        node.className = 'view'
+        document.body.appendChild(node)
         // keep the deprecated syntax here for code coverage
         address('/wibble').into(node).then(cb)()
 
-        $('body .view').remove()
+        document.body.removeChild(node)
 
         web.req.should.have.been.calledOnce
         cb.should.have.been.calledOnce
@@ -375,6 +378,47 @@ define(function(require) {
         api.query().should.deep.equal({a: 'a', b: 'b', c: 'c', d: 'd'})
       })
 
+      it('should build query from uri', function() {
+        var uri = '/foo?x=x'
+          , api = address(uri)
+          , query = { x: 'x' }
+
+        api.query().should.deep.equal(query)
+      })
+
+      it('should merge queries', function() {
+        var uri = '/foo?x=x'
+          , api = address(uri).query({y: 'y'})
+          , query = { x: 'x', y: 'y' }
+
+        api.query().should.deep.equal(query)
+      })
+
+      it('should overwrite queries in the resulting URI', function() {
+        var uri = '/foo?x=x'
+          , api = address(uri).query({x: '2'})
+          , query = { x: '2' }
+
+        api.query().should.deep.equal(query)
+        api.navigate().state.should.equal('/foo?x=2')
+      })
+
+      it('should keep encoded path components', function() {
+        var uri = '/foo/bar%2Fbaz'
+          , api = address(uri)
+
+        api.navigate().state.should.equal(uri)
+      })
+
+      it('should process encoded queries components', function() {
+        var uri = '/fo?x=x&y=y%3Dy'
+          , api = address(uri)
+          , query = { x: 'x', y: 'y%3Dy' }
+
+        api.query().should.deep.equal(query)
+        api.navigate().state.should.equal(uri)
+      })
+
       it('should handle streams', function() {
         var cb = sinon.spy()
           , req = {
@@ -402,6 +446,18 @@ define(function(require) {
         response.body.should.equal(responseBody)
       })
 
+      it('should err when missing URI', function() {
+        var onBadRequest = sinon.spy()
+          , onClientError = sinon.spy()
+
+        address()
+          .on('bad-request', onBadRequest)
+          .on('client-error', onClientError)
+          .get()
+
+        onBadRequest.should.have.been.calledOnce
+        onClientError.should.have.been.calledOnce
+      })
     })
   }
 )
