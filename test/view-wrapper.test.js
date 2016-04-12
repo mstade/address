@@ -3,7 +3,6 @@ define(function(require) {
   var _ = require('underscore')
     , sinon = require('sinon')
     , Squire = require('Squire')
-    , location = { pushState: function() {}}
     , body = document.body
 
   describe('view-wrapper', function() {
@@ -20,17 +19,14 @@ define(function(require) {
 
     before(function(done) {
       injector
-            .mock('./location', function() {
-              return { pushState: function() {}}
-            })
-        .require(['view-wrapper', 'location'], function(viewWrapper, location) {
+        .require(['view-wrapper'], function(viewWrapper) {
           wrapView = viewWrapper
           done()
         })
     })
 
     after(function() {
-      injector.clean(['./location', './z-app'])
+      injector.clean(['./z-app'])
     })
 
     beforeEach(function() {
