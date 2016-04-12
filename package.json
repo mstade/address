@@ -19,6 +19,7 @@
   },
   "scripts": {
     "test": "karma start --single-run",
+    "test:debug": "karma start --debug",
     "prepublish": "npm run build",
     "build": "rimraf lib && webpack"
   },
