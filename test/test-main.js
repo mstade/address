@@ -13,7 +13,7 @@ requirejs.config({
       'logger/log' : "test/log"
     , '@websdk/nap': 'node_modules/@websdk/nap/lib/nap'
     , '@websdk/rhumb': 'node_modules/@websdk/rhumb/lib/rhumb'
-    , 'Squire': 'test/Squire'
+    , 'Squire': 'node_modules/squirejs/src/Squire'
     , 'sinon': 'node_modules/sinon/pkg/sinon'
     , 'd3-dispatch': 'node_modules/d3-dispatch/build/d3-dispatch'
     , 'underscore' : 'node_modules/underscore/underscore'
