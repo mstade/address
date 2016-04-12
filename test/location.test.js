@@ -156,6 +156,27 @@ define(function(require) {
         location.on('statechange.test-redirect', null)
       })
 
+      it('should correctly handle back/forward events', function() {
+        expect(location.getState()).to.equal(originalPath)
+        location.setState('/foo/bar')
+        expect(location.getState()).to.equal('/foo/bar')
+
+        var changedState
+        location.on('statechange.test-history', function(state) {
+          changedState = state
+        })
+
+        window.history.back()
+        expect(changedState).to.eql({ base: '', path: originalPath })
+        expect(location.getState()).to.equal(originalPath)
+        
+        changedState = undefined
+        window.history.forward()
+        expect(changedState).to.eql({ base: '', path: '/foo/bar' })
+        expect(location.getState()).to.equal('/foo/bar')
+        location.on('statechange.test-history', null)
+      })
+
       describe(`location.handleClick()`, function() {  
         var changedState, anchor, handledClick
 
@@ -234,8 +255,6 @@ define(function(require) {
           click(anchor)
           expect(changedState).to.eql({ base: '', path: '/backwards/compatible', target: anchor })
         })
-
-        it('should correctly handle back/forward events')
       })
     })
   })
