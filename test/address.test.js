@@ -1,6 +1,5 @@
 define(function(require) {
-    var Squire = require('Squire')
-      , sinon = require('sinon')
+    var sinon = require('sinon')
       , zapp = require('z-app')
       , location = require('location')
       , address
@@ -8,53 +7,40 @@ define(function(require) {
       , nap
       , responseBody
       , response
+      , a = require('address')
 
     describe('Address', function() {
       var originalPath
 
-      beforeEach(function(done) {
+      beforeEach(function() {
         originalPath = window.location.href.slice(window.location.origin.length)
-
-        var injector = new Squire();
 
         responseBody = sinon.spy()
 
         response = {
           statusCode : 200
-          , headers: {
+        , headers: {
             contentType : 'application/x.nap.view'
           }
-          , body : responseBody
+        , body : responseBody
         }
 
         web = {
           req : sinon.spy(function(req, cb) {
             cb( null, response )
           })
-          , uri : function(uri, params) {
+        , uri : function(uri, params) {
             var paramsString = ''
             Object.keys(params).forEach(function(key) {
               paramsString += '/' + params[key]
             })
             return uri.split('/{')[0] + paramsString
           }
-          , find: function() {}
+        , find: function() {}
         }
-
-        injector
-          .mock(
-            'web'
-          , function() {
-              return web
-            })
-          .require(
-            [ 'address', 'web' ]
-          , function(a, web) {
-              address = function(r) {
-                return a(r).web(web)
-              }
-              done()
-            })
+        address = function(r) {
+          return a(r).web(web)
+        }
       })
 
       afterEach(function() {

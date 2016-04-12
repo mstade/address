@@ -4,10 +4,11 @@ define(
     describe('Serialize', function() {
 
       var serialize
+        , injector
 
       beforeEach(function(done) {
 
-        var injector = new Squire()
+        injector = new Squire()
 
         injector.require(
             [ 'serialize' ]
@@ -16,6 +17,10 @@ define(
             done()
           }
         )
+      })
+
+      afterEach(function () {
+        injector.clean()
       })
 
       it('should return key/value pairs as a query string', function() {
