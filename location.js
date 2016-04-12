@@ -100,9 +100,10 @@ define(function(require) {
   }
 
   function handleStateChange(event) {
-    var where = location.href.slice(location.origin.length)
+    var path = location.href.slice(location.origin.length)
+      , base = (event.state && event.state.base) || ''
 
-    if (~where.indexOf('#/')) {
+    if (~path.indexOf('#/')) {
       // "Redirect" current location to a proper path
       var path = location.hash.slice(1)
 
@@ -111,13 +112,12 @@ define(function(require) {
         event.stopPropagation()
         var state = { base: base, path: path }
         history.replaceState(state, null, rebase(path))
-        dispatcher.statechange(state)
       }
-    } else if (event.state && event.state.base) {
-      where = where.slice(event.state.base.length)
-      var state = { base: event.state.base, path: where }
-      dispatcher.statechange(state)
+    } else {
+      var state = { base: base, path: rebase(path).slice(base.length) }
     }
+
+    dispatcher.statechange(state)
   }
 
   function rebase(path) {
