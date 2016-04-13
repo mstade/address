@@ -321,11 +321,11 @@ define(function(require) {
         expect(location.getState()).to.equal(originalPath)
 
         api.target(null)
-        api.navigate().path.should.equal(location.getState())
+        api.navigate().should.equal(location.getState())
         expect(location.getState()).to.equal(uri)
 
         api.method('post')
-        expect(api.navigate().path).should.not.equal(location.getState())
+        expect(api.navigate()).should.not.equal(location.getState())
 
         window.open.calledOnce
         window.open.calledWith(uri, target)
@@ -376,14 +376,14 @@ define(function(require) {
           , query = { x: '2' }
 
         api.query().should.deep.equal(query)
-        api.navigate().path.should.equal('/foo?x=2')
+        api.navigate().should.equal('/foo?x=2')
       })
 
       it('should keep encoded path components', function() {
         var uri = '/foo/bar%2Fbaz'
           , api = address(uri)
 
-        api.navigate().path.should.equal(uri)
+        api.navigate().should.equal(uri)
       })
 
       it('should process encoded queries components', function() {
@@ -392,7 +392,7 @@ define(function(require) {
           , query = { x: 'x', y: 'y%3Dy' }
 
         api.query().should.deep.equal(query)
-        api.navigate().path.should.equal(uri)
+        api.navigate().should.equal(uri)
       })
 
       it('should handle streams', function() {
