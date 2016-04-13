@@ -34,7 +34,7 @@ define(function(require) {
 
       if(r && _.isString(r)) {
         uri = r
-        query = parseUri(encodeURIComponent(uri)).query() || query
+        query = parseUri(encodeURI(uri)).query() || query
       } else if(r && _.isObject(r)) {
         uri = r.uri || uri
         query = r.query || query
@@ -207,7 +207,7 @@ define(function(require) {
         function getUri() {
           var interpolatedUri = interpolate(web, uri, params)
               // As lil-uri always decodes the URI, encode it.
-            , parsedUri = parseUri(encodeURIComponent(interpolatedUri))
+            , parsedUri = parseUri(encodeURI(interpolatedUri))
             , q = _.extend({}, parsedUri.query(), query)
             , mergedUri = (_.isEmpty(q) ? parsedUri : parsedUri.query(q)).build()
 
