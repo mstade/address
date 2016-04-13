@@ -29,6 +29,18 @@ define(function(require) {
         })
       })
 
+      describe(`location.basePath()`, function() {
+        it('should replace the current path with a rebased path', function() {
+          var historyEntries = window.history.length
+          expect(location.getState()).to.equal(originalPath)
+          location.basePath('/foo')
+          expect(location.basePath()).to.equal('/foo')
+          expect(location.getState()).to.equal(originalPath)
+          expect(window.location.pathname).to.equal('/foo' + originalPath)
+          expect(window.history.length).to.equal(historyEntries)
+        })
+      })
+
       describe(`location.pushState()`, function() {
         it('should update the current location', function() {
           expect(location.getState()).to.not.equal('/base/foo')

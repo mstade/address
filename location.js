@@ -67,7 +67,11 @@ define(function(require) {
 
   function basePath(path) {
     if (arguments.length === 0) return base
+
     base = path? '/' + trimSlashes(path) : ''
+
+    var cwd = location.href.slice(location.origin.length)
+    history.replaceState(null, null, rebase(cwd))
   }
 
   function handleClick(event) {
