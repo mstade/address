@@ -28,12 +28,7 @@ define(function(require) {
 
   function getState() {
     var path = location.href.replace(location.origin, '')
-
-    if (path.slice(0, base.length) === base) {
-      return path.slice(base.length)
-    } else {
-      return path
-    }
+    return unbase(path)
   }
 
   function setState(path) {
@@ -51,6 +46,8 @@ define(function(require) {
     if (~path.indexOf('#/')) {
       path = '/' + trimSlashes(path.split('#/').slice(1)).join('/')
     }
+
+    path = unbase(path)
 
     if (path === getState()) {
       return false
@@ -115,17 +112,19 @@ define(function(require) {
       }
     }
 
-    dispatcher.statechange(rebase(path).slice(base.length))
+    dispatcher.statechange(unbase(path))
   }
 
   function rebase(path) {
-    if (path.slice(0, base.length) === base) {
-      // Remove base before adding it back in again
-      // This is a boo-boo case
-      path = path.slice(base.length)
-    }
+    return base + '/' + trimSlashes(unbase(path))
+  }
 
-    return base + '/' + trimSlashes(path)
+  function unbase(path) {
+    if (path.slice(0, base.length) === base) {
+      return path.slice(base.length)
+    } else {
+      return path
+    }
   }
 
   function trimSlashes(path) {

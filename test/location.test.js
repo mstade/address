@@ -51,8 +51,12 @@ define(function(require) {
         it('should rebase accordingly when base path is set', function() {
           location.basePath('/base')
           expect(location.getState()).to.not.equal('/foo')
-          expect(location.pushState('/foo')).to.equal('/foo')
+          expect(location.pushState('/base/foo')).to.equal('/foo')
           expect(location.getState()).to.equal('/foo')
+          expect(location.pushState('/base/bar')).to.equal('/bar')
+          expect(location.getState()).to.equal('/bar')
+          expect(location.pushState('/baz')).to.equal('/baz')
+          expect(location.getState()).to.equal('/baz')
         })
 
         it('should do nothing when pushing the current location', function() {
