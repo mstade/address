@@ -108,8 +108,6 @@ define(function(require) {
       var path = location.hash.slice(1)
 
       if (path) {
-        event.preventDefault()
-        event.stopPropagation()
         var state = { base: base, path: path }
         history.replaceState(state, null, rebase(path))
       }
