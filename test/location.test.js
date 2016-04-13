@@ -112,7 +112,7 @@ define(function(require) {
           })
 
           expect(location.getState()).to.equal(originalPath)
-          expect(location.setState('/base/bar').path).to.equal('/base/bar')
+          expect(location.setState('/base/bar')).to.equal('/base/bar')
           expect(location.getState()).to.equal('/base/bar')
           expect(statechange).to.be.true
 
@@ -120,7 +120,7 @@ define(function(require) {
 
           location.basePath('/base')
           expect(location.getState()).to.equal('/bar')
-          expect(location.setState('/foo').path).to.equal('/foo')
+          expect(location.setState('/foo')).to.equal('/foo')
           expect(location.getState()).to.equal('/foo')
           expect(statechange).to.be.true
 
@@ -161,7 +161,7 @@ define(function(require) {
 
         window.location.hash = '#/fancy/path'
 
-        expect(didRedirect).to.eql({ path: '/fancy/path', base: '' })
+        expect(didRedirect).to.equal('/fancy/path')
         expect(window.location.pathname).to.equal('/fancy/path')
         expect(window.location.hash).to.equal('')
 
@@ -240,7 +240,7 @@ define(function(require) {
           click(anchor, { button: 4 })
           expect(changedState).to.be.undefined
           click(anchor, { button: 0 })
-          expect(changedState).to.eql({ base: '', path: '/foo', target: anchor })
+          expect(changedState).to.equal('/foo')
         })
 
         it('should only care about clicks on anchor elements', function() {
@@ -267,7 +267,7 @@ define(function(require) {
 
           anchor.href = '#/backwards/compatible'
           click(anchor)
-          expect(changedState).to.eql({ base: '', path: '/backwards/compatible', target: anchor })
+          expect(changedState).to.equal('/backwards/compatible')
         })
       })
     })

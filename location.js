@@ -40,9 +40,8 @@ define(function(require) {
     var actual = pushState(path)
     
     if (actual) {
-      var state = { base: base, path: actual }
-      dispatcher.statechange(state)
-      return state
+      dispatcher.statechange(actual)
+      return actual
     } else {
       return false
     }
@@ -97,8 +96,7 @@ define(function(require) {
       var actual = pushState(path)
 
       if (actual) {
-        var state = { base: base, path: actual, target: a }
-        dispatcher.statechange(state)
+        dispatcher.statechange(actual)
       }
     }
   }
@@ -115,11 +113,9 @@ define(function(require) {
         var state = { base: base, path: path }
         history.replaceState(state, null, rebase(path))
       }
-    } else {
-      var state = { base: base, path: rebase(path).slice(base.length) }
     }
 
-    dispatcher.statechange(state)
+    dispatcher.statechange(rebase(path).slice(base.length))
   }
 
   function rebase(path) {
