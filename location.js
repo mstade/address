@@ -10,10 +10,9 @@ define(function(require) {
   on.call(window, 'popstate.location', handleStateChange)
   on.call(document, 'click.location', handleClick)
 
-  if (~location.hash.indexOf('#/')) {
+  if (isHashPath(location.hash)) {
     // Redirect current hash fragment location to "real" path
-    var path = location.hash.slice(1)
-    history.replaceState(null, null, rebase(path))
+    history.replaceState(null, null, rebase(fullPath(location)))
   }
 
   var api =
@@ -27,8 +26,7 @@ define(function(require) {
   return rebind(api, dispatcher, 'on')
 
   function getState() {
-    var path = location.href.replace(location.origin, '')
-    return unbase(path)
+    return unbase(fullPath(location))
   }
 
   function setState(path) {
@@ -44,7 +42,7 @@ define(function(require) {
 
   function pushState(path) {
     if (~path.indexOf('#/')) {
-      path = '/' + trimSlashes(path.split('#/').slice(1)).join('/')
+      path = '/' + trimSlashes(path.split('#/')[1])
     }
 
     path = unbase(path)
@@ -66,7 +64,7 @@ define(function(require) {
 
     base = path? '/' + trimSlashes(path) : ''
 
-    var cwd = location.href.slice(location.origin.length)
+    var cwd = fullPath(location)
     history.replaceState(null, null, rebase(cwd))
   }
 
@@ -80,13 +78,20 @@ define(function(require) {
 
     a = findClosest.anchor(target)
 
-    if (!a) return         // Ignore non-anchor clicks
+    if (!a) return // Ignore non-anchor clicks
     if (!!a.target) return // Ignore anchors with specified targets
+    if (!isSameOrigin(a, location)) return // Ignore links to different origins
 
-    if (a.origin !== location.origin) return    // Ignore links to different origins
-    if (a.hash && !~a.hash.indexOf('#/')) return // Ignore links with a non-path hash
+    var path
 
-    var path = rebase(a.hash? a.hash.slice(1) : a.href.slice(a.origin.length))
+    if (isHashPath(a.hash)) {
+      path = rebase(a.hash.slice(1))
+    } else if (a.hash) {
+      return // Ignore links with a non-path hash
+    } else {
+      path = rebase(fullPath(a))
+    }
+
     if (path) {
       event.preventDefault()
       event.stopPropagation()
@@ -99,20 +104,55 @@ define(function(require) {
   }
 
   function handleStateChange(event) {
-    var path = location.href.slice(location.origin.length)
-      , base = (event.state && event.state.base) || ''
+    var path, base = (event.state && event.state.base) || ''
 
-    if (~path.indexOf('#/')) {
+    if (isHashPath(location.hash)) {
       // "Redirect" current location to a proper path
-      var path = location.hash.slice(1)
+      path = location.hash.slice(1)
 
       if (path) {
         var state = { base: base, path: path }
         history.replaceState(state, null, rebase(path))
       }
+    } else {
+      path = fullPath(location)
     }
 
     dispatcher.statechange(unbase(path))
+  }
+
+  function isHashPath(hash) {
+    return (hash || '').slice(0, 2) === '#/'
+  }
+
+  function isSameOrigin(a, x) {
+    var o = origin(x)
+    return a.href.slice(0, o.length) === o
+  }
+
+  function origin(url) {
+    if (url.origin) {
+      return url.origin
+    } else {
+      var port
+
+      if (url.port && !~url.href.indexOf(':' + url.port)) {
+        // IE defaults port values based on protocol, which messes things up
+        port = ''
+      } else {
+        port = ':' + url.port
+      }
+
+      return url.protocol + "//" + url.hostname + port
+    }
+  }
+
+  function fullPath(url) {
+    if (isHashPath(url.hash)) {
+      return url.hash.slice(1)
+    } else {
+      return url.href.slice(origin(url).length)
+    }
   }
 
   function rebase(path) {
