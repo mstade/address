@@ -62,9 +62,11 @@ define(function(require) {
   function basePath(path) {
     if (arguments.length === 0) return base
 
-    base = path? '/' + trimSlashes(path) : ''
+    var cwd = unbase(fullPath(location))
 
-    var cwd = fullPath(location)
+    path = trimSlashes(path)
+    base = path? '/' + path : ''
+
     history.replaceState(null, null, rebase(cwd))
   }
 
