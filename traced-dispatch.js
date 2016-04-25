@@ -1,6 +1,6 @@
 define(function (require) {
   var _ = require('underscore')
-    , dispatch = require('d3-dispatch')
+    , dispatch = require('d3-dispatch').dispatch
 
   return function createDispatcher(/* types */) {
     var dispatcher = dispatch.apply(
