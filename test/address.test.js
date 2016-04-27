@@ -413,7 +413,7 @@ define(function(require) {
       it('should process encoded queries components', function() {
         var uri = '/fo?x=x&y=y%3Dy'
           , api = address(uri)
-          , query = { x: 'x', y: 'y=y' }
+          , query = { x: 'x', y: 'y%3Dy' }
 
         api.query().should.deep.equal(query)
         api.navigate().state.should.equal(uri)
