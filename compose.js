@@ -2,7 +2,7 @@ define(function(require) {
     var _ = require('underscore')
       , interpolate = require('./interpolate')
       , rhumb = require('@websdk/rhumb')
-      , uri = require('lil-uri')
+      , uri = require('./uri')
 
     return function(web, requestedUri, currentUri) {
 

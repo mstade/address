@@ -32,12 +32,6 @@ module.exports = {
     , commonjs: 'd3-dispatch'
     , amd: 'd3-dispatch'
     }
-  , 'lil-uri': {
-      root: 'lil-uri'
-    , commonjs2: 'lil-uri'
-    , commonjs: 'lil-uri'
-    , amd: 'lil-uri'
-    }
   }
 , devtool: '#source-map'
 }
