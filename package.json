@@ -30,7 +30,6 @@
     "@websdk/nap": "^0.10.7",
     "@websdk/rhumb": "^0.3.8",
     "d3-dispatch": "^0.2.6",
-    "lil-uri": "^0.2.0",
     "underscore": "^1.8.3"
   },
   "license": "MIT"

@@ -13,5 +13,6 @@ define(function(require) {
   , response: require('./response')
   , serialize: require('./serialize')
   , stream: require('./stream')
+  , uri: require('./uri')
   }
 })
