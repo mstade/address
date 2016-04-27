@@ -22,7 +22,9 @@ define(function (require) {
       , 'file:': true
       }
     , _ = require('underscore')
-  
+    , encode = _.identity
+    , decode = _.identity
+
   return function(url) {
     var api = {
           query: setQuery
@@ -110,7 +112,7 @@ define(function (require) {
       if (search && search.charAt(0) !== '?') search = '?' + search
 
       pathname = pathname.replace(/[?#]/g, function(match) {
-        return encodeURIComponent(match)
+        return encode(match)
       })
       search = search.replace('#', '%23')
 
@@ -574,8 +576,8 @@ define(function (require) {
         vstr = ''
       }
 
-      k = decodeURIComponent(kstr)
-      v = decodeURIComponent(vstr)
+      k = decode(kstr)
+      v = decode(vstr)
 
       if (!Object.prototype.hasOwnProperty.call(obj, k)) {
         obj[k] = v
@@ -594,13 +596,13 @@ define(function (require) {
       , eq = '='
     
     return Object.keys(obj).map(function(k) {
-      var ks = encodeURIComponent(stringifyPrimitive(k)) + eq
+      var ks = encode(stringifyPrimitive(k)) + eq
       if (_.isArray(obj[k])) {
         return obj[k].map(function(v) {
-          return ks + encodeURIComponent(stringifyPrimitive(v))
+          return ks + encode(stringifyPrimitive(v))
         }).join(sep)
       } else {
-        return ks + encodeURIComponent(stringifyPrimitive(obj[k]))
+        return ks + encode(stringifyPrimitive(obj[k]))
       }
     }).join(sep)
   }
