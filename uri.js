@@ -22,8 +22,8 @@ define(function (require) {
       , 'file:': true
       }
     , _ = require('underscore')
-    , encode = _.identity
-    , decode = _.identity
+    , encode = encodeURIComponent
+    , decode = decodeURIComponent
 
   return function(url) {
     var api = {
@@ -75,7 +75,7 @@ define(function (require) {
         , query = ''
 
       if (auth) {
-        auth = encodeURIComponent(auth)
+        auth = encode(auth)
         auth = auth.replace(/%3A/i, ':')
         auth += '@'
       }
@@ -299,7 +299,7 @@ define(function (require) {
         }
         start = 0
         if (atSign !== -1) {
-          fragments.auth = decodeURIComponent(rest.slice(0, atSign))
+          fragments.auth = decode(rest.slice(0, atSign))
           start = atSign + 1
         }
         if (nonHost === -1) {
@@ -550,7 +550,7 @@ define(function (require) {
       , obj = {}
       , regexp = /\+/g
       , maxKeys = 1000
-    
+
     if (typeof qs !== 'string' || qs.length === 0) {
       return obj
     }
@@ -594,7 +594,7 @@ define(function (require) {
   function formatQueryString(obj) {
     var sep = '&'
       , eq = '='
-    
+
     return Object.keys(obj).map(function(k) {
       var ks = encode(stringifyPrimitive(k)) + eq
       if (_.isArray(obj[k])) {
