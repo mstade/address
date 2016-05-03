@@ -388,10 +388,11 @@ define(function(require) {
 
       it('should merge queries', function() {
         var uri = '/foo?x=x'
-          , api = address(uri).query({y: 'y'})
-          , query = { x: 'x', y: 'y' }
+          , api = address(uri).query({y: 'y&x=z'})
+          , query = { x: 'x', y: 'y&x=z' }
 
         api.query().should.deep.equal(query)
+        api.navigate().state.should.equal('/foo?x=x&y=y%26x%3Dz')
       })
 
       it('should overwrite queries in the resulting URI', function() {
