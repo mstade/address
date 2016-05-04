@@ -36,7 +36,7 @@ define(function(require) {
 
       if (!_.isEmpty(query)) url.query(_.extend({}, url.query(), query))
 
-      return url.build()
+      return url.path()
 
       function byInterpolated(part) {
         return part.type == 'var'
