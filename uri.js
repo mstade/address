@@ -84,7 +84,7 @@ define(function (require) {
       , obj = {}
       , regexp = /\+/g
       , maxKeys = 1000
-      , key, value, decodedKey, decodedValue, fragment, parts
+      , decodedKey, decodedValue, fragment, parts
 
     if (typeof qs !== 'string' || qs.length === 0) {
       return obj
@@ -96,10 +96,8 @@ define(function (require) {
     for (var i = 0; i < len; ++i) {
       fragment = queryFragments[i].replace(regexp, '%20')
       parts = fragment.split(eq)
-      key = parts.shift()
-      value = parts.join(eq)
-      decodedKey = decode(key)
-      decodedValue = decode(value)
+      decodedKey = decode(parts.shift())
+      decodedValue = decode(parts.join(eq))
 
       if (!Object.prototype.hasOwnProperty.call(obj, decodedKey)) {
         obj[decodedKey] = decodedValue
