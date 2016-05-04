@@ -209,7 +209,7 @@ define(function(require) {
           var interpolatedUri = interpolate(web, uri, params)
             , parsedUri = parseUri(interpolatedUri)
             , q = _.extend({}, parsedUri.query(), query)
-            , mergedUri = (_.isEmpty(q) ? parsedUri : parsedUri.query(q)).build()
+            , mergedUri = (_.isEmpty(q) ? parsedUri : parsedUri.query(q)).path()
 
           if (!zapp.isRoot(context)) return mergedUri
           return compose(web, mergedUri, zapp.resource(context))
