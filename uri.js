@@ -14,7 +14,7 @@ define(function (require) {
         , path: setPath
         , pathname: getterSetter('pathname')
         , hash: getterSetter('hash')
-        , toString: setPath
+        , toString: build
         }
       , fragments = {
           pathname: ''
