@@ -14,6 +14,7 @@ define(function (require) {
         , path: setPath
         , pathname: getterSetter('pathname')
         , hash: getterSetter('hash')
+        , toString: setPath
         }
       , fragments = {
           pathname: ''
@@ -41,7 +42,10 @@ define(function (require) {
 
     function setSearch(queryString) {
       if (!arguments.length) return serialize(fragments.query, serializeEncoder)
-      fragments.query = parseQueryString(queryString)
+      fragments.query = parseQueryString(queryString.charAt(0) === '?'
+        ? queryString.slice(1)
+        : queryString
+      )
       return api
     }
 
