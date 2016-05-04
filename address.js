@@ -225,13 +225,14 @@ define(function(require) {
       }
 
       function handleResponse(req, callback, err, res) {
-
         // deprecated //
         callback && callback(err, res)
 
         if (err) return dispatcher.err(err), null
 
-        req.params = _.mapObject(req.params, decodeURIComponent)
+        if (req.params) {
+          req.params = _.mapObject(req.params, decodeURIComponent)
+        }
 
         if (isView(res)) {
           if (res.statusCode != 302) wrapView(location, req, res)
