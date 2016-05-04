@@ -229,10 +229,12 @@ define(function(require) {
         // deprecated //
         callback && callback(err, res)
 
-        if(err) return dispatcher.err(err), null
+        if (err) return dispatcher.err(err), null
 
-        if(isView(res)) {
-          if(res.statusCode != 302) wrapView(location, req, res)
+        req.params = _.mapObject(req.params, decodeURIComponent)
+
+        if (isView(res)) {
+          if (res.statusCode != 302) wrapView(location, req, res)
           req.context && invokeView(req, res)
         }
 
@@ -241,6 +243,7 @@ define(function(require) {
             res.body = res.body.dispatcher
           }
         }
+
 
         codes(res.statusCode).concat(['done']).forEach(function(type) {
           dispatcher[type](res)
