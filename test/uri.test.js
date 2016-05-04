@@ -1,7 +1,7 @@
 define(
   [ 'Squire' ]
   , function(Squire) {
-    describe('Serialize', function() {
+    describe('URI', function() {
 
       var uri
         , serialize = function (value) {
@@ -146,6 +146,19 @@ define(
         url.search().should.equal(serialize(query2))
         url.query().should.deep.equal(query2)
         url.hash().should.deep.equal(hash2)
+      })
+
+      it('should make creating paths chainable', function() {
+        var pathname = '/foo'
+          , query = {a: ['b', 'c'], d: 'hello world', e: 'bar'}
+          , hash = '#baz'
+
+        uri()
+          .pathname(pathname)
+          .search('a=b&a=c&d=hello%20world&e=bar')
+          .hash(hash)
+          .toString(pathname)
+            .should.equal(pathname + serialize(query) + hash)
       })
     })
   }
