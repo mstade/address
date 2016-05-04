@@ -8,12 +8,10 @@ define(function(require) {
           var ks = encode(key) + eq,
               value = query[key]
 
-          if (value == null)
-            return list
-          else if (_.isArray(value))
-            return list.concat(value.map(getEncodedValue).join(sep))
-          else
-            return list.concat(getEncodedValue(value))
+          if (_.isUndefined(value)) return list
+          if (_.isArray(value)) return list.concat(value.map(getEncodedValue).join(sep))
+
+          return list.concat(getEncodedValue(value))
 
           function getEncodedValue(v) {
             return ks + encode(v)
