@@ -1,6 +1,4 @@
 define(function (require) {
-  // define these here so at least they only have to be
-  // compiled once on the first module load.
   var _ = require('underscore')
     , serialize = require('./serialize')
     , encode = encodeURIComponent
@@ -86,7 +84,7 @@ define(function (require) {
       , obj = {}
       , regexp = /\+/g
       , maxKeys = 1000
-      , key, value, decodedKey, decodedValue, fragment, idx
+      , key, value, decodedKey, decodedValue, fragment, parts
 
     if (typeof qs !== 'string' || qs.length === 0) {
       return obj
@@ -97,16 +95,9 @@ define(function (require) {
 
     for (var i = 0; i < len; ++i) {
       fragment = queryFragments[i].replace(regexp, '%20')
-      idx = fragment.indexOf(eq)
-
-      if (idx !== -1) {
-        key = fragment.substr(0, idx)
-        value = fragment.substr(idx + 1)
-      } else {
-        key = fragment
-        value = ''
-      }
-
+      parts = fragment.split(eq)
+      key = parts.shift()
+      value = parts.join(eq)
       decodedKey = decode(key)
       decodedValue = decode(value)
 
