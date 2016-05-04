@@ -9,11 +9,11 @@ define(function(require) {
               value = query[key]
 
           if (_.isUndefined(value)) return list
-          if (_.isArray(value)) return list.concat(value.map(getEncodedValue).join(sep))
+          if (_.isArray(value)) return list.concat(value.map(getEncodedPair))
 
-          return list.concat(getEncodedValue(value))
+          return list.concat(getEncodedPair(value))
 
-          function getEncodedValue(v) {
+          function getEncodedPair(v) {
             return ks + encode(v)
           }
         }, [])
