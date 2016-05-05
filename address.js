@@ -230,10 +230,6 @@ define(function(require) {
 
         if (err) return dispatcher.err(err), null
 
-        if (req.params) {
-          req.params = _.mapObject(req.params, decodeURIComponent)
-        }
-
         if (isView(res)) {
           if (res.statusCode != 302) wrapView(location, req, res)
           req.context && invokeView(req, res)
