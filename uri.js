@@ -3,44 +3,45 @@ define(function (require) {
     , serialize = require('./serialize')
     , encode = encodeURIComponent
     , decode = decodeURIComponent
-    , serializeEncoder = _.compose(stringifyPrimitive, encode)
+    , serializeEncoder = _.compose(String, encode)
 
   return function(url) {
     var api = {
           query: setQuery
         , search: setSearch
         , path: setPath
-        , pathname: getterSetter('pathname')
-        , hash: getterSetter('hash')
+        , pathname: setPathname
+        , hash: setHash
         , toString: build
         }
-      , fragments = {
-          pathname: ''
-        , path: ''
-        , query: {}
-        , hash: ''
-        }
+      , pathname = ''
+      , query = {}
+      , hash = ''
 
     return url ? parse(url) : api
 
     function setQuery(value) {
-      if (!arguments.length) return fragments.query
-      if (!_.isObject(value)) return fragments.query[value]
-      fragments.query = _.extend(fragments.query, value)
+      if (!arguments.length) return query
+      if (!_.isObject(value)) return query[value]
+      query = _.extend(query, value)
       return api
     }
 
-    function getterSetter(prop) {
-      return function _getterSetter(value) {
-        if (!arguments.length) return fragments[prop]
-        fragments[prop] = value
-        return api
-      }
+    function setPathname(value) {
+      if (!arguments.length) return pathname
+      pathname = value
+      return api
+    }
+
+    function setHash(value) {
+      if (!arguments.length) return hash
+      hash = value
+      return api
     }
 
     function setSearch(queryString) {
-      if (!arguments.length) return serialize(fragments.query, serializeEncoder)
-      fragments.query = parseQueryString(queryString.charAt(0) === '?'
+      if (!arguments.length) return serialize(query, serializeEncoder)
+      query = parseQueryString(queryString.charAt(0) === '?'
         ? queryString.slice(1)
         : queryString
       )
@@ -52,46 +53,39 @@ define(function (require) {
     }
 
     function build() {
-      var pathname = fragments.pathname || ''
-        , hash = fragments.hash || ''
+      var currentPathname = pathname.replace(/[?#]/g, function(match) {
+            return encode(match)
+          })
+        , currentHash = hash && hash.charAt(0) !== '#' ? '#' + hash : hash
         , search = setSearch()
 
-      if (hash && hash.charAt(0) !== '#') hash = '#' + hash
-
-      pathname = pathname.replace(/[?#]/g, function(match) {
-        return encode(match)
-      })
       search = search.replace('#', '%23')
 
-      return pathname + search + hash
+      return currentPathname + search + currentHash
     }
 
     function parse(url) {
       var parts = url.match(/^(.*?)(\?.*?)?(#.*?)?$/)
         , search = parts[2] ? parts[2].slice(1) : ''
 
-      fragments.path = url
-      fragments.pathname = parts[1] || ''
-      fragments.hash = parts[3] ? parts[3].slice(1) : ''
+      pathname = parts[1] || ''
+      hash = parts[3] ? parts[3].slice(1) : ''
 
       return setSearch(search)
     }
   }
 
-  function parseQueryString(qs) {
+  function parseQueryString(queryString) {
     var sep = '&'
       , eq = '='
-      , obj = {}
+      , query = {}
       , regexp = /\+/g
-      , maxKeys = 1000
       , decodedKey, decodedValue, fragment, parts
 
-    if (typeof qs !== 'string' || qs.length === 0) {
-      return obj
-    }
+    if (!queryString) return query
 
-    var queryFragments = qs.split(sep)
-      , len = Math.min(queryFragments.length, maxKeys)
+    var queryFragments = queryString.split(sep)
+      , len = queryFragments.length
 
     for (var i = 0; i < len; ++i) {
       fragment = queryFragments[i].replace(regexp, '%20')
@@ -99,29 +93,15 @@ define(function (require) {
       decodedKey = decode(parts.shift())
       decodedValue = decode(parts.join(eq))
 
-      if (!Object.prototype.hasOwnProperty.call(obj, decodedKey)) {
-        obj[decodedKey] = decodedValue
-      } else if (_.isArray(obj[decodedKey])) {
-        obj[decodedKey].push(decodedValue)
+      if (!Object.prototype.hasOwnProperty.call(query, decodedKey)) {
+        query[decodedKey] = decodedValue
+      } else if (_.isArray(query[decodedKey])) {
+        query[decodedKey].push(decodedValue)
       } else {
-        obj[decodedKey] = [obj[decodedKey], decodedValue]
+        query[decodedKey] = [query[decodedKey], decodedValue]
       }
     }
 
-    return obj
-  }
-
-  function stringifyPrimitive(value) {
-    switch (typeof value) {
-      case 'string':
-      case 'boolean':
-        return String(value)
-
-      case 'number':
-        return isFinite(value) ? String(value) : ''
-
-      default:
-        return ''
-    }
+    return query
   }
 })
