@@ -1,8 +1,6 @@
 define(function (require) {
   var _ = require('underscore')
     , serialize = require('./serialize')
-    , encode = encodeURIComponent
-    , decode = decodeURIComponent
     , serializeEncoder = _.compose(String, encode)
 
   return function(url) {
@@ -53,13 +51,9 @@ define(function (require) {
     }
 
     function build() {
-      var currentPathname = pathname.replace(/[?#]/g, function(match) {
-            return encode(match)
-          })
+      var currentPathname = pathname.replace(/[?#]/g, encode)
         , currentHash = hash && hash.charAt(0) !== '#' ? '#' + hash : hash
-        , search = setSearch()
-
-      search = search.replace('#', '%23')
+        , search = setSearch().replace(/#/g, encode)
 
       return currentPathname + search + currentHash
     }
@@ -103,5 +97,13 @@ define(function (require) {
     }
 
     return query
+  }
+
+  function encode(value) {
+    return value ? encodeURIComponent(value) : ''
+  }
+
+  function decode(value) {
+    return value ? decodeURIComponent(value) : ''
   }
 })
