@@ -1,6 +1,7 @@
 define(function(require) {
 
   var error = require('./error')
+    , uri = require('./uri')
 
   return {
 
@@ -19,7 +20,7 @@ define(function(require) {
     }
   , decodeParams : function(req, res, next) {
       if (req.params) {
-        req.params = _.mapObject(req.params, decode)
+        req.params = _.mapObject(req.params, uri.decode)
       }
       next(req, res)
     }
@@ -35,10 +36,6 @@ define(function(require) {
         })
       }
     }
-  }
-
-  function decode(value) {
-    return value ? decodeURIComponent(value) : ''
   }
 })
 

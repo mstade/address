@@ -21,8 +21,8 @@ define(function(require) {
 
     if(shouldRewrite) {
       composedParams = _.extend(
-        _.mapObject(currentResource.params, decode)
-      , _.mapObject(requestedResource.params, decode)
+        _.mapObject(currentResource.params, uri.decode)
+      , _.mapObject(requestedResource.params, uri.decode)
       )
       return rewrite(web, rewritePath, composedParams)
     }
@@ -53,9 +53,5 @@ define(function(require) {
       q[k] = v
       return q
     }
-  }
-
-  function decode(value) {
-    return value ? decodeURIComponent(value) : ''
   }
 })
