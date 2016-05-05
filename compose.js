@@ -1,52 +1,61 @@
 define(function(require) {
-    var _ = require('underscore')
-      , interpolate = require('./interpolate')
-      , rhumb = require('@websdk/rhumb')
-      , uri = require('./uri')
+  var _ = require('underscore')
+    , interpolate = require('./interpolate')
+    , rhumb = require('@websdk/rhumb')
+    , uri = require('./uri')
 
-    return function(web, requestedUri, currentUri) {
+  return function(web, requestedUri, currentUri) {
 
-      if(!currentUri || requestedUri == currentUri) return requestedUri
+    if(!currentUri || requestedUri == currentUri) return requestedUri
 
-      var currentResource = web.find(currentUri)
-        , requestedResource = web.find(requestedUri)
+    var currentResource = web.find(currentUri)
+      , requestedResource = web.find(requestedUri)
 
-      if(!currentResource || !requestedResource) return requestedUri
+    if(!currentResource || !requestedResource) return requestedUri
 
-      var composedParams = _.extend(currentResource.params, requestedResource.params)
-        , redirect = currentResource.redirects[requestedResource.path]
-        , composes = _.contains(currentResource.composes, requestedResource.path)
-        , rewritePath = redirect || currentResource.path
-        , shouldRewrite = redirect || composes
+    var composedParams
+      , redirect = currentResource.redirects[requestedResource.path]
+      , composes = _.contains(currentResource.composes, requestedResource.path)
+      , rewritePath = redirect || currentResource.path
+      , shouldRewrite = redirect || composes
 
-      if(shouldRewrite) return rewrite(web, rewritePath, composedParams)
-
-      return requestedUri
+    if(shouldRewrite) {
+      composedParams = _.extend(
+        _.mapObject(currentResource.params, decode)
+      , _.mapObject(requestedResource.params, decode)
+      )
+      return rewrite(web, rewritePath, composedParams)
     }
 
-    function rewrite(web, path, params) {
-      var alreadyInterpolated = _.chain(rhumb._parse(path))
-            .flatten()
-            .filter(byInterpolated)
-            .map('input')
-            .value()
-        , query = _.reduce(params, buildQuery, {})
-        , rewritten = interpolate(web, path, params)
-        , url = uri(rewritten)
+    return requestedUri
+  }
 
-      if (!_.isEmpty(query)) url.query(_.extend({}, url.query(), query))
+  function rewrite(web, path, params) {
+    var alreadyInterpolated = _.chain(rhumb._parse(path))
+          .flatten()
+          .filter(byInterpolated)
+          .map('input')
+          .value()
+      , query = _.reduce(params, buildQuery, {})
+      , rewritten = interpolate(web, path, params)
+      , url = uri(rewritten)
 
-      return url.path()
+    if (!_.isEmpty(query)) url.query(_.extend({}, url.query(), query))
 
-      function byInterpolated(part) {
-        return part.type == 'var'
-      }
+    return url.path()
 
-      function buildQuery(q, v, k) {
-        if (_.contains(alreadyInterpolated, k)) return q
-        q[k] = v
-        return q
-      }
+    function byInterpolated(part) {
+      return part.type == 'var'
+    }
+
+    function buildQuery(q, v, k) {
+      if (_.contains(alreadyInterpolated, k)) return q
+      q[k] = v
+      return q
     }
   }
-)
+
+  function decode(value) {
+    return value ? decodeURIComponent(value) : ''
+  }
+})
