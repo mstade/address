@@ -3,7 +3,12 @@ define(function (require) {
     , serialize = require('./serialize')
     , serializeEncoder = _.compose(String, encode)
 
-  return function(url) {
+  uri.decode = decode
+  uri.encode = encode
+
+  return uri
+
+  function uri(url) {
     var api = {
           query: setQuery
         , search: setSearch
