@@ -109,6 +109,12 @@ define(function (require) {
   }
 
   function decode(value) {
-    return value ? decodeURIComponent(value) : ''
+    if (value) {
+      return String(value).replace(/%[0-9a-fA-F]{2}/g, function(match) {
+        return decodeURIComponent(match)
+      })
+    } else {
+      return ''
+    }
   }
 })
