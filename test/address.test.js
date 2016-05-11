@@ -36,6 +36,7 @@ define(function(require) {
             return uri.split('/{')[0] + paramsString
           }
         , find: function() {}
+        , use: function() {}
         }
 
         location = {
