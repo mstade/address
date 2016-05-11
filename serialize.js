@@ -15,7 +15,7 @@ define(function(require) {
       return list.concat(encodeKV(value))
 
       function encodeKV(v) {
-        return encode(key) + '=' + encode(v)
+        return v? encode(key) + '=' + encode(v) : encode(key)
       }
     }
   }
