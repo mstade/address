@@ -15,6 +15,7 @@ define(function(require) {
     , error = require('./error')
     , dispatch = require('d3-dispatch').dispatch
     , rebind = require('./rebind')
+    , middleware = require('./middleware')
 
     function address(r) {
 
@@ -64,7 +65,7 @@ define(function(require) {
 
       api.web = function(w) {
         if(!arguments.length) return web
-        web = w
+        web = augmentWeb(w)
         location = require('./location')(web, address)
         return api
       }
@@ -246,6 +247,14 @@ define(function(require) {
           dispatcher[type](res)
         })
       }
+    }
+
+    function augmentWeb(web) {
+      if (!web.use._address_decodeParams) {
+        web.use._address_decodeParams = true
+        web.use(middleware.decodeParams)
+      }
+      return web
     }
 
     return address
