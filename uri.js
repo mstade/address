@@ -8,7 +8,7 @@ define(function (require) {
 
   return uri
 
-  function uri(url) {
+  function uri(url, decoder) {
     var api = {
           query: setQuery
         , search: setSearch
@@ -47,7 +47,7 @@ define(function (require) {
       query = parseQueryString(queryString.charAt(0) === '?'
         ? queryString.slice(1)
         : queryString
-      )
+      , decoder)
       return api
     }
 
@@ -74,7 +74,7 @@ define(function (require) {
     }
   }
 
-  function parseQueryString(queryString) {
+  function parseQueryString(queryString, decoder) {
     var sep = '&'
       , eq = '='
       , query = {}
@@ -86,11 +86,13 @@ define(function (require) {
     var queryFragments = queryString.split(sep)
       , len = queryFragments.length
 
+    decoder = decoder || decode
+
     for (var i = 0; i < len; ++i) {
       fragment = queryFragments[i].replace(regexp, '%20')
       parts = fragment.split(eq)
-      decodedKey = decode(parts.shift())
-      decodedValue = decode(parts.join(eq))
+      decodedKey = decoder(parts.shift())
+      decodedValue = decoder(parts.join(eq))
 
       if (!Object.prototype.hasOwnProperty.call(query, decodedKey)) {
         query[decodedKey] = decodedValue
