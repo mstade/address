@@ -12,18 +12,11 @@ define(function(require) {
     })
 
     it('should return encode query string in the redirect location', function() {
-      redirect('/foo?@bar%/=%?').should.deep.equal({
-        statusCode : 302
-      , headers : {
-          location : '/foo?%40bar%25%2F=%25%3F'
-        }
-      })
-      redirect('/baz?%=%2f').should.deep.equal({
-        statusCode : 302
-      , headers : {
-          location : '/baz?%25=%252f'
-        }
-      })
+      redirect('/foo?@bar%/=%?').statusCode.should.equal(302)
+      redirect('/foo?@bar%/=%?').headers.location.should.equal('/foo?%40bar%25%2F=%25%3F')
+
+      redirect('/baz?%=%2f').statusCode.should.equal(302)
+      redirect('/baz?%=%2f').headers.location.should.equal('/baz?%25=%2F')
     })
   })
 })
