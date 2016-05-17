@@ -1,6 +1,6 @@
 {
   "name": "@zambezi/address",
-  "version": "3.0.0-real-urls.0",
+  "version": "3.0.0-real-urls.1",
   "description": "API for nap resources",
   "main": "lib/address.js",
   "devDependencies": {
