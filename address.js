@@ -11,10 +11,11 @@ define(function(require) {
     , wrapView = require('./view-wrapper')
     , invokeView = require('./view-invoker')
     , toObject = require('./kv-to-object')
-    , parseUri = require('lil-uri')
+    , parseUri = require('./uri')
     , error = require('./error')
     , dispatch = require('d3-dispatch').dispatch
     , rebind = require('./rebind')
+    , middleware = require('./middleware')
 
     function address(r) {
 
@@ -34,7 +35,7 @@ define(function(require) {
 
       if(r && _.isString(r)) {
         uri = r
-        query = parseUri(encodeURIComponent(uri)).query() || query
+        query = parseUri(uri).query() || query
       } else if(r && _.isObject(r)) {
         uri = r.uri || uri
         query = r.query || query
@@ -64,7 +65,7 @@ define(function(require) {
 
       api.web = function(w) {
         if(!arguments.length) return web
-        web = w
+        web = augmentWeb(w)
         location = require('./location')(web, address)
         return api
       }
@@ -207,10 +208,9 @@ define(function(require) {
 
         function getUri() {
           var interpolatedUri = interpolate(web, uri, params)
-              // As lil-uri always decodes the URI, encode it.
-            , parsedUri = parseUri(encodeURIComponent(interpolatedUri))
+            , parsedUri = parseUri(interpolatedUri)
             , q = _.extend({}, parsedUri.query(), query)
-            , mergedUri = (_.isEmpty(q) ? parsedUri : parsedUri.query(q)).build()
+            , mergedUri = (_.isEmpty(q) ? parsedUri : parsedUri.query(q)).path()
 
           if (!zapp.isRoot(context)) return mergedUri
           return compose(web, mergedUri, zapp.resource(context))
@@ -226,14 +226,13 @@ define(function(require) {
       }
 
       function handleResponse(req, callback, err, res) {
-
         // deprecated //
         callback && callback(err, res)
 
-        if(err) return dispatcher.err(err), null
+        if (err) return dispatcher.err(err), null
 
-        if(isView(res)) {
-          if(res.statusCode != 302) wrapView(location, req, res)
+        if (isView(res)) {
+          if (res.statusCode != 302) wrapView(location, req, res)
           req.context && invokeView(req, res)
         }
 
@@ -243,10 +242,19 @@ define(function(require) {
           }
         }
 
+
         codes(res.statusCode).concat(['done']).forEach(function(type) {
           dispatcher[type](res)
         })
       }
+    }
+
+    function augmentWeb(web) {
+      if (!web.use._address_decodeParams) {
+        web.use._address_decodeParams = true
+        web.use(middleware.decodeParams)
+      }
+      return web
     }
 
     return address
