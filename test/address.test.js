@@ -37,6 +37,7 @@ define(function(require) {
             return uri.split('/{')[0] + paramsString
           }
         , find: function() {}
+        , use: function() {}
         }
         address = function(r) {
           return a(r).web(web)
@@ -182,7 +183,7 @@ define(function(require) {
       it('should call web.req with the configured request and callback', function() {
         var cb = sinon.spy()
           , req = {
-            uri : '/wibble/123'
+            uri : '/wibble/123?a=a%3Db'
           , method : 'send'
           , headers : {
               accept : 'application/json'
@@ -195,6 +196,7 @@ define(function(require) {
         var update = address('/wibble/{id}')
           .param('id', '123')
           .method('send')
+          .query('a', 'a=b')
           .header('accept','application/json')
           .body({hello:'world!'})
           .on('done', cb)
@@ -202,7 +204,8 @@ define(function(require) {
         update()
 
         web.req.should.have.been.calledOnce
-        web.req.args[0][0].should.deep.equal(req)
+        web.req.should.have.been.calledWith(req)
+
         cb.should.have.been.calledOnce
       })
 
@@ -226,8 +229,7 @@ define(function(require) {
 
         web.req.should.have.been.calledOnce
         cb.should.have.been.calledOnce
-
-        web.req.args[0][0].should.deep.equal(defaulReq)
+        web.req.should.have.been.calledWith(defaulReq)
       })
 
       it('should call the response body with the node', function() {
@@ -364,10 +366,11 @@ define(function(require) {
 
       it('should merge queries', function() {
         var uri = '/foo?x=x'
-          , api = address(uri).query({y: 'y'})
-          , query = { x: 'x', y: 'y' }
+          , api = address(uri).query({y: 'y&x=z'})
+          , query = { x: 'x', y: 'y&x=z' }
 
         api.query().should.deep.equal(query)
+        api.navigate().should.equal('/foo?x=x&y=y%26x%3Dz')
       })
 
       it('should overwrite queries in the resulting URI', function() {
@@ -389,7 +392,7 @@ define(function(require) {
       it('should process encoded queries components', function() {
         var uri = '/fo?x=x&y=y%3Dy'
           , api = address(uri)
-          , query = { x: 'x', y: 'y%3Dy' }
+          , query = { x: 'x', y: 'y=y' }
 
         api.query().should.deep.equal(query)
         api.navigate().should.equal(uri)

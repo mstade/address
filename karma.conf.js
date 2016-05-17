@@ -36,11 +36,6 @@ module.exports = function(config) {
       , watched: false
     }
     , {
-        pattern: 'node_modules/lil-uri/uri.js'
-      , included: false
-      , watched: false
-    }
-    , {
         pattern: 'node_modules/d3-dispatch/build/d3-dispatch.js'
       , included: false
       , watched: false
