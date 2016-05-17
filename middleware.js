@@ -1,6 +1,7 @@
 define(function(require) {
 
   var error = require('./error')
+    , uri = require('./uri')
 
   return {
 
@@ -17,9 +18,15 @@ define(function(require) {
         !responded && res(err, data)
       })
     }
+  , decodeParams : function(req, res, next) {
+      if (req.params) {
+        req.params = _.mapObject(req.params, uri.decode)
+      }
+      next(req, res)
+    }
 
   , logger : function(log) {
-      return function(req, res, next) {
+      return function logger(req, res, next) {
         next(req, function(err, data) {
           if(data.statusCode == 302) log.debug(data.statusCode, req.uri, data.headers.location)
           if(data.statusCode >= 400) {
@@ -30,5 +37,5 @@ define(function(require) {
       }
     }
   }
-
 })
+
