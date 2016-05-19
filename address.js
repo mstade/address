@@ -15,13 +15,13 @@ define(function(require) {
     , error = require('./error')
     , dispatch = require('d3-dispatch').dispatch
     , rebind = require('./rebind')
+    , location = require('./location')
     , middleware = require('./middleware')
 
     function address(r) {
 
       var uri
         , web
-        , location
         , method = "get"
         , headers = { accept : "application/x.nap.view" }
         , params = {}
@@ -66,7 +66,6 @@ define(function(require) {
       api.web = function(w) {
         if(!arguments.length) return web
         web = augmentWeb(w)
-        location = require('./location')(web, address)
         return api
       }
 

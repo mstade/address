@@ -41,6 +41,11 @@ module.exports = function(config) {
       , watched: false
     }
     , {
+        pattern: 'node_modules/squirejs/src/Squire.js'
+      , included: false
+      , watched: false
+    }
+    , {
         pattern: 'test/**/*.js'
       , included: false
     }

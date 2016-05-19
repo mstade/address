@@ -1,204 +1,297 @@
 define(function(require) {
-  var Squire = require('Squire')
-    , dispatch = require('d3-dispatch').dispatch
-    , rebind = require('rebind')
-    , findClosest
-    , location
-    , web
-    , locationHash
-    , address
-    , anchor
+  var location = require('location')
 
   describe('Location', function() {
-    beforeEach(function(done) {
-      var locationHashDispatcher = dispatch('statechange')
-      var navigateDispatcher = dispatch('navigate')
+    var originalPath
 
-      var injector = new Squire();
-      var locationHashApi = {
-        state: function(value){
-          if (arguments.length) {
-            locationHash.value = value
-            locationHashDispatcher.statechange()
-            return locationHash
+    beforeEach(function() {
+      originalPath = window.location.href.slice(window.location.origin.length)
+      location.basePath('')
+    })
+
+    afterEach(function() {
+      window.history.replaceState(null, null, originalPath)
+    })
+
+    describe('API', function() {
+      describe(`location.getState()`, function() {
+        it('should always get the current window location', function() {
+          expect(location.getState() === '/base/foo')
+          window.history.replaceState(null, null, '/base/bar')
+          expect(location.getState() === '/base/bar')
+        })
+
+        it('should, if base path is set, remove it from current window location', function() {
+          location.basePath('/base')
+          expect(location.getState() === '/foo')
+          window.history.replaceState(null, null, '/bar')
+          expect(location.getState() === '/bar')
+        })
+      })
+
+      describe(`location.basePath()`, function() {
+        it('should replace the current path with a rebased path', function() {
+          var historyEntries = window.history.length
+          expect(location.getState()).to.equal(originalPath)
+          location.basePath('/foo')
+          expect(location.basePath()).to.equal('/foo')
+          expect(location.getState()).to.equal(originalPath)
+          expect(window.location.pathname).to.equal('/foo' + originalPath)
+          expect(window.history.length).to.equal(historyEntries)    
+
+          location.basePath('/bar')
+          expect(location.basePath()).to.equal('/bar')
+          expect(location.getState()).to.equal(originalPath)
+          expect(window.location.pathname).to.equal('/bar' + originalPath)
+          expect(window.history.length).to.equal(historyEntries)
+
+          location.basePath('/')
+          expect(location.basePath()).to.equal('')
+          expect(location.getState()).to.equal(originalPath)
+          expect(window.location.pathname).to.equal(originalPath)
+          expect(window.history.length).to.equal(historyEntries)
+
+          location.basePath('')
+          expect(location.basePath()).to.equal('')
+          expect(location.getState()).to.equal(originalPath)
+          expect(window.location.pathname).to.equal(originalPath)
+          expect(window.history.length).to.equal(historyEntries)
+        })
+      })
+
+      describe(`location.pushState()`, function() {
+        it('should update the current location', function() {
+          expect(location.getState()).to.not.equal('/base/foo')
+          expect(location.pushState('/base/foo')).to.equal('/base/foo')
+          expect(location.getState()).to.equal('/base/foo')
+        })
+
+        it('should rebase accordingly when base path is set', function() {
+          location.basePath('/base')
+          expect(location.getState()).to.not.equal('/foo')
+          expect(location.pushState('/base/foo')).to.equal('/foo')
+          expect(location.getState()).to.equal('/foo')
+          expect(location.pushState('/base/bar')).to.equal('/bar')
+          expect(location.getState()).to.equal('/bar')
+          expect(location.pushState('/baz')).to.equal('/baz')
+          expect(location.getState()).to.equal('/baz')
+        })
+
+        it('should do nothing when pushing the current location', function() {
+          expect(location.pushState(location.getState())).to.equal(false)
+          
+          location.basePath('/base')
+          expect(location.pushState(location.getState())).to.equal(false)
+        })
+
+        it('should not dispatch events when pushing a new location', function() {
+          var statechange = false
+
+          location.on('statechange.test-no-dispatch', function() {
+            statechange = true
+          })
+
+          expect(location.getState()).to.equal(originalPath)
+          expect(location.pushState('/base/bar')).to.equal('/base/bar')
+          expect(location.getState()).to.equal('/base/bar')
+          expect(statechange).to.be.false
+
+          location.basePath('/base')
+          expect(location.getState()).to.equal('/bar')
+          expect(location.pushState('/foo')).to.equal('/foo')
+          expect(location.getState()).to.equal('/foo')
+          expect(statechange).to.be.false
+
+          location.on('statechange.test-no-dispatch', null)
+        })
+      })
+
+      describe(`location.setState()`, function() {
+        it('should do nothing when setting the current location', function() {
+          var statechange = false
+
+          location.on('statechange.test-no-op', function() {
+            statechange = true
+          })
+
+          expect(location.setState(location.getState())).to.equal(false)
+          expect(location.getState()).to.equal(originalPath)
+          expect(statechange).to.be.false
+
+          location.basePath('/base')
+          expect(location.setState(location.getState())).to.equal(false)
+          expect(location.getState()).to.equal(originalPath)
+          expect(statechange).to.be.false
+
+          location.on('statechange.test-no-op', null)
+        })
+
+        it('should dispatch an event when setting a new location', function() {
+          var statechange = false
+
+          location.on('statechange.test-dispatch', function() {
+            statechange = true
+          })
+
+          expect(location.getState()).to.equal(originalPath)
+          expect(location.setState('/base/bar')).to.equal('/base/bar')
+          expect(location.getState()).to.equal('/base/bar')
+          expect(statechange).to.be.true
+
+          statechange = false
+
+          location.basePath('/base')
+          expect(location.getState()).to.equal('/bar')
+          expect(location.setState('/foo')).to.equal('/foo')
+          expect(location.getState()).to.equal('/foo')
+          expect(statechange).to.be.true
+
+          location.on('statechange.test-dispatch', null)
+        })
+      })
+
+      describe(`location.openNewWindow()`, function() {
+        it('should try to open a new window', function() {
+          var path, target, opts
+          window.open = function(x, y, z) {
+            path = x
+            target = y
+            opts = z
           }
-          return locationHash.value
+
+          location.openNewWindow('/base/foo', 'wibble')
+          expect(path).to.equal('/base/foo')
+          expect(target).to.equal('wibble')
+          expect(opts).to.equal('')
+
+          location.basePath('/base')
+          location.openNewWindow('/foo', 'wibble')
+          expect(path).to.equal('/base/foo')
+          expect(target).to.equal('wibble')
+          expect(opts).to.equal('')
+        })
+      })
+    })
+
+    describe('Events', function() {
+      it('should "redirect" hashchanges locations to a real url', function() {
+        var didRedirect
+
+        location.on('statechange.test-redirect', function(state) {
+          didRedirect = state
+        })
+
+        window.location.hash = '#/fancy/path'
+
+        expect(didRedirect).to.equal('/fancy/path')
+        expect(window.location.pathname).to.equal('/fancy/path')
+        expect(window.location.hash).to.equal('')
+
+        location.on('statechange.test-redirect', null)
+      })
+
+      xit('should correctly handle back/forward events', function() {
+        expect(location.getState()).to.equal(originalPath)
+        location.setState('/start')
+        location.setState('/back')
+        location.setState('/forward')
+
+        var changedState
+        location.on('statechange.test-history', function(state) {
+          changedState = state
+        })
+
+        expect(location.getState()).to.equal('/forward')
+        window.history.back()
+        expect(changedState).to.eql({ base: '', path: '/back' })
+        expect(location.getState()).to.equal('/back')
+        
+        changedState = undefined
+        window.history.forward()
+        expect(changedState).to.eql({ base: '', path: '/forward' })
+        expect(location.getState()).to.equal('/forward')
+        location.on('statechange.test-history', null)
+      })
+
+      describe(`location.handleClick()`, function() {  
+        var changedState, anchor, handledClick
+
+        beforeEach(function() {
+          anchor = document.createElement('a')
+          document.body.appendChild(anchor)
+          window.addEventListener('click', stopNavigation)
+          location.on('statechange.test', function(state) {
+            changedState = state
+          })
+        })
+
+        afterEach(function() {
+          document.body.removeChild(anchor)
+          window.removeEventListener('click', stopNavigation)
+          location.on('statechange.test', null)
+          anchor = changedState = undefined
+        })
+
+        function stopNavigation(e) {
+          e.preventDefault()
         }
-      , hrefFromPath: function(path){ return path }
-      , pathFromHref: function(href){ return href.split('#')[1] ||'' }
-      , shouldIgnoreHref: function(href) { return !~href.indexOf('#') }
-      , value: undefined
-      }
-      findClosest = function(fn, node, baseCase) {
-        if (!node) return baseCase
-        if (fn(node)) return node
-        return findClosest(fn, node.parentNode, baseCase)
-      }
-      web = {
-          uri : function(uri, params) {
-            var paramsString = ""
-            Object.keys(params).forEach(function(key) {
-              paramsString += "/" + params[key]
-            })
-            return uri.split("/{")[0] + paramsString
-          }
-        , find: function(v) { return web.routes[v] }
-        , routes: {}
-      }
-      findClosest.anchor = function() {
-        return anchor
-      }
 
-      locationHash = rebind(locationHashApi, locationHashDispatcher, 'on')
-
-      var addressApi = function address(path) {
-        return {
-          'origin': function(target) {
-            return {navigate: function(path) { navigateDispatcher.navigate(path) }}
-          }
+        function click(target, opts) {
+          opts || (opts = {})
+          opts.view = window
+          opts.bubbles = true
+          opts.cancelable = true
+          var event = new MouseEvent('click', opts)
+          target.dispatchEvent(event)
         }
-      }
 
-      address = rebind(addressApi, navigateDispatcher, 'on')
+        it('should ignore ctrl+clicks', function() {
+          anchor.href = '/foo'
+          click(anchor, { ctrlKey: true })
+          expect(changedState).to.be.undefined
+        })
 
-      injector.mock(
-        'web'
-      , function() {
-        return {
-          load: function(name, req, onload, config) {
-            onload(web)
-          }
-        }
-      }).mock(
-        'location-hash'
-      , function() {
-        return locationHash
-      }).mock(
-        'address'
-      , function() {
-        return address
-      }).mock(
-        'find-closest'
-      , function() {
-        return findClosest
+        it('should only care about primary button clicks (usually left click)', function() {
+          anchor.href = '/foo'
+          click(anchor, { button: 1 })
+          expect(changedState).to.be.undefined
+          click(anchor, { button: 2 })
+          expect(changedState).to.be.undefined
+          click(anchor, { button: 3 })
+          expect(changedState).to.be.undefined
+          click(anchor, { button: 4 })
+          expect(changedState).to.be.undefined
+          click(anchor, { button: 0 })
+          expect(changedState).to.equal('/foo')
+        })
+
+        it('should only care about clicks on anchor elements', function() {
+          click(document.body)
+          expect(changedState).to.be.undefined
+        })
+
+        it('should ignore anchors which specify target', function() {
+          anchor.target = 'wibble'
+          click(anchor)
+          expect(changedState).to.be.undefined
+        })
+
+        it('should only care about links of the same origin', function() {
+          anchor.href = 'http://www.google.com'
+          click(anchor)
+          expect(changedState).to.be.undefined
+        })
+
+        it('should only care about hash if the first character of the hash is a `/`', function() {
+          anchor.href= '#ignored'
+          click(anchor)
+          expect(changedState).to.be.undefined
+
+          anchor.href = '#/backwards/compatible'
+          click(anchor)
+          expect(changedState).to.equal('/backwards/compatible')
+        })
       })
-      .require(
-        [ 'location' ]
-      , function(a) {
-        location = a(web, address)
-        done()
-      }
-      )
-    })
-
-    it('should get the current state', function () {
-      expect(location.getState()).to.be.undefined
-    })
-
-    it('should update the current state when the hash changes', function () {
-      var handlerCalled = false
-      location.on('statechange', function() {
-        handlerCalled = true
-      })
-      locationHash.state('b')
-      expect(location.getState()).to.be.equal('b')
-      expect(handlerCalled).to.be.true
-    })
-
-    it('should not dispatch the state change on push when value does not change', function () {
-      var handlerCalled = false
-      locationHash.state('a')
-      location.on('statechange', function() {
-        handlerCalled = true
-      })
-      expect(location.pushState('a')).to.be.undefined
-      expect(location.getState()).to.be.equal('a')
-      expect(locationHash.state()).to.be.equal('a')
-      expect(handlerCalled).to.be.false
-    })
-
-    it('should not dispatch the state change on push when value does change', function () {
-      var handlerCalled = false
-      location.on('statechange', function() {
-        handlerCalled = true
-      })
-      expect(location.pushState('b')).to.be.true
-      expect(location.getState()).to.be.equal('b')
-      expect(locationHash.state()).to.be.equal('b')
-      expect(handlerCalled).to.be.false
-    })
-    
-    it('should not dispatch the state change on set when value does not change', function () {
-      var handlerCalled = false
-      locationHash.state('a')
-      location.on('statechange', function() {
-        handlerCalled = true
-      })
-      location.setState('a')
-      expect(location.getState()).to.be.equal('a')
-      expect(locationHash.state()).to.be.equal('a')
-      expect(handlerCalled).to.be.false
-    })
-
-    it('should dispatch the state change on set when value does change', function () {
-      var handlerCalled = false
-      locationHash.state('a')
-      location.on('statechange', function() {
-        handlerCalled = true
-      })
-      location.setState('b')
-      expect(location.getState()).to.be.equal('b')
-      expect(locationHash.state()).to.be.equal('b')
-      expect(handlerCalled).to.be.true
-    })
-
-    it('should try to open a new window', function () {
-      var open = window.open
-      var opened = false
-      window.open = function(path, target) {
-        expect(path).to.be.equal('a')
-        expect(target).to.be.equal('_blank')
-        opened = true;
-      }
-
-      expect(opened).to.be.false
-      location.openNewWindow('a', '_blank')
-      expect(opened).to.be.true
-      window.open = open
-    })
-
-    it('should only navigate on click on links with hash and without target', function () {
-      var hasNavigated = false
-      var evt = document.createEvent("MouseEvents");
-      evt.initEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-      address.on('navigate', function () {
-        hasNavigated = true
-      })
-
-      document.dispatchEvent(evt)
-      expect(hasNavigated).to.be.false
-
-      anchor = document.createElement('a')
-      document.dispatchEvent(evt)
-      expect(hasNavigated).to.be.false
-
-      anchor.href = 'a'
-      document.dispatchEvent(evt)
-      expect(hasNavigated).to.be.false
-
-      anchor.href = '#a'
-      document.dispatchEvent(evt)
-      expect(hasNavigated).to.be.false
-
-      web.routes.a = {}
-      document.dispatchEvent(evt)
-      expect(hasNavigated).to.be.true
-
-      hasNavigated = false
-      anchor.target = '_blank'
-      document.dispatchEvent(evt)
-      expect(hasNavigated).to.be.false
     })
   })
-}
-)
+})
