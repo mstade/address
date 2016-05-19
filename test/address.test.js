@@ -1,18 +1,19 @@
 define(function(require) {
-    var Squire = require('Squire')
-      , sinon = require('sinon')
+    var sinon = require('sinon')
       , zapp = require('z-app')
+      , location = require('location')
       , address
       , web
       , nap
-      , location
       , responseBody
       , response
+      , a = require('address')
 
     describe('Address', function() {
-      beforeEach(function(done) {
+      var originalPath
 
-        var injector = new Squire();
+      beforeEach(function() {
+        originalPath = window.location.href.slice(window.location.origin.length)
 
         responseBody = sinon.spy()
 
@@ -38,42 +39,13 @@ define(function(require) {
         , find: function() {}
         , use: function() {}
         }
-
-        location = {
-          setState: function(state) {
-            if (arguments.length) {
-              location.state = state
-              return location
-            }
-            return location.state
-          }
-        , pushState: function(state) {
-            if (location.state == state) return
-            location.setState(state)
-            return true
-          }
-        , openNewWindow: sinon.spy()
+        address = function(r) {
+          return a(r).web(web)
         }
+      })
 
-        injector
-          .mock(
-            'web'
-          , function() {
-              return web
-            })
-          .mock(
-            'location'
-          , function() {
-              return function() { return location }
-            })
-          .require(
-            [ 'address', 'web' ]
-          , function(a, web) {
-              address = function(r) {
-                return a(r).web(web)
-              }
-              done()
-            })
+      afterEach(function() {
+        window.history.replaceState(null, null, originalPath)
       })
 
       it('should store the resource in the closure', function() {
@@ -342,20 +314,24 @@ define(function(require) {
           , api = address(req)
           , target = '_blank'
 
+        var _open = window.open
+        window.open = sinon.spy()
+
         api.target(target).should.equal(api)
         api.target().should.equal(target)
         api.navigate()
-        expect(location.state).to.equal(undefined)
+        expect(location.getState()).to.equal(originalPath)
 
         api.target(null)
-        api.navigate().should.equal(location)
-        expect(location.state).to.equal(uri)
+        api.navigate().should.equal(location.getState())
+        expect(location.getState()).to.equal(uri)
 
         api.method('post')
-        expect(api.navigate()).should.not.equal(location)
+        expect(api.navigate()).should.not.equal(location.getState())
 
-        location.openNewWindow.calledOnce
-        location.openNewWindow.calledWith(uri, target)
+        window.open.calledOnce
+        window.open.calledWith(uri, target)
+        window.open = _open
       })
 
       it('should use the origin', function() {
@@ -394,7 +370,7 @@ define(function(require) {
           , query = { x: 'x', y: 'y&x=z' }
 
         api.query().should.deep.equal(query)
-        api.navigate().state.should.equal('/foo?x=x&y=y%26x%3Dz')
+        api.navigate().should.equal('/foo?x=x&y=y%26x%3Dz')
       })
 
       it('should overwrite queries in the resulting URI', function() {
@@ -403,14 +379,14 @@ define(function(require) {
           , query = { x: '2' }
 
         api.query().should.deep.equal(query)
-        api.navigate().state.should.equal('/foo?x=2')
+        api.navigate().should.equal('/foo?x=2')
       })
 
       it('should keep encoded path components', function() {
         var uri = '/foo/bar%2Fbaz'
           , api = address(uri)
 
-        api.navigate().state.should.equal(uri)
+        api.navigate().should.equal(uri)
       })
 
       it('should process encoded queries components', function() {
@@ -419,7 +395,7 @@ define(function(require) {
           , query = { x: 'x', y: 'y=y' }
 
         api.query().should.deep.equal(query)
-        api.navigate().state.should.equal(uri)
+        api.navigate().should.equal(uri)
       })
 
       it('should handle streams', function() {
