@@ -19,6 +19,7 @@ define(function(require) {
       { getState: getState
       , setState: setState
       , pushState: pushState
+      , replaceState: replaceState
       , openNewWindow: openNewWindow
       , basePath: basePath
       }
@@ -40,19 +41,27 @@ define(function(require) {
     }
   }
 
-  function pushState(path) {
-    if (~path.indexOf('#/')) {
-      path = '/' + trimSlashes(path.split('#/')[1])
-    }
+  function trimPath(path) {
+    return '/' + trimSlashes(path.slice(0, 2) === '#/' ? path.slice(1) : path)
+  }
 
-    path = unbase(path)
+  function updateState(path, method) {
+    path = unbase(trimPath(path))
 
     if (path === getState()) {
       return false
     } else {
-      history.pushState({ base: base, path: path }, null, rebase(path))
+      history[method]({ base: base, path: path }, null, rebase(path))
       return path
     }
+  }
+
+  function pushState(path) {
+    return updateState(path, 'pushState')
+  }
+
+  function replaceState(path) {
+    return updateState(path, 'replaceState')
   }
 
   function openNewWindow(path, target) {
@@ -65,7 +74,7 @@ define(function(require) {
     var cwd = unbase(fullPath(location))
 
     path = trimSlashes(path)
-    base = path? '/' + path : ''
+    base = path ? '/' + path : ''
 
     history.replaceState(null, null, rebase(cwd))
   }
@@ -170,6 +179,6 @@ define(function(require) {
   }
 
   function trimSlashes(path) {
-    return (path || '').replace(/^\/+/, '').replace(/\/+$/, '')
+    return (path || '').replace(/^\/+|\/+$/g, '')
   }
 })
