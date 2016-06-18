@@ -42,7 +42,7 @@ define(function(require) {
   }
 
   function trimPath(path) {
-    return '/' + trimSlashes(path.slice(0, 2) === '#/' ? path.slice(1) : path)
+    return '/' + trimSlashes(~path.indexOf('#/')? path.split('#/')[1] : path)
   }
 
   function updateState(path, method) {
