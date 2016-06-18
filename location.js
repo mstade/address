@@ -19,7 +19,6 @@ define(function(require) {
       { getState: getState
       , setState: setState
       , pushState: pushState
-      , replaceState: replaceState
       , openNewWindow: openNewWindow
       , basePath: basePath
       }
