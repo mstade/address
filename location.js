@@ -50,7 +50,7 @@ define(function(require) {
     if (path === getState()) {
       return false
     } else {
-      history[method]({ base: base, path: path }, null, rebase(path))
+      method({ base: base, path: path }, null, rebase(path))
       return path
     }
   }
@@ -61,11 +61,11 @@ define(function(require) {
   }
 
   function pushState(path) {
-    return updateState(path, 'pushState')
+    return updateState(path, history.pushState.bind(history))
   }
 
   function replaceState(path) {
-    return updateState(path, 'replaceState')
+    return updateState(path, history.replaceState.bind(history))
   }
 
   function openNewWindow(path, target) {
