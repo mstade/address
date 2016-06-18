@@ -57,7 +57,7 @@ define(function(require) {
 
   function deprecatedPushState(path) {
     console.warn('deprecated : location.pushState, to be removed in v.4.0.0.')
-    return pushState(path, 'pushState')
+    return pushState(path)
   }
 
   function pushState(path) {
