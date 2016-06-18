@@ -78,7 +78,7 @@ define(function(require) {
     var cwd = unbase(fullPath(location))
 
     path = trimSlashes(path)
-    base = path ? '/' + path : ''
+    base = path? '/' + path : ''
 
     history.replaceState(null, null, rebase(cwd))
   }
