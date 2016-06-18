@@ -18,7 +18,7 @@ define(function(require) {
   var api =
       { getState: getState
       , setState: setState
-      , pushState: pushState
+      , pushState: deprecatedPushState
       , openNewWindow: openNewWindow
       , basePath: basePath
       }
@@ -53,6 +53,11 @@ define(function(require) {
       history[method]({ base: base, path: path }, null, rebase(path))
       return path
     }
+  }
+
+  function deprecatedPushState(path) {
+    console.warn('deprecated : location.pushState, to be removed in v.4.0.0.')
+    return pushState(path, 'pushState')
   }
 
   function pushState(path) {
