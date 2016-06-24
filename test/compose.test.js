@@ -17,16 +17,7 @@ define(function(require) {
         , routes: {}
       }
 
-      injector.mock(
-        'web'
-      , function() {
-        return {
-          load: function(name, req, onload, config) {
-            onload(web)
-          }
-        }
-      })
-      .require(
+      injector.require(
         [ 'compose' ]
       , function(a) {
         compose = a
