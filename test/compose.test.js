@@ -1,8 +1,8 @@
 define(function(require) {
   var Squire = require('Squire')
-  , compose
-  , web
-  , _ = require('underscore')
+    , compose
+    , web
+    , _ = require('underscore')
 
   describe('Compose', function() {
     beforeEach(function(done) {
