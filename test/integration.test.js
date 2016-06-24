@@ -38,6 +38,22 @@ define(function(require) {
         return a(r).web(web)
       }
     })
+
+    it('should navigate to the url', function () {
+      web.add({
+          "name": "a"
+        , "path": "/news-reader/articles/{articleId}"
+        , "methods": {}
+        , composes : []
+        , params: {}
+        , redirects : {}
+      })
+      address('/news-reader/articles/{articleId}')
+        .param('articleId', 1)
+        .navigate()
+          .should.equal('/news-reader/articles/1')
+    })
+
     it('should navigate to redirect path when navigating to composed path', function () {
       web.add({
         "name": "a"
@@ -59,15 +75,16 @@ define(function(require) {
           .param('articleId', 2)
           .navigate()
 
-      uri.should.equal('///news-reader/2')
+      uri.should.equal('/news-reader/2')
 
       z.resource(z.root(), uri)
 
       address('/news-reader/articles/{articleId}')
         .param('articleId', 1)
         .navigate()
-          .should.equal('///news-reader/1')
+          .should.equal('/news-reader/1')
     })
+
   })
 }
 )
