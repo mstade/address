@@ -1,15 +1,17 @@
 define(function(require) {
-    var sinon = require('sinon')
-      , zapp = require('z-app')
-      , location = require('location')
-      , address
-      , web
-      , nap
-      , responseBody
-      , response
-      , a = require('address')
+  var sinon = require('sinon')
+    , zapp = require('z-app')
+    , location = require('location')
+    , address
+    , web
+    , nap
+    , responseBody
+    , response
+    , a = require('address')
+    , _ = require('underscore')
 
-    describe('Address', function() {
+
+  describe('Address', function() {
       var originalPath
 
       beforeEach(function() {
@@ -30,13 +32,10 @@ define(function(require) {
             cb( null, response )
           })
         , uri : function(uri, params) {
-            var paramsString = ''
-            Object.keys(params).forEach(function(key) {
-              paramsString += '/' + params[key]
-            })
-            return uri.split('/{')[0] + paramsString
+            return _.template(uri, {interpolate: /\{(.+?)\}/g })(params)
           }
-        , find: function() {}
+        , find: function() {
+          }
         , use: function() {}
         }
         address = function(r) {
