@@ -19,6 +19,7 @@ define(function(require) {
       { getState: getState
       , setState: setState
       , pushState: deprecatedPushState
+      , replaceState: replaceState
       , openNewWindow: openNewWindow
       , basePath: basePath
       }
