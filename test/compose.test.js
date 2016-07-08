@@ -1,8 +1,8 @@
 define(function(require) {
   var Squire = require('Squire')
-  , compose
-  , web
-  , _ = require('underscore')
+    , compose
+    , web
+    , _ = require('underscore')
 
   describe('Compose', function() {
     beforeEach(function(done) {
@@ -17,16 +17,7 @@ define(function(require) {
         , routes: {}
       }
 
-      injector.mock(
-        'web'
-      , function() {
-        return {
-          load: function(name, req, onload, config) {
-            onload(web)
-          }
-        }
-      })
-      .require(
+      injector.require(
         [ 'compose' ]
       , function(a) {
         compose = a
