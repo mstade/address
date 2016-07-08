@@ -13,6 +13,7 @@ define(function(require) {
     res.body = function(node) {
       var uri = getCurrentUri(req, res)
 
+      if(zapp.isRoot(node)) location.replaceState(uri)
       if(resourceWillChange(req, res, node)) dispatchEvent(node, 'resourcewillchange')
       dispatchEvent(node, 'update', {detail : { from : zapp.resource(node), to : uri }})
       zapp.resource(node, uri)
