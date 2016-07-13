@@ -1,6 +1,6 @@
 {
   "name": "@zambezi/address",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "API for nap resources",
   "main": "lib/address.js",
   "devDependencies": {
@@ -8,6 +8,7 @@
     "karma-chrome-launcher": "~0.1.7",
     "karma-coverage": "^0.5.2",
     "karma-mocha": "~0.1.0",
+    "karma-mocha-reporter": "^1.0.2",
     "karma-requirejs": "~0.2.2",
     "karma-sinon-chai": "~0.1.4",
     "karma-teamcity-reporter": "~0.1.1",
