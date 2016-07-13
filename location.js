@@ -18,7 +18,8 @@ define(function(require) {
   var api =
       { getState: getState
       , setState: setState
-      , pushState: pushState
+      , pushState: deprecatedPushState
+      , replaceState: replaceState
       , openNewWindow: openNewWindow
       , basePath: basePath
       }
@@ -40,19 +41,32 @@ define(function(require) {
     }
   }
 
-  function pushState(path) {
-    if (~path.indexOf('#/')) {
-      path = '/' + trimSlashes(path.split('#/')[1])
-    }
+  function trimPath(path) {
+    return '/' + trimSlashes(~path.indexOf('#/')? path.split('#/')[1] : path)
+  }
 
-    path = unbase(path)
+  function updateState(path, method) {
+    path = unbase(trimPath(path))
 
     if (path === getState()) {
       return false
     } else {
-      history.pushState({ base: base, path: path }, null, rebase(path))
+      method({ base: base, path: path }, null, rebase(path))
       return path
     }
+  }
+
+  function deprecatedPushState(path) {
+    console.warn('deprecated : location.pushState, to be removed in v.4.0.0.')
+    return pushState(path)
+  }
+
+  function pushState(path) {
+    return updateState(path, history.pushState.bind(history))
+  }
+
+  function replaceState(path) {
+    return updateState(path, history.replaceState.bind(history))
   }
 
   function openNewWindow(path, target) {
@@ -170,6 +184,6 @@ define(function(require) {
   }
 
   function trimSlashes(path) {
-    return (path || '').replace(/^\/+/, '').replace(/\/+$/, '')
+    return (path || '').replace(/^\/+|\/+$/g, '')
   }
 })
