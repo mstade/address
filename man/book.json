@@ -1,0 +1,13 @@
+{
+  "plugins": [ "zambezi-docs", "addcssjs" ]
+, "pluginsConfig": {
+    "zambezi-docs": {
+      "logo": "logo.png"
+    , "color": "#037c73"
+    }
+  , "addcssjs": {
+      "js": []
+    , "css": ["styles.css"]
+    }
+  }
+}

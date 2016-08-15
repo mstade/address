@@ -1,0 +1,29 @@
+[data-level="0"] main h1:first-of-type {
+  margin: 0 0 .5em;
+}
+
+[data-level="0"] #get-started-with-address {
+  text-align: center;
+}
+
+[data-level="0"] #get-started-with-address a {
+  display: inline-block;
+  background-color: #037c73;
+  color: #fff;
+  padding: 0 1em;
+}
+
+[data-level="0"] #what-are-the-benefits ~ ul {
+  list-style-type: none;
+  overflow: hidden;
+  padding: 0
+}
+
+[data-level="0"] #what-are-the-benefits ~ ul > li {
+  width: 50%;
+  float: left;
+  margin: 0;
+}
+[data-level="0"] #what-are-the-benefits ~ ul > li:nth-child(2n-1) {
+  clear: left;
+}
