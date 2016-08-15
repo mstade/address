@@ -31,7 +31,7 @@ It provides
 
 ## What does it do?
 
-Address gives an API to address behavior with URIs using HTTP methods and content negotiation to choose the required action to be executed. It also serves as a router to react to changes in the URL of the current website, and also can manipulate the the location to navigate to a different section of your single page application (SPA).
+Address gives an API to address behavior with URIs using HTTP methods and content negotiation to choose the required action to be executed. It also serves as a router to react to changes in the URL of the current website, and also can manipulate the the location to navigate to a different section of your [Single-page application (SPA)](https://en.wikipedia.org/wiki/Single-page_application).
 
 ## What can you use it with?
 
