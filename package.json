@@ -5,6 +5,7 @@
   "main": "lib/address.js",
   "devDependencies": {
     "ez-doc": "^0.1.0",
+    "gitbook-plugin-addcssjs": "1.0.1",
     "karma": "^0.13.21",
     "karma-chrome-launcher": "~0.1.7",
     "karma-coverage": "^0.5.2",
