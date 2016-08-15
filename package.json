@@ -4,6 +4,7 @@
   "description": "API for nap resources",
   "main": "lib/address.js",
   "devDependencies": {
+    "ez-doc": "^0.1.0",
     "karma": "^0.13.21",
     "karma-chrome-launcher": "~0.1.7",
     "karma-coverage": "^0.5.2",
@@ -23,7 +24,8 @@
     "test": "karma start --single-run",
     "test:debug": "karma start --debug",
     "prepublish": "npm run build",
-    "build": "rimraf lib && webpack"
+    "build": "rimraf lib && webpack",
+    "build-doc": "cd man && ez-doc build"
   },
   "repository": {
     "type": "git",
