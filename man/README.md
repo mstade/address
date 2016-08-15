@@ -1,8 +1,10 @@
 # Address
 
+## [Get started with Address](./get-started.md)
+
 ## What is Address
 
-Address is the [API](http://en.wikipedia.org/wiki/API) library for [resource oriented architecture (ROA)](http://en.wikipedia.org/wiki/Resource-oriented_architecture).
+Address is the [application programming interface (API)](http://en.wikipedia.org/wiki/API) library for [resource oriented architecture (ROA)](http://en.wikipedia.org/wiki/Resource-oriented_architecture), where each resource is an addressable action with a [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier).
 
 It provides
  * an API for configuring and invoking requests for resources,
@@ -17,7 +19,7 @@ It provides
   * Compose new resources from already existing ones.
 * Extensible
   * The list of resources can be extended during runtime
-  * You can define custom [middlewares](https://en.wikipedia.org/wiki/Middleware) for adding custom behavior to existing resources
+  * Define [middlewares](https://en.wikipedia.org/wiki/Middleware) to add custom behavior to existing resources
 * Open, based on standards
   * Address is based on open standards and built with open source software
   * Uses HTTP methods and content negotiation to decide which resource to load
@@ -29,10 +31,10 @@ It provides
 
 ## What does it do?
 
-
+Address gives an API to address behavior with URIs using HTTP methods and content negotiation to choose the required action to be executed. It also serves as a router to react to changes in the URL of the current website, and also can manipulate the the location to navigate to a different section of your single page application (SPA).
 
 ## What can you use it with?
 
-Address can be used with any framework and any module loader, so you can easily integrate it to you workflow.
+Address can be used with any framework and any module loader, so you can easily integrate it to you workflow. Resources are just assumed to be functions that are called when you address their URL. Different resources can be implemented using different frameworks or libraries, so multiple teams can work on the same application, with just agreeing to use Address resources.
 
 ## [Get started with Address](get-started.md)

@@ -25,7 +25,8 @@
     "test:debug": "karma start --debug",
     "prepublish": "npm run build",
     "build": "rimraf lib && webpack",
-    "build-doc": "cd man && ez-doc build"
+    "build-doc": "cd man && ez-doc build",
+    "serve-doc": "cd man && ez-doc serve"
   },
   "repository": {
     "type": "git",
