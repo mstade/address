@@ -1,6 +1,6 @@
 # Address
 
-## [Get started with Address](get-started.md)
+## [Get started with Address][get-started]
 
 ## What is Address?
 
@@ -37,4 +37,6 @@ Address gives an API to address behavior with URIs using HTTP methods and conten
 
 Address can be used with any framework and any module loader, so you can easily integrate it to you workflow. Resources are just assumed to be functions that are called when you address their URL. Different resources can be implemented using different frameworks or libraries, so multiple teams can work on the same application, with just agreeing to use Address resources.
 
-## [Get started with Address](get-started.md)
+## [Get started with Address][get-started]
+
+[get-started]: https://www.npmjs.com/package/@zambezi/address "@zambezi/address"
