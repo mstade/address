@@ -2,6 +2,7 @@ define(function(require) {
 
   var error = require('./error')
     , uri = require('./uri')
+    , _ = require('underscore')
 
   return {
 
