@@ -1,6 +1,6 @@
 {
   "name": "@zambezi/address",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "API for nap resources",
   "main": "lib/address.js",
   "devDependencies": {
@@ -27,8 +27,8 @@
     "url": "git@github.com:zambezi/address.git"
   },
   "dependencies": {
-    "@websdk/nap": "^0.10.7",
-    "@websdk/rhumb": "^0.3.8",
+    "@websdk/nap": "^0.11.2",
+    "@websdk/rhumb": "^0.3.9",
     "d3-dispatch": "^0.2.6",
     "underscore": "^1.8.3"
   },
