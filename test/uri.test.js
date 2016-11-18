@@ -160,6 +160,7 @@ define(function(require) {
       uri('/foo?%%2f').search().toLowerCase().should.deep.equal('?%25%2f')
       uri('/foo?q=@bar%/').query().should.deep.equal({ 'q' : '@bar%/' })
       uri('/foo?q=@bar%/').search().toLowerCase().should.deep.equal('?q=%40bar%25%2f')
+      uri('/foo?q=M%C3%A1rcio').query().should.deep.equal({ 'q' : 'Márcio' })
       uri('/foo?q=%40bar%25%2f').query().should.deep.equal({ 'q' : '@bar%/' })
       uri('/foo?q=%40bar%25%2f').search().toLowerCase().should.deep.equal('?q=%40bar%25%2f')
     })
