@@ -110,7 +110,7 @@ define(function (require) {
 
   function decode(value) {
     if (value) {
-      return String(value).replace(/%[0-9a-fA-F]{2}/g, function(match) {
+      return String(value).replace(/(?:%[0-9a-fA-F]{2})+/g, function(match) {
         return decodeURIComponent(match)
       })
     } else {
