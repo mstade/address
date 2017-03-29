@@ -93,6 +93,56 @@ define(function(require) {
 
       callback.should.have.been.calledOnce
     })
+
+    it('should dispatch "update" when using a DOMElement for the first time', function() {
+
+      eventName = 'update'
+      node.addEventListener(eventName, callback)
+
+      wrapView(location, reqOne, resOne)
+      resOne.body(node)
+
+      callback.should.have.been.calledOnce
+
+      expect(callback.firstCall.args[0].detail).to.deep.equal({ from: undefined, to: 'resource/one' })
+    })
+
+    it('should dispatch "update" when addressing a different resource on the same DOMElement', function () {
+
+      eventName = 'update'
+      node.addEventListener(eventName, callback)
+
+      wrapView(location, reqOne, resOne)
+      resOne.body(node)
+
+      wrapView(location, reqTwo, resTwo)
+      resTwo.body(node)
+
+      callback.should.have.been.calledTwice
+
+      expect(callback.firstCall.args[0].detail).to.deep.equal({ from: undefined, to: 'resource/one' })
+      expect(callback.secondCall.args[0].detail).to.deep.equal({ from: 'resource/one', to: 'resource/two' })
+    })
+
+    it('should not dispatch "update" when addressing the same resource on the same DOMElement', function() {
+
+      eventName = 'update'
+      node.addEventListener(eventName, callback)
+
+      eventName = 'update'
+      node.addEventListener(eventName, callback)
+
+      wrapView(location, reqOne, resOne)
+      resOne.body(node)
+
+      wrapView(location, reqOne, resTwo)
+      resTwo.body(node)
+
+      callback.should.have.been.calledTwice
+
+      expect(callback.firstCall.args[0].detail).to.deep.equal({ from: undefined, to: 'resource/one' })
+      expect(callback.secondCall.args[0].detail).to.deep.equal({ from: 'resource/one', to: 'resource/one' })
+    })
   })
 
   function createWeb() {
