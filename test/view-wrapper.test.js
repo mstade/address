@@ -63,6 +63,19 @@ define(function(require) {
       callback.should.have.been.calledOnce
     })
 
+    it('should dispatch "resourcewillchange" when calling detach with the DOMElement', function() {
+
+      eventName = 'resourcewillchange'
+      node.addEventListener(eventName, callback)
+
+      wrapView(location, reqOne, resOne)
+      resOne.body(node)
+      callback.reset()
+      resOne.body.detach(node)
+
+      callback.should.have.been.calledOnce
+    })
+
     it('should dispatch "resourcewillchange" when addressing a different resource on the same DOMElement', function () {
 
       eventName = 'resourcewillchange'
