@@ -15,9 +15,15 @@ define(function(require) {
 
       if(zapp.isRoot(node)) location.replaceState(uri)
       if(resourceWillChange(req, res, node)) dispatchEvent(node, 'resourcewillchange')
-      dispatchEvent(node, 'update', {detail : { from : zapp.resource(node), to : uri }})
+      dispatchEvent(node, 'update', { detail: { from: zapp.resource(node), to: uri } })
       zapp.resource(node, uri)
       view(node)
+    }
+
+    res.body.detach = function (node) {
+      dispatchEvent(node, 'resourcewillchange')
+      dispatchEvent(node, 'update', { detail: { from: zapp.resource(node), to: null } })
+      zapp.resource(node, undefined)
     }
   }
 

@@ -258,7 +258,7 @@ address("/price/usd/gbp")
 
 ## Adding a resource view to the DOM
 
-Often you will be requesting a view of a paticular resource which you want to display in the page.
+Often you will be requesting a view of a particular resource which you want to display in the page.
 As mentioned, the default accept type of a request is "application/x.nap.view".
 The response to a request with this header will be a response object in which the `.body` property will contain a view function which can be invoked on a DOM node.
 
@@ -297,6 +297,36 @@ address("/price/usd/gbp")
     view(node)
   })
   .get()
+```
+
+### Detaching children resource views gracefully
+
+When we request in a view for a child resource, by default it will only be notified when any view function is called on the same the DOM node.  This is useful as it enables the child view to knows when it is created, updated or replaced.
+This can present some problems when a view has been removed from the page, as the child resource can't close any of its open resources or clean up any orphaned DOM elements it is keeping hold of.
+
+To allow your child resources to receive events when you want to detach from from the DOM, you will need to explicitly call the `.detach(...)` on the view and supply the correct child DOM element when you want to detach the view from the DOM.
+To achieve this, we can do something like the following:
+
+```javascript
+function view(node) {
+  var priceNode = d3.select(node).select(".price").node()
+  var priceView
+
+  address("/price/usd/gbp")
+    .on('ok', function(response) {
+      priceView = response.body
+      priceView(priceNode)
+    })
+    .get()
+
+  // At some other time when a child resource view needs to be detached
+  //
+  // The 'ok' callback may not have been called, so first need to check priceView is assigned
+  if (priceView) {
+    priceView.detach(node)
+  }
+}
+
 ```
 
 ## into utility
@@ -391,11 +421,12 @@ Two custom events are dispatched by DOM elements used to render view resources:
 
 ### `update`
 
-Dispatched before invoking a view function, regardless of the resource addressed into the DOM element of the view.
+The `update` event is dispatched before a view function is invoked, regardless of whether the addressed resource view has changed for the DOM element.
 
 ### `resourcewillchange`
 
-Dispatched before invoking a view function with a new resource.
+The `resourcewillchange` event is dispatched when the address of the view resource has changed or when a resource view has been detached for the DOM element.
+This is an opportunity for a resource view to unsubscribe from any resources it has open and to clear the DOM node.
 
 ###  Usage
 
