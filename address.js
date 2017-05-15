@@ -56,7 +56,7 @@ define(function(require) {
           })
           codes(err.statusCode).forEach(function(type) {
             console.debug(err.statusCode, type, err.body.message, request.method)
-            dispatcher[type](err)
+            dispatcher.call(type, null, err)
           })
         }
 
@@ -228,7 +228,10 @@ define(function(require) {
         // deprecated //
         callback && callback(err, res)
 
-        if (err) return dispatcher.err(err), null
+        if (err) {
+          dispatcher.call('err', null, err)
+          return null
+        }
 
         if (isView(res)) {
           if (res.statusCode != 302) wrapView(location, req, res)
@@ -243,7 +246,7 @@ define(function(require) {
 
 
         codes(res.statusCode).concat(['done']).forEach(function(type) {
-          dispatcher[type](res)
+          dispatcher.call(type, null, res)
         })
       }
     }

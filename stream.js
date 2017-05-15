@@ -1,5 +1,6 @@
 define(function (require) {
-    var dispatch = require('./traced-dispatch')
+    var _ = require('underscore')
+      , dispatch = require('./traced-dispatch')
       , redispatch = require('./redispatch')
       , rebind = require('./rebind')
 
@@ -13,12 +14,20 @@ define(function (require) {
       }
 
       stream.dispatcher = rebind({}, clientDispatcher, 'on')
-      stream.status = clientDispatcher.status
-      stream.message = clientDispatcher.message
-      stream.error = clientDispatcher.error
+
+      stream.status = function status() {
+        clientDispatcher.apply('status', null, _.toArray(arguments))
+      }
+
+      stream.message = function message() {
+        clientDispatcher.apply('message', null, _.toArray(arguments))
+      }
+
+      stream.error = function error() {
+        clientDispatcher.apply('error', null, _.toArray(arguments))
+      }
 
       return rebind(stream, serviceDispatcher, 'on')
     }
-
   }
 )
