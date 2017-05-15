@@ -77,6 +77,13 @@ define(function(require) {
           .should.equal('get')
       })
 
+      it('should set the target', function() {
+        address()
+          .target('_blank')
+          .target()
+          .should.equal('_blank')
+      })
+
       it('should set a header', function() {
         address()
           .header('accept', 'application/json')
@@ -111,6 +118,12 @@ define(function(require) {
           .header('foo', 'bar')
           .header()
           .should.deep.equal({accept:'application/json', foo:'bar'})
+      })
+
+      it('should provide get for web component', function() {
+        address()
+          .web()
+          .should.deep.equal(web)
       })
 
       it('should set multiple headers from an object', function() {
@@ -244,11 +257,15 @@ define(function(require) {
       it('should call the response body with the node', function() {
         var cb = sinon.spy()
           , node = document.createElement('div')
+          , api = address('/wibble')
 
         node.className = 'view'
         document.body.appendChild(node)
         // keep the deprecated syntax here for code coverage
-        address('/wibble').into(node).then(cb)()
+        api.into(node)
+          .then(cb).then().should.equal(cb)
+
+        api()
 
         document.body.removeChild(node)
 
@@ -256,6 +273,27 @@ define(function(require) {
         cb.should.have.been.calledOnce
         responseBody.should.have.been.calledOnce
         responseBody.should.have.been.calledWith(node)
+      })
+
+      it('should call the response body with the view selector if present', function() {
+        var cb = sinon.spy()
+          , node = document.createElement('div')
+          , viewNode = document.createElement('div')
+          , api = address('/wibble')
+
+        viewNode.className = 'view'
+        document.body.appendChild(node)
+        node.appendChild(viewNode)
+
+        api.origin(node).into('.view')
+          .on('done', cb)()
+
+        document.body.removeChild(node)
+
+        web.req.should.have.been.calledOnce
+        cb.should.have.been.calledOnce
+        responseBody.should.have.been.calledOnce
+        responseBody.should.have.been.calledWith(viewNode)
       })
 
       it('should update methods when shorthands are used', function() {
@@ -326,9 +364,7 @@ define(function(require) {
         var _open = window.open
         window.open = sinon.spy()
 
-        api.target(target).should.equal(api)
-        api.target().should.equal(target)
-        api.navigate()
+        api.navigate(target)
         expect(location.getState()).to.equal(originalPath)
 
         api.target(null)
@@ -346,9 +382,27 @@ define(function(require) {
       it('should use the origin', function() {
         var uri = '/example'
           , api = address(uri)
+          , node = document.createElement('div')
 
-        api.origin(uri).should.equal(api)
-        api.origin().should.equal(uri)
+        api.origin(node).should.equal(api)
+        api.origin().should.equal(node)
+      })
+
+      it('should call response body when navigate called from a non-root origin', function() {
+        var uri = '/example'
+          , api = address(uri)
+          , node = document.createElement('div')
+
+        node.className = 'z-app'
+        document.body.appendChild(node)
+
+        // Check node is classified as a non-root origin
+        zapp.root(node).should.not.equal(zapp.root())
+        api.origin(node).should.equal(api)
+
+        expect(api.navigate()).to.be.undefined
+
+        document.body.removeChild(node)
       })
 
       it('should use the query', function() {
