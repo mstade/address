@@ -6,7 +6,7 @@ define(function (require) {
     var dispatchers = []
 
     function redispatch() {
-      var dispatcher = dispatch.apply(null, dispatchers.reduce(types, []))
+      var dispatcher = dispatch.apply(dispatch, dispatchers.reduce(types, []))
       dispatchers.forEach(proxyEvents)
 
       return dispatcher
@@ -14,7 +14,9 @@ define(function (require) {
       function proxyEvents(d) {
         d.types.forEach(proxyEvent)
         function proxyEvent(type) {
-          d.dispatcher.on(type + '.redispatch', dispatcher[type])
+          d.dispatcher.on(type + '.redispatch', function() {
+            dispatcher.apply(type, null, _.toArray(arguments))
+          })
         }
       }
     }

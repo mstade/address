@@ -7,6 +7,8 @@ define(function(require) {
     , nap
     , responseBody
     , response
+    , error
+    , respondWithError
     , a = require('address')
     , _ = require('underscore')
 
@@ -27,9 +29,17 @@ define(function(require) {
         , body : responseBody
         }
 
+        error = new Error('Some failure')
+
+        respondWithError = false
+
         web = {
           req : sinon.spy(function(req, cb) {
-            cb( null, response )
+            if (respondWithError) {
+              cb(error, null)
+            } else {
+              cb(null, response)
+            }
           })
         , uri : function(uri, params) {
             return _.template(uri, {interpolate: /\{(.+?)\}/g })(params)
@@ -435,6 +445,19 @@ define(function(require) {
 
         onBadRequest.should.have.been.calledOnce
         onClientError.should.have.been.calledOnce
+      })
+
+      it('should err when response returns an error', function() {
+        var onErr = sinon.spy()
+
+        respondWithError = true
+
+        address('/wibble')
+          .on('err', onErr)
+          .get()
+
+        onErr.should.have.been.calledOnce
+        onErr.should.have.been.calledWith(error)
       })
     })
   }

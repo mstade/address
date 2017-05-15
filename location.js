@@ -32,9 +32,9 @@ define(function(require) {
 
   function setState(path) {
     var actual = pushState(path)
-    
+
     if (actual) {
-      dispatcher.statechange(actual)
+      dispatcher.call('statechange', null, actual)
       return actual
     } else {
       return false
@@ -114,7 +114,7 @@ define(function(require) {
       var actual = pushState(path)
 
       if (actual) {
-        dispatcher.statechange(actual)
+        dispatcher.call('statechange', null, actual)
       }
     }
   }
@@ -134,7 +134,7 @@ define(function(require) {
       path = fullPath(location)
     }
 
-    dispatcher.statechange(unbase(path))
+    dispatcher.call('statechange', null, unbase(path))
   }
 
   function isHashPath(hash) {

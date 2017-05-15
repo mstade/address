@@ -6,21 +6,33 @@ define(function(require) {
     it('should always be able to dispatch a firstsubscribed event', function() {
       dispatcher = dispatch()
 
-      expect(dispatcher.firstsubscribed).to.be.a('function')
+      expect(function() {
+        dispatcher.call('firstsubscribed')
+      }).to.not.throw(Error)
     })
 
     it('should always be able to dispatch a lastunsubscribed event', function() {
       dispatcher = dispatch()
 
-      expect(dispatcher.lastunsubscribed).to.be.a('function')
+      expect(function() {
+        dispatcher.call('lastunsubscribed')
+      }).to.not.throw(Error)
     })
 
     it('should create a method for all event types passed in the constructor', function() {
       dispatcher = dispatch('test1', 'test2')
 
-      expect(dispatcher.test1).to.be.a('function')
-      expect(dispatcher.test2).to.be.a('function')
-      expect(dispatcher.test3).not.to.be.a('function')
+      expect(function() {
+        dispatcher.call('test1')
+      }).to.not.throw(Error)
+
+      expect(function() {
+        dispatcher.call('test2')
+      }).to.not.throw(Error)
+
+      expect(function() {
+        dispatcher.call('test3')
+      }).to.throw(Error)
     })
 
     describe('on', function() {
@@ -29,7 +41,7 @@ define(function(require) {
         dispatcher = dispatch('test')
 
         dispatcher.on('test', done)
-        dispatcher.test()
+        dispatcher.call('test')
       })
 
       it('should override any listener if called a second time', function(done) {
@@ -39,7 +51,7 @@ define(function(require) {
           expect('this').to.be('not called')
         })
         dispatcher.on('test', done)
-        dispatcher.test()
+        dispatcher.call('test')
       })
 
     })

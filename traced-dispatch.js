@@ -33,12 +33,12 @@ define(function (require) {
         if (_.isNull(listener)) {
           delete listenersMap[type]
           if (hadBaseListeners && !hasListeners(baseType)) {
-            dispatcher.lastunsubscribed(baseType)
+            dispatcher.call('lastunsubscribed', null, baseType)
           }
         } else {
           listenersMap[type] = true
           if (!hadBaseListeners && hasListeners(baseType)) {
-            dispatcher.firstsubscribed(baseType)
+            dispatcher.call('firstsubscribed', null, baseType)
           }
         }
       }
