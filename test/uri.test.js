@@ -39,11 +39,14 @@ define(function(require) {
     })
 
     it('should parse a path with query string', function() {
-      var path = '/?a=b&a=c&d=hello+world&e=foo%20bar'
-        , query = {a: ['b', 'c'], d: 'hello world', e: 'foo bar'}
+      var path = '/?a=b&a=c&a=d&e=hello+world&f=foo%20bar'
+        , query = {a: ['b', 'c', 'd'], e: 'hello world', f: 'foo bar'}
         , url = uri(path)
       url.path().should.equal('/' + serialize(query))
       url.query().should.deep.equal(query)
+      url.query('a').should.deep.equal(query.a)
+      url.query('e').should.deep.equal(query.e)
+      url.query('f').should.deep.equal(query.f)
       url.search().should.equal(serialize(query))
       url.pathname().should.equal('/')
       url.hash().should.equal('')
@@ -72,11 +75,11 @@ define(function(require) {
     })
 
     it('should update the path components', function() {
-      var path = '/foo?a=b&a=c&d=hello+world&e=foo%20bar#baz'
+      var path = '/foo?a=b&a=c&a=d&e=hello+world&f=foo%20bar#baz'
         , pathname = '/foo'
         , pathname2 = '/bar'
-        , query = {a: ['b', 'c'], d: 'hello world', e: 'foo bar'}
-        , query2 = {a: 'b', d: undefined, e: 'foo bar'}
+        , query = {a: ['b', 'c', 'd'], e: 'hello world', f: 'foo bar'}
+        , query2 = {a: 'b', e: undefined, f: 'foo bar'}
         , hash = 'baz'
         , hash2 = 'foo'
         , url = uri(path)
@@ -87,7 +90,7 @@ define(function(require) {
       url.pathname().should.equal(pathname)
       url.hash().should.equal(hash)
 
-      url.query({a: 'b', d: undefined}).query().should.deep.equal(query2)
+      url.query({a: 'b', e: undefined}).query().should.deep.equal(query2)
       url.pathname(pathname2).pathname().should.equal(pathname2)
       url.hash(hash2).hash().should.deep.equal(hash2)
 
