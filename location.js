@@ -32,7 +32,7 @@ define(function(require) {
 
   function setState(path) {
     var actual = pushState(path)
-    
+
     if (actual) {
       dispatcher.statechange(actual)
       return actual
