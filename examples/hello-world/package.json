@@ -1,0 +1,18 @@
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "(sleep 1 && opn http://localhost:8080) & http-server ./"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "@zambezi/address": "../../",
+    "http-server": "^0.10.0",
+    "opn-cli": "^3.1.0"
+  }
+}
