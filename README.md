@@ -8,6 +8,54 @@ It provides
 * utilities for creating appropriate responses from resources,
 * utilities for displaying resources in the DOM.
 
+
+## Installation
+
+Address is available as the `@zambezi/address` package on [npm](https://www.npmjs.com/):
+
+    $ npm install --save @zambezi/address
+
+Then using the module handler of your choice, you can use the following modules for requesting an addressable resource:
+
+```javascript
+// using ES6 modules
+import { address } from '@zambezi/address'
+
+// using AMD modules
+define([
+  '@zambezi/address/lib/address'
+], function(address) {
+  // ...
+})
+
+```
+
+To create a resource, you should be importing the following:
+
+```javascript
+// using ES6 modules
+import { error, ok } from '@zambezi/address'
+
+export function myResource(req, res) {
+  // ...
+}
+
+// using AMD modules
+define([
+  '@zambezi/address/lib/ok'
+, '@zambezi/address/lib/error'
+], function(ok, error) {
+  return function myResource(req, res) {
+    // ...
+  }
+})
+
+```
+
+## API docs
+
+[Read them here](docs/API.md)
+
 ## Usage
 
 Include the address library as a dependency to your AMD module using the namespaced module name '@zambezi/address/lib/address'.
