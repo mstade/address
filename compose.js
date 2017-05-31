@@ -9,14 +9,16 @@ define(function(require) {
     if(!currentUri || requestedUri == currentUri) return requestedUri
 
     var currentResource = web.find(currentUri)
+      , currentMetadata = repairResource(currentResource).metadata
       , requestedResource = web.find(requestedUri)
+      , requestedMetadata = repairResource(requestedResource).metadata
 
     if(!currentResource || !requestedResource) return requestedUri
 
     var composedParams
-      , redirect = currentResource.redirects[requestedResource.path]
-      , composes = _.contains(currentResource.composes, requestedResource.path)
-      , rewritePath = redirect || currentResource.path
+      , redirect = currentMetadata.redirects[requestedMetadata.path]
+      , composes = _.contains(currentMetadata.composes, requestedMetadata.path)
+      , rewritePath = redirect || currentMetadata.path
       , shouldRewrite = redirect || composes
 
     if(shouldRewrite) {
@@ -28,6 +30,16 @@ define(function(require) {
     }
 
     return requestedUri
+  }
+
+  // Because of the lack of documentation, there are uses of address where a set of customisation have been made:
+  // + `web.find` is overridden.
+  // + metadata properties is stored on the route resource itself, rather than on `resource.metadata`.
+  //
+  // In a future release we may want to deprecate or remove this behaviour.
+  // Further details can be found: https://github.com/zambezi/address/issues/59
+  function repairResource(resource) {
+    return _.extend({ metadata: resource }, resource)
   }
 
   function rewrite(web, path, params) {
