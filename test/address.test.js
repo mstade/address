@@ -15,7 +15,9 @@ define(function(require) {
       var originalPath
 
       beforeEach(function() {
-        originalPath = window.location.href.slice(window.location.origin.length)
+        var origin = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port
+
+        originalPath = window.location.href.slice(origin.length)
 
         responseBody = sinon.spy()
 
@@ -41,6 +43,7 @@ define(function(require) {
         address = function(r) {
           return a(r).web(web)
         }
+        zapp.clearResource(zapp.root())
       })
 
       afterEach(function() {
@@ -221,7 +224,7 @@ define(function(require) {
             , origin: undefined
             }
 
-        expect(zapp.rootResource()).to.be.undefined
+        expect(zapp.rootResource()).to.be.null
         expect(zapp.resource(zapp.root())).to.be.equal(zapp.rootResource())
 
         address('/wibble').on('done', cb)()
