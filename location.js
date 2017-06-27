@@ -32,7 +32,7 @@ define(function(require) {
 
   function setState(path) {
     var actual = pushState(path)
-    
+
     if (actual) {
       dispatcher.statechange(actual)
       return actual
@@ -75,7 +75,6 @@ define(function(require) {
 
   function basePath(path) {
     if (arguments.length === 0) return base
-
     var cwd = unbase(fullPath(location))
 
     path = trimSlashes(path)
@@ -150,16 +149,17 @@ define(function(require) {
     if (url.origin) {
       return url.origin
     } else {
-      var port
+      var port = ''
 
-      if (url.port && !~url.href.indexOf(':' + url.port)) {
-        // IE defaults port values based on protocol, which messes things up
-        port = ''
-      } else {
+      if (url.port && ~url.href.indexOf(':' + url.port)) {
         port = ':' + url.port
       }
 
-      return url.protocol + "//" + url.hostname + port
+      if (url.protocol) {
+        return url.protocol + "//" + url.hostname + port
+      } else {
+        return location.protocol + "//" + location.hostname + ':' + location.port
+      }
     }
   }
 
