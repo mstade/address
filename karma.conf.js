@@ -21,6 +21,11 @@ module.exports = function(config) {
       , watched: false
     }
     , {
+        pattern: 'node_modules/custom-event-polyfill/custom-event-polyfill.js'
+      , included: true
+      , watched: false
+    }
+    , {
         pattern: 'node_modules/underscore/underscore.js'
       , included: false
       , watched: false

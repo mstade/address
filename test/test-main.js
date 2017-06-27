@@ -29,4 +29,3 @@ requirejs.config({
 })
 
 require(tests, window.__karma__.start)
-

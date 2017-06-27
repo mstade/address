@@ -5,7 +5,9 @@ define(function(require) {
     var originalPath
 
     beforeEach(function() {
-      originalPath = window.location.href.slice(window.location.origin.length)
+      var origin = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port
+
+      originalPath = window.location.href.slice(origin.length)
       location.basePath('')
     })
 
@@ -14,7 +16,7 @@ define(function(require) {
     })
 
     describe('API', function() {
-      describe(`location.getState()`, function() {
+      describe('location.getState()', function() {
         it('should always get the current window location', function() {
           expect(location.getState() === '/base/foo')
           window.history.replaceState(null, null, '/base/bar')
@@ -29,7 +31,7 @@ define(function(require) {
         })
       })
 
-      describe(`location.basePath()`, function() {
+      describe('location.basePath()', function() {
         it('should replace the current path with a rebased path', function() {
           var historyEntries = window.history.length
           expect(location.getState()).to.equal(originalPath)
@@ -37,7 +39,7 @@ define(function(require) {
           expect(location.basePath()).to.equal('/foo')
           expect(location.getState()).to.equal(originalPath)
           expect(window.location.pathname).to.equal('/foo' + originalPath)
-          expect(window.history.length).to.equal(historyEntries)    
+          expect(window.history.length).to.equal(historyEntries)
 
           location.basePath('/bar')
           expect(location.basePath()).to.equal('/bar')
@@ -59,7 +61,7 @@ define(function(require) {
         })
       })
 
-      describe(`location.pushState()`, function() {
+      describe('location.pushState()', function() {
         it('should update the current location', function() {
           expect(location.getState()).to.not.equal('/base/foo')
           expect(location.pushState('/base/foo')).to.equal('/base/foo')
@@ -79,7 +81,7 @@ define(function(require) {
 
         it('should do nothing when pushing the current location', function() {
           expect(location.pushState(location.getState())).to.equal(false)
-          
+
           location.basePath('/base')
           expect(location.pushState(location.getState())).to.equal(false)
         })
@@ -106,7 +108,7 @@ define(function(require) {
         })
       })
 
-      describe(`location.setState()`, function() {
+      describe('location.setState()', function() {
         it('should do nothing when setting the current location', function() {
           var statechange = false
 
@@ -150,7 +152,7 @@ define(function(require) {
         })
       })
 
-      describe(`location.openNewWindow()`, function() {
+      describe('location.openNewWindow()', function() {
         it('should try to open a new window', function() {
           var path, target, opts
           window.open = function(x, y, z) {
@@ -205,7 +207,7 @@ define(function(require) {
         window.history.back()
         expect(changedState).to.eql({ base: '', path: '/back' })
         expect(location.getState()).to.equal('/back')
-        
+
         changedState = undefined
         window.history.forward()
         expect(changedState).to.eql({ base: '', path: '/forward' })
@@ -213,7 +215,7 @@ define(function(require) {
         location.on('statechange.test-history', null)
       })
 
-      describe(`location.handleClick()`, function() {  
+      describe('location.handleClick()', function() {
         var changedState, anchor, handledClick
 
         beforeEach(function() {
@@ -238,10 +240,9 @@ define(function(require) {
 
         function click(target, opts) {
           opts || (opts = {})
-          opts.view = window
-          opts.bubbles = true
-          opts.cancelable = true
-          var event = new MouseEvent('click', opts)
+          var event = document.createEvent('MouseEvent');
+          event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, opts.ctrlKey || false, opts.altKey || false, opts.shiftKey || false, opts.metaKey || false, opts.button || 0, null);
+
           target.dispatchEvent(event)
         }
 
@@ -290,6 +291,12 @@ define(function(require) {
           anchor.href = '#/backwards/compatible'
           click(anchor)
           expect(changedState).to.equal('/backwards/compatible')
+        })
+
+        it('should handle query only links', function() {
+          anchor.href= '?foo'
+          click(anchor)
+          expect(changedState).to.equal(originalPath + '?foo')
         })
       })
     })

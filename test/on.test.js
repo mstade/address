@@ -4,6 +4,7 @@ define(function(require) {
 
   describe('On', function() {
     var node
+
     beforeEach(function () {
       node = document.createElement('div')
       document.body.appendChild(node)
@@ -15,20 +16,20 @@ define(function(require) {
 
     it('should add listener to DOM elements', function(done) {
       on.call(node, 'click', callback(done))
-      node.dispatchEvent(new Event('click'))
+      node.dispatchEvent(new CustomEvent('click'))
     })
 
     it('should only listen to the last added callback', function(done) {
       on.call(node, 'click', errors)
       on.call(node, 'click', callback(done))
 
-      node.dispatchEvent(new Event('click'))
+      node.dispatchEvent(new CustomEvent('click'))
     })
 
     it('should listen to namespaced events', function(done) {
       on.call(node, 'click.namespaced', callback(done))
 
-      node.dispatchEvent(new Event('click'))
+      node.dispatchEvent(new CustomEvent('click'))
     })
 
     it('should add multiple events with different namespaces', function(done) {
@@ -36,14 +37,14 @@ define(function(require) {
       on.call(node, 'click.namespace1', next)
       on.call(node, 'click.namespace2', next)
 
-      node.dispatchEvent(new Event('click'))
+      node.dispatchEvent(new CustomEvent('click'))
     })
 
     it('should remove the listener when listener is set to null', function(done) {
       on.call(node, 'click.namespace1', errors)
       on.call(node, 'click.namespace1', null)
 
-      node.dispatchEvent(new Event('click'))
+      node.dispatchEvent(new CustomEvent('click'))
       setTimeout(done, 100)
     })
 
@@ -51,11 +52,11 @@ define(function(require) {
       on.call(node, 'click.namespace1', errors)
       on.call(node, '.namespace1', null)
 
-      node.dispatchEvent(new Event('click'))
+      node.dispatchEvent(new CustomEvent('click'))
       setTimeout(function () {
         on.call(node, 'click.namespace1', callback(done))
         on.call(node, '.namespace1', errors)
-        node.dispatchEvent(new Event('click'))
+        node.dispatchEvent(new CustomEvent('click'))
       }, 100)
     })
   })
