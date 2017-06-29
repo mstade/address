@@ -26,12 +26,6 @@ module.exports = {
     , commonjs: '@websdk/rhumb'
     , amd: '@websdk/rhumb'
     }
-  , 'd3-dispatch': {
-      root: 'd3_dispatch'
-    , commonjs2: 'd3-dispatch'
-    , commonjs: 'd3-dispatch'
-    , amd: 'd3-dispatch'
-    }
   }
 , devtool: '#source-map'
 }
