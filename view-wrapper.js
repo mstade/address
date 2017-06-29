@@ -29,7 +29,17 @@ define(function(require) {
     var resource
     if (!web || !uri) return undefined
     resource = web.find(uri)
-    return resource ?  resource.path : undefined
+    return resource ? repairResource(resource).metadata.path : undefined
+  }
+
+  // Because of the lack of documentation, there are uses of address where a set of customisation have been made:
+  // + `web.find` is overridden.
+  // + metadata properties is stored on the route resource itself, rather than on `resource.metadata`.
+  //
+  // In a future release we may want to deprecate or remove this behaviour.
+  // Further details can be found: https://github.com/zambezi/address/issues/59
+  function repairResource(resource) {
+    return _.extend({ metadata: resource }, resource)
   }
 
   function resourceWillChange(req, res, node) {
