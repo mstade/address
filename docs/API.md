@@ -2,6 +2,13 @@
 
 ## TOC
 
+* [Adding resources](#addingresources)
+  + [`address.web()`](#addressweb)
+  + [`web.find()`](#webfind)
+  + [`web.req()`](#webreq)
+  + [`web.use()`](#webuse)
+  + [`web.uri()`](#weburi)
+
 * [Requesting a resource](#requesting-a-resource)
   + [`address(uri)`](#addressuri)
   + [`.uri()`](#uri)
@@ -60,6 +67,109 @@
 * [Top level navigation](#top-level-navigation)
   + [`.navigate()`](#navigate)
   + [`.target()`](#target)
+
+
+## Adiing resources
+
+### `address.web()`
+
+Provides set or get of the web object used for carrying out the request.
+
+_set:_
+```javascript
+address('/price/usd/gbp')
+  .web(nap.web())
+  .on('ok', function(response) {
+    // use data from response
+  })
+  .get()
+```
+
+_get:_
+```javascript
+var value = address()
+  .web(nap.web())
+  .web()
+// value is an instance of nap web
+```
+
+### `web.find()`
+
+A function that needs to take in a particular route and return a routing function.
+
+This routing function need to taken in a param object and returning an object with the following properties:
+
+- `name`: the name of the resource route
+- `methods`: an array of methods that a particular route supports
+- `params`: the params associated with the resource route
+- `metadata`:
+  - `path`: the pattern or path associated with the resource route
+  - `redirects`: an object with redirection rules; where the property key is the route match and the property value is the route to redirect to
+  - `composes`: an array of routes that this route composes
+
+When using `@websdk/rhumb` the function can be implemented as
+
+```javascript
+var routes = rhumb.create()
+
+routes.add('/greeting(/{name})', function (params) {
+  return {
+    name: 'greeting'
+  , methods: ['get']
+  , params: params
+  , metadata: {
+      path: '/greeting(/{name})'
+    , redirects: {}
+    , composes: []
+    }
+  }
+})
+
+function find (uri) {
+  return routes.match(uri)
+}
+```
+
+### `web.req()`
+
+A function for handling request and ensuring the callback is called with the resource response.
+
+```javascript
+web.req = function(path, cb) {
+  // create req object
+
+  // find match for uri
+
+  // if match call resource handler, passing callback as the response
+  // else call callback with a not found error
+
+  return web
+}
+```
+
+### `web.use()`
+
+A function for adding additional middlewares to resource handlers.
+
+```javascript
+web.use = function(...middlewares) {
+  if(!middlewares.length) return web
+  // update middlewares
+  return web
+}
+```
+
+
+### `web.uri()`
+
+A function responsible for interpolating a route with a parmeters object.
+
+```javascript
+web.uri = function uri(route, params)  {
+  // do interpolation
+  return interpolatedUri
+}
+```
 
 
 ## Requesting a resource
