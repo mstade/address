@@ -19,11 +19,6 @@
 
 <script>
   var web = nap.web()
-  var routes = rhumb.create()
-
-  web.find = function (uri) {
-    return routes.match(uri)
-  }
 
   defineResources(nap.negotiate, function() {
     address.location.basePath('/#')
@@ -49,26 +44,10 @@
   }
 
   function defineResources(negotiate, callback) {
-    routes.add('/', routeDefinition('home (redirect)', '/', ['get']))
-    routes.add('/greeting(/{name})', routeDefinition('greeting', '/greeting(/{name})', ['get']))
-
-    web.resource('home (redirect)', '/', negotiate.method({ get: negotiate.accept({ 'application/x.nap.view': redirectHome }) }))
-    web.resource('greeting', '/greeting(/{name})', negotiate.method({ get: negotiate.accept({ 'application/x.nap.view': greeting }) }))
+    web.resource('home (redirect)', '/', negotiate.method({ get: negotiate.accept({ 'application/x.nap.view': redirectHome }) }), { path: '/', redirects: [] })
+    web.resource('greeting', '/greeting(/{name})', negotiate.method({ get: negotiate.accept({ 'application/x.nap.view': greeting }) }), { path: '/greeting(/{name})', redirects: [] })
 
     callback()
-  }
-
-  function routeDefinition (name, path, methods) {
-    return function (params) {
-      return {
-        name: name
-      , path: path
-      , methods: methods
-      , params: params
-      , redirects: {}
-      , composes: []
-      }
-    }
   }
 
   function load(path) {
