@@ -201,7 +201,10 @@ define(function(require) {
           subject.query().should.deep.equal({ q: char, u: code })
           subject.search().should.deep.equal('?q=' + enc + '&u=' + code)
         } catch (e) {
-          if (e instanceof URIError === false) {
+          if (e instanceof URIError) {
+            // Some character cause a malformed URI error; we ignore these
+          } else {
+            // But rethrow anything else
             throw e
           }
         }
