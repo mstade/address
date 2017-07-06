@@ -177,5 +177,35 @@ define(function(require) {
         .toString(pathname)
           .should.equal(pathname + serialize(query) + hash)
     })
+
+    it('should properly deal with unicode plane 0 pct-encoded characters', function() {
+      testCodePlane(0x0000, 0xFFFF)
+    })
+
+    it('should properly deal with unicode plane 1 pct-encoded characters', function() {
+      testCodePlane(0x10000, 0x1FFFF)
+    })
+
+    it('should properly deal with unicode plane 2 pct-encoded characters', function() {
+      testCodePlane(0x20000, 0x2FFFF)
+    })
+
+    function testCodePlane(start, end) {
+      for (var i = start; i <= end; i++) {
+        var char = String.fromCodePoint(i)
+        var code = i.toString(16)
+
+        try {
+          var enc = encodeURIComponent(char)
+          var subject = uri('/foo?q=' + enc + '&u=' + code)
+          subject.query().should.deep.equal({ q: char, u: code })
+          subject.search().should.deep.equal('?q=' + enc + '&u=' + code)
+        } catch (e) {
+          if (e instanceof URIError === false) {
+            throw e
+          }
+        }
+      }
+    }
   })
 })
