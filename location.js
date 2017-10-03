@@ -102,8 +102,9 @@ define(function(require) {
 
     if (isHashPath(a.hash)) {
       path = rebase(a.hash.slice(1))
-    } else if (a.hash) {
-      return // Ignore links with a non-path hash
+    } else if (a.hash || a.href.slice(location.href.length) === '#') {
+      // Ignore links with a non-path hash, and empty hashes (e.g.: `<a href="#"></a>`)
+      return 
     } else {
       path = rebase(fullPath(a))
     }
