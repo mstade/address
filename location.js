@@ -94,9 +94,16 @@ define(function(require) {
 
     a = findClosest.anchor(target)
 
-    if (!a) return // Ignore non-anchor clicks
-    if (!!a.target) return // Ignore anchors with specified targets
-    if (!isSameOrigin(a, location)) return // Ignore links to different origins
+    if ( !a // non-anchor clicks
+      || !!a.target // anchors with specified targets
+      || a.hasAttribute('download') // anchors with download attribute
+      || !isSameOrigin(a, location) // links to different origins
+    ) {
+      /* If any of the above conditions are true, we ignore the click and
+       * let the browser deal with the navigation as it sees fit
+       */
+      return
+    }
 
     var path
 
