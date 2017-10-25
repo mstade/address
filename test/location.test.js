@@ -190,6 +190,24 @@ define(function(require) {
         location.on('statechange.test-redirect', null)
       })
 
+      it('should correctly deal with hashchanges where the hash is empty', function() {
+        var didRedirect
+        var currentPath = window.location.pathname
+        var currentHash = window.location.hash
+
+        location.on('statechange.test-redirect-empty-hash', function(state) {
+          didRedirect = state
+        })
+
+        window.location.hash = '#'
+        expect(didRedirect).to.equal(undefined)
+        expect(window.location.pathname).to.equal(currentPath)
+        expect(window.location.hash).to.equal('')
+        window.location.hash = currentHash
+
+        location.on('statechange.test-redirect-empty-hash', null)
+      })
+
       xit('should correctly handle back/forward events', function() {
         expect(location.getState()).to.equal(originalPath)
         location.setState('/start')
@@ -271,7 +289,19 @@ define(function(require) {
         })
 
         it('should ignore anchors which specify target', function() {
+          anchor.href='/wibble'
           anchor.target = 'wibble'
+          click(anchor)
+          expect(changedState).to.be.undefined
+        })
+
+        it('should ignore anchors which specify a download attribute', function() {
+          anchor.href='/wibble'
+          anchor.setAttribute('download', '')
+          click(anchor)
+          expect(changedState).to.be.undefined
+
+          anchor.setAttribute('download', 'something')
           click(anchor)
           expect(changedState).to.be.undefined
         })
@@ -283,13 +313,29 @@ define(function(require) {
         })
 
         it('should only care about hash if the first character of the hash is a `/`', function() {
-          anchor.href= '#ignored'
+          anchor.href = '#ignored'
           click(anchor)
           expect(changedState).to.be.undefined
 
           anchor.href = '#/backwards/compatible'
           click(anchor)
           expect(changedState).to.equal('/backwards/compatible')
+        })
+
+        it('should ignore empty hash links', function() {
+          anchor.href = '#'
+          click(anchor)
+          expect(changedState).to.be.undefined
+        })
+
+        it('should ignore anchors with query parameters after the hash', function() {
+          anchor.href = '#?query'
+          click(anchor)
+          expect(changedState).to.be.undefined
+
+          anchor.href = '#?query=something'
+          click(anchor)
+          expect(changedState).to.be.undefined
         })
       })
     })

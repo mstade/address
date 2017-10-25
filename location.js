@@ -94,16 +94,24 @@ define(function(require) {
 
     a = findClosest.anchor(target)
 
-    if (!a) return // Ignore non-anchor clicks
-    if (!!a.target) return // Ignore anchors with specified targets
-    if (!isSameOrigin(a, location)) return // Ignore links to different origins
+    if ( !a // non-anchor clicks
+      || !!a.target // anchors with specified targets
+      || a.hasAttribute('download') // anchors with download attribute
+      || !isSameOrigin(a, location) // links to different origins
+    ) {
+      /* If any of the above conditions are true, we ignore the click and
+       * let the browser deal with the navigation as it sees fit
+       */
+      return
+    }
 
     var path
 
     if (isHashPath(a.hash)) {
       path = rebase(a.hash.slice(1))
-    } else if (a.hash) {
-      return // Ignore links with a non-path hash
+    } else if (a.hash || a.href.slice(location.href.length) === '#') {
+      // Ignore links with a non-path hash, and empty hashes (e.g.: `<a href="#"></a>`)
+      return 
     } else {
       path = rebase(fullPath(a))
     }
