@@ -110,9 +110,9 @@ define(function(require) {
         , redirects : {}
       })
       address('/news-reader/articles/{articleId}')
-        .param('articleId', 1)
+        .param('articleId', 9)
         .navigate()
-          .should.equal('/news-reader/articles/1')
+          .should.equal('/news-reader/articles/9')
     })
 
     it('should navigate to redirect path when navigating to composed path', function () {
@@ -141,11 +141,9 @@ define(function(require) {
       z.resource(z.root(), uri)
 
       address('/news-reader/articles/{articleId}')
-        .param('articleId', 1)
+        .param('articleId', 5)
         .navigate()
-          .should.equal('/news-reader/1')
+        .should.equal('/news-reader/5')
     })
-
   })
-}
-)
+})
