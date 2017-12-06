@@ -7,12 +7,11 @@ define(function(require) {
   return {
 
     requestTimeout : function(req, res, next) {
-
       var responded
         , timeout = setTimeout(function() {
             responded = true
             res(null, error(408))
-          }, 30000)
+          }, req.timeout)
 
       next(req, function(err, data) {
         clearTimeout(timeout)

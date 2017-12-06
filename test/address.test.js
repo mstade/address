@@ -190,6 +190,7 @@ define(function(require) {
           , body : {hello:'world!'}
           , context: undefined
           , origin: undefined
+          , timeout: 30000
           }
 
         var update = address('/wibble/{id}')
@@ -219,6 +220,7 @@ define(function(require) {
             , body : undefined
             , context: document.body
             , origin: undefined
+            , timeout: 30000
             }
 
         expect(zapp.rootResource()).to.be.undefined
