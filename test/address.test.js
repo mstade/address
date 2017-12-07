@@ -190,7 +190,7 @@ define(function(require) {
           , body : {hello:'world!'}
           , context: undefined
           , origin: undefined
-          , timeout: 30000
+          , timeout: 60000
           }
 
         var update = address('/wibble/{id}')
@@ -199,6 +199,7 @@ define(function(require) {
           .query('a', 'a=b')
           .header('accept','application/json')
           .body({hello:'world!'})
+          .timeout(60000)
           .on('done', cb)
 
         update()
