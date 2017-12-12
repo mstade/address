@@ -305,17 +305,17 @@ address("/price/usd/gbp")
 ```
 
 ### Adding timeout
-When requesting a resource address will by default wait 30 seconds for a response from the resource, before responding with a ```408 Request Timeout``` error. By calling the ```timeout``` method on the request, it is possible to increase or decrease this timeout period. The following example shows how to increase the timeout from the default 30 seconds to 60:
+When requesting a resource address will by default wait at least 30 seconds for a response from the resource, before returning a `408 Request Timeout` error. By calling the `timeout` method on the request, it is possible to increase or decrease this timeout period. The following example shows how to increase the timeout from the default 30 seconds to 60:
 
 ```javascript
-// increase the timeout to 60000ms (60 sec) for request to resolve
+// increase the timeout to 60 sec for request to resolve
 address("/price/usd/gbp")
-  .timeout(60000)
+  .timeout(60)
   .json()
   .get()
 ```
 
-The value given to the ```timeout``` method is in milliseconds.
+The value given to the `timeout` method is in milliseconds.
 
 ## Adding a resource view to the DOM
 

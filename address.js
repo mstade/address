@@ -31,7 +31,7 @@ define(function(require) {
         , callback
         , target
         , into
-        , timeout = 30000
+        , timeout = 30
         , dispatcher = dispatch.apply(null, codes.range().concat(['err', 'done']))
 
       if(r && _.isString(r)) {

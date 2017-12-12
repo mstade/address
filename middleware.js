@@ -8,10 +8,11 @@ define(function(require) {
 
     requestTimeout : function(req, res, next) {
       var responded
+        , interval = req.timeout * 1000
         , timeout = setTimeout(function() {
             responded = true
             res(null, error(408))
-          }, req.timeout)
+        }, interval)
 
       next(req, function(err, data) {
         clearTimeout(timeout)
