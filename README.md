@@ -315,7 +315,7 @@ address("/price/usd/gbp")
   .get()
 ```
 
-The value given to the `timeout` method is in milliseconds.
+The value given to the `timeout` method is in seconds.
 
 ## Adding a resource view to the DOM
 
