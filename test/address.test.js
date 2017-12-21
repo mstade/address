@@ -209,7 +209,7 @@ define(function(require) {
         cb.should.have.been.calledOnce
       })
 
-      it('should return error when negative negative value is provided', function() {
+      it('should return error when negative timeout value is provided', function() {
         var cb = sinon.spy()
           , responseBody = {
               message: 'Invalid timeout'
@@ -228,7 +228,7 @@ define(function(require) {
         response.body.should.equal(responseBody)
       })
 
-      it('should return error when negative null value is provided', function() {
+      it('should return error when null timeout value is provided', function() {
         var cb = sinon.spy()
           , req = {
               uri : '/wibble/123'
