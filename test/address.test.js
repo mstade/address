@@ -209,88 +209,42 @@ define(function(require) {
         cb.should.have.been.calledOnce
       })
 
-      it('should call configured request and callback with the default timeout if no value is provided', function() {
+      it('should return error when negative negative value is provided', function() {
         var cb = sinon.spy()
-          , req = {
-            uri : '/wibble/123'
-          , method : 'send'
-          , headers : {
-              accept : 'application/json'
+          , responseBody = {
+              message: 'Invalid timeout'
             }
-          , body : undefined
-          , context: undefined
-          , origin: undefined
-          , timeout: 30
-          }
 
-        var update = address('/wibble/{id}')
+        response.statusCode = 400
+        response.body = responseBody
+
+        address('/wibble/{id}')
           .param('id', '123')
           .method('send')
-          .header('accept','application/json')
-          .timeout()
-          .on('done', cb)
-
-        update()
-
-        web.req.should.have.been.calledOnce
-        web.req.should.have.been.calledWith(req)
-        cb.should.have.been.calledOnce
-      })
-
-      it('should call configured request and callback with the default timeout if negative value is provided', function() {
-        var cb = sinon.spy()
-          , req = {
-            uri : '/wibble/123'
-          , method : 'send'
-          , headers : {
-              accept : 'application/json'
-            }
-          , body : undefined
-          , context: undefined
-          , origin: undefined
-          , timeout: 30
-          }
-
-        var update = address('/wibble/{id}')
-          .param('id', '123')
-          .method('send')
-          .header('accept','application/json')
           .timeout(-10)
-          .on('done', cb)
+          .on('done', cb)()
 
-        update()
-
-        web.req.should.have.been.calledOnce
-        web.req.should.have.been.calledWith(req)
-        cb.should.have.been.calledOnce
+        cb.should.have.been.calledWith(response)
+        response.body.should.equal(responseBody)
       })
 
-      it('should call configured request and callback with the default timeout if null value is provided', function() {
+      it('should return error when negative null value is provided', function() {
         var cb = sinon.spy()
           , req = {
-            uri : '/wibble/123'
-          , method : 'send'
-          , headers : {
-              accept : 'application/json'
+              uri : '/wibble/123'
+            , method : 'send'
+            , timeout: null
             }
-          , body : undefined
-          , context: undefined
-          , origin: undefined
-          , timeout: 30
-          }
+          , responseBody = {
+              message: 'Invalid timeout'
+            }
 
-        var update = address('/wibble/{id}')
-          .param('id', '123')
-          .method('send')
-          .header('accept','application/json')
-          .timeout(null)
-          .on('done', cb)
+        response.statusCode = 400
+        response.body = responseBody
 
-        update()
-
-        web.req.should.have.been.calledOnce
-        web.req.should.have.been.calledWith(req)
-        cb.should.have.been.calledOnce
+        address(req).on('done', cb)()
+        cb.should.have.been.calledWith(response)
+        response.body.should.equal(responseBody)
       })
 
       it('should use defaults', function() {

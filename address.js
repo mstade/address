@@ -17,7 +17,6 @@ define(function(require) {
     , rebind = require('./rebind')
     , location = require('./location')
     , middleware = require('./middleware')
-    , util = require('./util')
 
     function address(r) {
 
@@ -195,7 +194,8 @@ define(function(require) {
       }
 
       api.timeout = function(v) {
-        timeout = util.isValidNumber(v) ? v : timeout
+        if(!arguments.length) return timeout
+        timeout = v
         return api
       }
 
