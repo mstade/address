@@ -212,7 +212,7 @@ define(function(require) {
       it('should return error when negative timeout value is provided', function() {
         var cb = sinon.spy()
           , responseBody = {
-              message: 'Invalid timeout'
+              message: 'Invalid timeout: must be an integer value greater than 0'
             }
 
         response.statusCode = 400
@@ -236,7 +236,7 @@ define(function(require) {
             , timeout: null
             }
           , responseBody = {
-              message: 'Invalid timeout'
+              message: 'Invalid timeout: must be an integer value greater than 0'
             }
 
         response.statusCode = 400

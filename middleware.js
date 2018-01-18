@@ -17,9 +17,7 @@ define(function(require) {
           }, req.timeout * 1000)
         } else {
           responded = true
-          res(null, error(400, {
-            message: 'Invalid timeout'
-          }))
+          throw new Error('Invalid timeout: must be an integer value greater than 0')
         }
 
       next(req, function(err, data) {
