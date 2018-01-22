@@ -209,44 +209,6 @@ define(function(require) {
         cb.should.have.been.calledOnce
       })
 
-      it('should return error when negative timeout value is provided', function() {
-        var cb = sinon.spy()
-          , responseBody = {
-              message: 'Invalid timeout: must be an integer value greater than 0'
-            }
-
-        response.statusCode = 400
-        response.body = responseBody
-
-        address('/wibble/{id}')
-          .param('id', '123')
-          .method('send')
-          .timeout(-10)
-          .on('done', cb)()
-
-        cb.should.have.been.calledWith(response)
-        response.body.should.equal(responseBody)
-      })
-
-      it('should return error when null timeout value is provided', function() {
-        var cb = sinon.spy()
-          , req = {
-              uri : '/wibble/123'
-            , method : 'send'
-            , timeout: null
-            }
-          , responseBody = {
-              message: 'Invalid timeout: must be an integer value greater than 0'
-            }
-
-        response.statusCode = 400
-        response.body = responseBody
-
-        address(req).on('done', cb)()
-        cb.should.have.been.calledWith(response)
-        response.body.should.equal(responseBody)
-      })
-
       it('should use defaults', function() {
         var cb = sinon.spy()
           , defaulReq = {
