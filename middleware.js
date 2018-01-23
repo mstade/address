@@ -7,12 +7,18 @@ define(function(require) {
   return {
 
     requestTimeout : function(req, res, next) {
-
       var responded
-        , timeout = setTimeout(function() {
-            responded = true
-            res(null, error(408))
-          }, 30000)
+        , timeout
+
+        if(req.timeout > 0) {
+          timeout = setTimeout(function() {
+              responded = true
+              res(null, error(408))
+          }, req.timeout * 1000)
+        } else {
+          responded = true
+          throw new Error('Invalid timeout: must be an integer value greater than 0')
+        }
 
       next(req, function(err, data) {
         clearTimeout(timeout)

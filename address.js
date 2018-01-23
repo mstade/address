@@ -31,6 +31,7 @@ define(function(require) {
         , callback
         , target
         , into
+        , timeout = 30
         , dispatcher = dispatch.apply(null, codes.range().concat(['err', 'done']))
 
       if(r && _.isString(r)) {
@@ -42,6 +43,7 @@ define(function(require) {
         method = r.method || method
         headers = r.headers || headers
         body = r.body || body
+        timeout = r.timeout || timeout
       }
 
       function api() {
@@ -191,6 +193,12 @@ define(function(require) {
         api.method('remove').body(body)()
       }
 
+      api.timeout = function(v) {
+        if(!arguments.length) return timeout
+        timeout = v
+        return api
+      }
+
       return rebind(api, dispatcher, 'on')
 
       function req() {
@@ -203,6 +211,7 @@ define(function(require) {
         , body : body
         , context : context
         , origin: origin
+        , timeout: timeout
         }
 
         function getUri() {

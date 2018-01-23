@@ -190,6 +190,7 @@ define(function(require) {
           , body : {hello:'world!'}
           , context: undefined
           , origin: undefined
+          , timeout: 60
           }
 
         var update = address('/wibble/{id}')
@@ -198,13 +199,13 @@ define(function(require) {
           .query('a', 'a=b')
           .header('accept','application/json')
           .body({hello:'world!'})
+          .timeout(60)
           .on('done', cb)
 
         update()
 
         web.req.should.have.been.calledOnce
         web.req.should.have.been.calledWith(req)
-
         cb.should.have.been.calledOnce
       })
 
@@ -219,6 +220,7 @@ define(function(require) {
             , body : undefined
             , context: document.body
             , origin: undefined
+            , timeout: 30
             }
 
         expect(zapp.rootResource()).to.be.undefined
