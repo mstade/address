@@ -12,7 +12,7 @@ define(function(require) {
 
   if (isHashPath(location.hash)) {
     // Redirect current hash fragment location to "real" path
-    history.replaceState(null, null, rebase(fullPath(location)))
+    history.replaceState(null, null, rebase(fullPath(location)) + location.search)
   }
 
   var api =
@@ -32,7 +32,7 @@ define(function(require) {
 
   function setState(path) {
     var actual = pushState(path)
-    
+
     if (actual) {
       dispatcher.statechange(actual)
       return actual
@@ -51,7 +51,7 @@ define(function(require) {
     if (path === getState()) {
       return false
     } else {
-      method({ base: base, path: path }, null, rebase(path))
+      method({ base: base, path: path }, null, rebase(path) + location.search)
       return path
     }
   }
@@ -111,7 +111,7 @@ define(function(require) {
       path = rebase(a.hash.slice(1))
     } else if (a.hash || a.href.slice(location.href.length) === '#') {
       // Ignore links with a non-path hash, and empty hashes (e.g.: `<a href="#"></a>`)
-      return 
+      return
     } else {
       path = rebase(fullPath(a))
     }

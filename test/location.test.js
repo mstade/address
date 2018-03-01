@@ -37,7 +37,7 @@ define(function(require) {
           expect(location.basePath()).to.equal('/foo')
           expect(location.getState()).to.equal(originalPath)
           expect(window.location.pathname).to.equal('/foo' + originalPath)
-          expect(window.history.length).to.equal(historyEntries)    
+          expect(window.history.length).to.equal(historyEntries)
 
           location.basePath('/bar')
           expect(location.basePath()).to.equal('/bar')
@@ -60,6 +60,16 @@ define(function(require) {
       })
 
       describe(`location.pushState()`, function() {
+        var originalHref
+
+        before(function() {
+          originalHref = window.location.href
+        })
+
+        afterEach(function() {
+          window.history.pushState(null, null, originalHref)
+        })
+
         it('should update the current location', function() {
           expect(location.getState()).to.not.equal('/base/foo')
           expect(location.pushState('/base/foo')).to.equal('/base/foo')
@@ -79,7 +89,7 @@ define(function(require) {
 
         it('should do nothing when pushing the current location', function() {
           expect(location.pushState(location.getState())).to.equal(false)
-          
+
           location.basePath('/base')
           expect(location.pushState(location.getState())).to.equal(false)
         })
@@ -103,6 +113,28 @@ define(function(require) {
           expect(statechange).to.be.false
 
           location.on('statechange.test-no-dispatch', null)
+        })
+
+        it('should preserve query parameters', function() {
+          var loc = window.location
+          var originalQuery = new URLSearchParams(loc.search.substring(1))
+
+          originalQuery.set('foo', 'bar')
+          originalQuery.set('fizz', 'buzz')
+
+          window.history.replaceState(
+            null, null,
+            loc.origin + loc.pathname + '?' + originalQuery.toString()
+          )
+
+          location.basePath('/base')
+          location.getState()
+          location.pushState('/base/foo')
+
+          var newQuery = new URLSearchParams(window.location.search.substring(1))
+
+          expect(newQuery.get('foo')).to.equal('bar')
+          expect(newQuery.get('fizz')).to.equal('buzz')
         })
       })
 
@@ -223,7 +255,7 @@ define(function(require) {
         window.history.back()
         expect(changedState).to.eql({ base: '', path: '/back' })
         expect(location.getState()).to.equal('/back')
-        
+
         changedState = undefined
         window.history.forward()
         expect(changedState).to.eql({ base: '', path: '/forward' })
@@ -231,7 +263,7 @@ define(function(require) {
         location.on('statechange.test-history', null)
       })
 
-      describe(`location.handleClick()`, function() {  
+      describe(`location.handleClick()`, function() {
         var changedState, anchor, handledClick
 
         beforeEach(function() {
