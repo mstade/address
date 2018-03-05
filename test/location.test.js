@@ -1,5 +1,10 @@
 define(function(require) {
-  var location = require('location')
+  var getLocationModule = require('location')
+  var location
+
+  beforeEach(function() {
+    location = getLocationModule()
+  })
 
   describe('Location', function() {
     var originalPath

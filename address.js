@@ -15,7 +15,7 @@ define(function(require) {
     , error = require('./error')
     , dispatch = require('d3-dispatch').dispatch
     , rebind = require('./rebind')
-    , location = require('./location')
+    , location = require('./location')()
     , middleware = require('./middleware')
 
     function address(r) {

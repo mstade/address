@@ -1,7 +1,7 @@
 define(function(require) {
   var sinon = require('sinon')
     , zapp = require('z-app')
-    , location = require('location')
+    , location = require('location')()
     , address
     , web
     , nap
