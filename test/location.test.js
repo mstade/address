@@ -18,6 +18,32 @@ define(function(require) {
       window.history.replaceState(null, null, originalPath)
     })
 
+    describe('Instantiation', function() {
+      describe('upgrading from hash path', function() {
+        it('should preserve query parameters', function() {
+          var loc = window.location
+          var originalQuery = new URLSearchParams()
+
+          originalQuery.set('foo', 'bar')
+          originalQuery.set('fizz', 'buzz')
+
+          window.history.replaceState(
+            null, null,
+            loc.origin + loc.pathname +
+            '?' + originalQuery.toString() +
+            '#/app/workspaces'
+          )
+
+          location = getLocationModule()
+
+          var newQuery = new URLSearchParams(loc.search.substring(1))
+
+          expect(newQuery.get('foo')).to.equal('bar')
+          expect(newQuery.get('fizz')).to.equal('buzz')
+        })
+      })
+    })
+
     describe('API', function() {
       describe(`location.getState()`, function() {
         it('should always get the current window location', function() {
