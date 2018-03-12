@@ -34,7 +34,7 @@ define(function(require) {
             '#/app/workspaces'
           )
 
-          location = getLocationModule()
+          location = getLocationModule(true)
 
           var newQuery = new URLSearchParams(loc.search.substring(1))
 

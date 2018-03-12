@@ -1,8 +1,8 @@
 define(function(require) {
   var instance
 
-  return function() {
-    if (!instance) {
+  return function(force) {
+    if (!instance || force) {
       instance = getInstance()
     }
 
