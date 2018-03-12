@@ -4,7 +4,17 @@ define(function(require) {
   var dispatcher = require('d3-dispatch').dispatch('statechange')
   var on = require('./on')
 
-  return function () {
+  var instance
+
+  return function() {
+    if (!instance) {
+      instance = getInstance()
+    }
+
+    return instance
+  }
+
+  function getInstance() {
     var history = window.history
     var location = window.location
     var base = ''
