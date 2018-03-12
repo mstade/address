@@ -1,9 +1,4 @@
 define(function(require) {
-  var findClosest = require('./find-closest')
-  var rebind = require('./rebind')
-  var dispatcher = require('d3-dispatch').dispatch('statechange')
-  var on = require('./on')
-
   var instance
 
   return function() {
@@ -15,9 +10,13 @@ define(function(require) {
   }
 
   function getInstance() {
-    var history = window.history
-    var location = window.location
-    var base = ''
+    var findClosest = require('./find-closest')
+      , rebind = require('./rebind')
+      , dispatcher = require('d3-dispatch').dispatch('statechange')
+      , history = window.history
+      , location = window.location
+      , on = require('./on')
+      , base = ''
 
     on.call(window, 'popstate.location', handleStateChange)
     on.call(document, 'click.location', handleClick)
