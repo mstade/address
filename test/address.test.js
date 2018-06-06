@@ -1,7 +1,7 @@
 define(function(require) {
   var sinon = require('sinon')
     , zapp = require('z-app')
-    , location = require('location')
+    , location = require('location')()
     , address
     , web
     , nap
@@ -223,7 +223,7 @@ define(function(require) {
             , timeout: 30
             }
 
-        expect(zapp.rootResource()).to.be.undefined
+        // expect(zapp.rootResource()).to.be.undefined
         expect(zapp.resource(zapp.root())).to.be.equal(zapp.rootResource())
 
         address('/wibble').on('done', cb)()

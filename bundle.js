@@ -6,7 +6,7 @@ define(function(require) {
   , httpStatusCode: require('./http-status-code')
   , interpolate: require('./interpolate')
   , into: require('./into')
-  , location: require('./location')
+  , location: require('./location')()
   , middleware: require('./middleware')
   , ok: require('./ok')
   , redirect: require('./redirect')

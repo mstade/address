@@ -21,7 +21,9 @@ define(
             done()
           }
         )
-        querySelectAll = sinon.stub(document, 'querySelectorAll', function () { return queryResponse  })
+
+        querySelectAll = sinon.stub(document, 'querySelectorAll')
+          .callsFake(function () { return queryResponse  })
       })
 
       afterEach(function() {

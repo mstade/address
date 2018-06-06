@@ -1,5 +1,5 @@
 // Karma configuration
-// Generated on Thu Sep 26 2013 10:51:28 GMT+0100 (GMT Daylight Time)
+process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 module.exports = function(config) {
   config.set({
@@ -9,7 +9,7 @@ module.exports = function(config) {
 
 
   // frameworks to use
-  frameworks: ['requirejs', 'mocha', 'sinon-chai'],
+  frameworks: ['requirejs', 'mocha', 'chai-sinon'],
 
 
   // list of files / patterns to load in the browser

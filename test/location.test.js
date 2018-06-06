@@ -1,5 +1,10 @@
 define(function(require) {
-  var location = require('location')
+  var getLocationModule = require('location')
+  var location
+
+  beforeEach(function() {
+    location = getLocationModule()
+  })
 
   describe('Location', function() {
     var originalPath
@@ -11,6 +16,32 @@ define(function(require) {
 
     afterEach(function() {
       window.history.replaceState(null, null, originalPath)
+    })
+
+    describe('Instantiation', function() {
+      describe('upgrading from hash path', function() {
+        it('should preserve query parameters', function() {
+          var loc = window.location
+          var originalQuery = new URLSearchParams()
+
+          originalQuery.set('foo', 'bar')
+          originalQuery.set('fizz', 'buzz')
+
+          window.history.replaceState(
+            null, null,
+            loc.origin + loc.pathname +
+            '?' + originalQuery.toString() +
+            '#/app/workspaces'
+          )
+
+          location = getLocationModule(true)
+
+          var newQuery = new URLSearchParams(loc.search.substring(1))
+
+          expect(newQuery.get('foo')).to.equal('bar')
+          expect(newQuery.get('fizz')).to.equal('buzz')
+        })
+      })
     })
 
     describe('API', function() {
@@ -37,7 +68,7 @@ define(function(require) {
           expect(location.basePath()).to.equal('/foo')
           expect(location.getState()).to.equal(originalPath)
           expect(window.location.pathname).to.equal('/foo' + originalPath)
-          expect(window.history.length).to.equal(historyEntries)    
+          expect(window.history.length).to.equal(historyEntries)
 
           location.basePath('/bar')
           expect(location.basePath()).to.equal('/bar')
@@ -60,6 +91,16 @@ define(function(require) {
       })
 
       describe(`location.pushState()`, function() {
+        var originalHref
+
+        before(function() {
+          originalHref = window.location.href
+        })
+
+        afterEach(function() {
+          window.history.pushState(null, null, originalHref)
+        })
+
         it('should update the current location', function() {
           expect(location.getState()).to.not.equal('/base/foo')
           expect(location.pushState('/base/foo')).to.equal('/base/foo')
@@ -79,7 +120,7 @@ define(function(require) {
 
         it('should do nothing when pushing the current location', function() {
           expect(location.pushState(location.getState())).to.equal(false)
-          
+
           location.basePath('/base')
           expect(location.pushState(location.getState())).to.equal(false)
         })
@@ -190,6 +231,18 @@ define(function(require) {
         location.on('statechange.test-redirect', null)
       })
 
+      it('should preserve query params from search and hash strings', function() {
+        history.replaceState(
+          null, null,
+          window.location.pathname + '?aaa=1&bbb=2#/somehash?bbb=3&ccc=4'
+        )
+
+        location = getLocationModule(true)
+
+        expect(window.location.pathname).to.equal('/somehash')
+        expect(window.location.search).to.equal('?aaa=1&bbb=3&ccc=4')
+      })
+
       it('should correctly deal with hashchanges where the hash is empty', function() {
         var didRedirect
         var currentPath = window.location.pathname
@@ -223,7 +276,7 @@ define(function(require) {
         window.history.back()
         expect(changedState).to.eql({ base: '', path: '/back' })
         expect(location.getState()).to.equal('/back')
-        
+
         changedState = undefined
         window.history.forward()
         expect(changedState).to.eql({ base: '', path: '/forward' })
@@ -231,7 +284,7 @@ define(function(require) {
         location.on('statechange.test-history', null)
       })
 
-      describe(`location.handleClick()`, function() {  
+      describe(`location.handleClick()`, function() {
         var changedState, anchor, handledClick
 
         beforeEach(function() {
