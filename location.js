@@ -22,8 +22,14 @@ define(function(require) {
     on.call(document, 'click.location', handleClick)
 
     if (isHashPath(location.hash)) {
+      var consolidated = getConsolidatedQuery(location)
+
       // Redirect current hash fragment location to "real" path
-      history.replaceState(null, null, rebase(fullPath(location)) + location.search)
+      history.replaceState(
+        null, null,
+        rebase(fullPath(location)).split('?')[0] +
+        (consolidated ? '?' + consolidated : '')
+      )
     }
 
     var api =
@@ -36,6 +42,32 @@ define(function(require) {
         }
 
     return rebind(api, dispatcher, 'on')
+
+    function getQueryParams (str) {
+      return str.split('&').reduce(function (sum, param) {
+        var pair = param.split('=')
+
+        if (pair[0].length) {
+          sum[pair[0]] = pair[1]
+        }
+
+        return sum
+      }, {})
+    }
+
+    function getConsolidatedQuery (location) {
+      var searchParams = getQueryParams(location.search.split('?')[1] || '')
+
+      var hashParams = getQueryParams(
+        (location.hash.split('#')[1] || '').split('?')[1] || ''
+      )
+
+      var consolidated = Object.assign({}, searchParams, hashParams)
+
+      return Object.keys(consolidated).map(function (key) {
+        return key + '=' + consolidated[key]
+      }).join('&')
+    }
 
     function getState() {
       return unbase(fullPath(location))
@@ -62,7 +94,7 @@ define(function(require) {
       if (path === getState()) {
         return false
       } else {
-        method({ base: base, path: path }, null, rebase(path) + location.search)
+        method({ base: base, path: path }, null, rebase(path))
         return path
       }
     }

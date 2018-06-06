@@ -179,14 +179,17 @@ define(function(require) {
     })
 
     it('should properly deal with unicode plane 0 pct-encoded characters', function() {
+      this.timeout(10000)
       testCodePlane(0x0000, 0xFFFF)
     })
 
     it('should properly deal with unicode plane 1 pct-encoded characters', function() {
+      this.timeout(10000)
       testCodePlane(0x10000, 0x1FFFF)
     })
 
     it('should properly deal with unicode plane 2 pct-encoded characters', function() {
+      this.timeout(10000)
       testCodePlane(0x20000, 0x2FFFF)
     })
 

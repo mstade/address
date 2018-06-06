@@ -1,10 +1,13 @@
 var webpack = require('webpack')
+var path = require('path')
+
 module.exports = {
   entry: './bundle.js'
+, mode: 'production'
 , output: {
     libraryTarget: 'umd'
   , library: 'address'
-  , path: './lib'
+  , path: path.resolve('./lib')
   , filename: 'address.js'
   }
 , externals: {

@@ -27,3 +27,4 @@ modules
 
 coverage
 lib
+/package-lock.json

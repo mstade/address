@@ -145,28 +145,6 @@ define(function(require) {
 
           location.on('statechange.test-no-dispatch', null)
         })
-
-        it('should preserve query parameters', function() {
-          var loc = window.location
-          var originalQuery = new URLSearchParams(loc.search.substring(1))
-
-          originalQuery.set('foo', 'bar')
-          originalQuery.set('fizz', 'buzz')
-
-          window.history.replaceState(
-            null, null,
-            loc.origin + loc.pathname + '?' + originalQuery.toString()
-          )
-
-          location.basePath('/base')
-          location.getState()
-          location.pushState('/base/foo')
-
-          var newQuery = new URLSearchParams(window.location.search.substring(1))
-
-          expect(newQuery.get('foo')).to.equal('bar')
-          expect(newQuery.get('fizz')).to.equal('buzz')
-        })
       })
 
       describe(`location.setState()`, function() {
@@ -251,6 +229,18 @@ define(function(require) {
         expect(window.location.hash).to.equal('')
 
         location.on('statechange.test-redirect', null)
+      })
+
+      it('should preserve query params from search and hash strings', function() {
+        history.replaceState(
+          null, null,
+          window.location.pathname + '?aaa=1&bbb=2#/somehash?bbb=3&ccc=4'
+        )
+
+        location = getLocationModule(true)
+
+        expect(window.location.pathname).to.equal('/somehash')
+        expect(window.location.search).to.equal('?aaa=1&bbb=3&ccc=4')
       })
 
       it('should correctly deal with hashchanges where the hash is empty', function() {
